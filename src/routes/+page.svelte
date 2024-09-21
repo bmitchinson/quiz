@@ -1,17 +1,6 @@
-<!-- src/routes/+page.svelte -->
-<script>
-	import GoogleLogin from '$lib/components/GoogleLogin.svelte';
-</script>
+<div class="flex mt-4 flex-col items-center">
+	<h1 class="text-3xl mb-8">Welcome to the WIP Quiz App</h1>
 
-<div class="flex items-center justify-center min-h-screen">
-	<div class="flex flex-col items-center space-y-4 p-6">
-		<h1 class="text-3xl">Welcome to this login sample!</h1>
-		<GoogleLogin />
-		<h2 class="text-xl" id="email">Email: ~~~</h2>
-		<img
-			src="https://res.cloudinary.com/dheqbiqti/image/upload/v1679284720/theo.png"
-			width={150}
-			height={150}
-		/>
-	</div>
+	<p><a href="/admin">Admin</a></p>
+	<p><a href="/student">Take a Quiz</a></p>
 </div>
