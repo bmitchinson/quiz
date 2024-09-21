@@ -1,38 +1,15 @@
-# create-svelte
+# Quiz 📓📝
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+It's like quizlet for math flashcards setup by teachers for their students.
+Scores are recorded for teachers to view to save time grading weekly quizzes.
 
-## Creating a project
+![](/docs/screenshot1.jpg)
 
-If you're seeing this, you've probably already done this step. Congrats!
+### Tools
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- vercel / vercel postgres (neon)
+- cloudflare
+- sveltekit
+- tailwind
+- lots and lots of chatgpt o1 as an exercise in AI codegen for rapid
+  development
