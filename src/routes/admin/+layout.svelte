@@ -1,23 +1,9 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { invalidateAll } from '$app/navigation';
+	export let data: { authenticated: boolean };
 
-	let isAuthenticated: undefined | Boolean = undefined;
+	let isAuthenticated = data.authenticated;
 	let message = '';
 	let success = false;
-
-	onMount(() => {
-		const auth = localStorage.getItem('auth');
-		const timestamp = localStorage.getItem('auth_timestamp') || '0';
-		const age = Date.now() - Number(timestamp);
-		if (auth === 'true' && timestamp && age < 3600000) {
-			isAuthenticated = true;
-		} else {
-			isAuthenticated = false;
-			localStorage.removeItem('auth');
-			localStorage.removeItem('auth_timestamp');
-		}
-	});
 
 	async function submitPassword(event: Event) {
 		event.preventDefault();
@@ -28,18 +14,11 @@
 			body: formData
 		});
 		const result = await response.json();
-		console.log('result:', result);
 
 		if (result.success) {
-			isAuthenticated = true;
-			localStorage.setItem('auth', 'true');
-			localStorage.setItem('auth_timestamp', Date.now().toString());
-			message = 'Authentication successful!';
-			success = true;
-			await invalidateAll(); // Refresh data without reloading
+			location.reload();
 		} else {
 			message = result.message || 'Authentication failed.';
-			console.log('message:', message);
 			success = false;
 		}
 	}
@@ -67,7 +46,7 @@
 				Submit
 			</button>
 			{#if message}
-				<div class={`message ${success ? 'success' : 'error'}`}>
+				<div class={`mt-4 message ${success ? 'success' : 'error'}`}>
 					{message}
 				</div>
 			{/if}

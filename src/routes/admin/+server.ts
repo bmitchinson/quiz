@@ -1,15 +1,12 @@
 import { json } from '@sveltejs/kit';
-import { passwordIsValid } from '$lib/passwordcheck';
+import { hourTTL, passwordIsValid } from '$lib/passwordcheck';
 
-export async function POST({ request }) {
+export async function POST({ request, cookies }) {
 	const formData = await request.formData();
 	const password = formData.get('password');
 
-	if (typeof password !== 'string') {
-		return { success: false, message: 'Invalid input' };
-	}
-
 	if (passwordIsValid(password)) {
+		cookies.set('pass', formData.get('password'), hourTTL);
 		return json({ success: true });
 	} else {
 		return json({ success: false, message: 'Incorrect password' });
