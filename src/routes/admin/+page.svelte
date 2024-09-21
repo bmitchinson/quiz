@@ -3,6 +3,24 @@
 	let message = '';
 	let success = false;
 	let searchQuery = '';
+	let currentPage = 1;
+	const itemsPerPage = 10;
+
+	// Computed property to get the filtered and paginated students
+	$: filteredStudents = data.students.filter((student) =>
+		student.name.toLowerCase().includes(searchQuery.toLowerCase())
+	);
+	$: paginatedStudents = filteredStudents.slice(
+		(currentPage - 1) * itemsPerPage,
+		currentPage * itemsPerPage
+	);
+	$: totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+
+	function goToPage(page: number) {
+		if (page >= 1 && page <= totalPages) {
+			currentPage = page;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -61,14 +79,29 @@ bdylan"
 				</tr>
 			</thead>
 			<tbody>
-				{#each data.students.filter((student) => student.name
-						.toLowerCase()
-						.includes(searchQuery.toLowerCase())) as student}
+				{#each paginatedStudents as student}
 					<tr>
 						<td class="py-2 px-4 border-b">{student.name}</td>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
+		<div class="flex justify-between mt-4">
+			<button
+				on:click={() => goToPage(currentPage - 1)}
+				class="px-4 py-2 bg-gray-300 rounded-md"
+				disabled={currentPage === 1}
+			>
+				Previous
+			</button>
+			<span>Page {currentPage} of {totalPages}</span>
+			<button
+				on:click={() => goToPage(currentPage + 1)}
+				class="px-4 py-2 bg-gray-300 rounded-md"
+				disabled={currentPage === totalPages}
+			>
+				Next
+			</button>
+		</div>
 	</div>
 </div>
