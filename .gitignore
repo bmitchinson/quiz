@@ -19,3 +19,8 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Prisma
+/prisma/migrations/
+!prisma/migrations/**/migration.sql
+!prisma/migrations/migration_lock.toml
