@@ -6,7 +6,7 @@
 	let success = false;
 	let searchQuery = '';
 	let currentPage = 1;
-	const itemsPerPage = 10;
+	const itemsPerPage = 5;
 
 	// Computed property to get the filtered and paginated students
 	$: filteredStudents = data.students.filter((student) =>
@@ -51,7 +51,10 @@
 	<title>Admin View</title>
 </svelte:head>
 
-<div class="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 space-y-8">
+<div
+	id="card-container"
+	class="min-h-screen bg-gray-100 flex flex-wrap items-center justify-center p-4 gap-10"
+>
 	<div class="bg-white shadow-md rounded-lg p-8 w-full max-w-lg">
 		<h1 class="text-2xl font-bold mb-6 text-center">Admin View</h1>
 		<form method="post" action="?/addStudents" class="space-y-4">
