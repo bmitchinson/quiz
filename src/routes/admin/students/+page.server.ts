@@ -1,5 +1,3 @@
-// src/routes/admin/+page.server.ts
-
 import type { Actions, PageServerLoad } from './$types';
 import { Database } from '$lib/database';
 import { error } from '@sveltejs/kit';
