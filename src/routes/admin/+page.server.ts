@@ -1,10 +1,19 @@
 // src/routes/admin/+page.server.ts
 
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import { Database } from '$lib/database';
 import { error } from '@sveltejs/kit';
 
 const db = new Database();
+
+export const load: PageServerLoad = async () => {
+	try {
+		const students = await db.getAllStudents();
+		return { students };
+	} catch (err) {
+		throw error(500, 'Failed to load students');
+	}
+};
 
 export const actions: Actions = {
 	addStudents: async ({ request }) => {

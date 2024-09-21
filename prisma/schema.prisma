@@ -11,6 +11,6 @@ generator client {
 
 model Student {
   id        Int     @id @default(autoincrement())
-  lastName  String  @unique
+  name  String  @unique
   createdAt DateTime @default(now())
 }

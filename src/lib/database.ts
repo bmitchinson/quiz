@@ -27,20 +27,21 @@ export class Database {
 	/**
 	 * Adds multiple unique student last names to the database.
 	 * Uses upsert to avoid duplicates.
-	 * @param lastNames Array of unique student last names.
+	 * @param names Array of unique student last names.
 	 */
-	async addStudents(lastNames: string[]): Promise<void> {
+	async addStudents(names: string[]): Promise<void> {
 		try {
-			const createPromises = lastNames.map((lastName) =>
-				this.prisma.student.upsert({
-					where: { lastName },
+			const createPromises = names.map((name) => {
+				const lowerName = name.toLowerCase();
+				return this.prisma.student.upsert({
+					where: { name },
 					update: {},
-					create: { lastName }
-				})
-			);
+					create: { name: lowerName }
+				});
+			});
 
 			await this.prisma.$transaction(createPromises);
-			console.log('Added Students:', lastNames);
+			console.log('Added Students:', names);
 		} catch (error) {
 			console.error('Error adding students:', error);
 			throw error;
@@ -54,10 +55,10 @@ export class Database {
 	async getAllStudents(): Promise<string[]> {
 		try {
 			const students = await this.prisma.student.findMany({
-				select: { lastName: true },
-				orderBy: { lastName: 'asc' }
+				select: { name: true },
+				orderBy: { name: 'asc' }
 			});
-			return students.map((student) => student.lastName);
+			return students;
 		} catch (error) {
 			console.error('Error fetching students:', error);
 			throw error;
