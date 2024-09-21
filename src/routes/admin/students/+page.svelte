@@ -109,14 +109,20 @@ bdylan"
 			<tbody>
 				{#each paginatedStudents as student}
 					<tr>
-						<td class="py-2 px-4 border-b">{student.name}</td>
 						<td class="py-2 px-4 border-b">
-							<button
-								on:click={() => deleteStudent(student.name)}
-								class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-md transition duration-200"
-							>
-								Delete
-							</button>
+							<div class="flex justify-center">
+								{student.name}
+							</div>
+						</td>
+						<td class="py-2 px-4 border-b">
+							<div class="flex justify-center">
+								<button
+									on:click={() => deleteStudent(student.name)}
+									class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-md transition duration-200"
+								>
+									Delete
+								</button>
+							</div>
 						</td>
 					</tr>
 				{/each}
