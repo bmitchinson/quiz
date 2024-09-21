@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
+
 	export let data: { students: { name: string }[] };
 	let message = '';
 	let success = false;
@@ -21,6 +23,28 @@
 			currentPage = page;
 		}
 	}
+
+	async function deleteStudent(name: string) {
+		if (window.confirm(`Are you sure you want to delete ${name}?`)) {
+			const formData = new FormData();
+			formData.append('name', name);
+
+			const response = await fetch('?/deleteStudent', {
+				method: 'POST',
+				body: formData
+			});
+
+			const result = await response.json();
+			if (result.status === 200) {
+				message = 'Student deleted successfully';
+				success = true;
+				await invalidateAll();
+			} else {
+				message = 'Failed to delete student';
+				success = false;
+			}
+		}
+	}
 </script>
 
 <svelte:head>
@@ -30,13 +54,6 @@
 <div class="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 space-y-8">
 	<div class="bg-white shadow-md rounded-lg p-8 w-full max-w-lg">
 		<h1 class="text-2xl font-bold mb-6 text-center">Admin View</h1>
-		{#if message}
-			<div
-				class={`mb-4 p-4 rounded ${success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
-			>
-				{message}
-			</div>
-		{/if}
 		<form method="post" action="?/addStudents" class="space-y-4">
 			<div>
 				<label for="lastNames" class="block text-gray-700 font-medium mb-2">
@@ -66,6 +83,13 @@ bdylan"
 
 	<div class="bg-white shadow-md rounded-lg p-8 w-full max-w-lg">
 		<h2 class="text-2xl font-bold mb-6 text-center">Existing Students</h2>
+		{#if message}
+			<div
+				class={`mb-4 p-4 rounded ${success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+			>
+				{message}
+			</div>
+		{/if}
 		<input
 			type="text"
 			placeholder="Search by last name"
@@ -76,12 +100,21 @@ bdylan"
 			<thead>
 				<tr>
 					<th class="py-2 px-4 border-b">Last Name</th>
+					<th class="py-2 px-4 border-b">Actions</th>
 				</tr>
 			</thead>
 			<tbody>
 				{#each paginatedStudents as student}
 					<tr>
 						<td class="py-2 px-4 border-b">{student.name}</td>
+						<td class="py-2 px-4 border-b">
+							<button
+								on:click={() => deleteStudent(student.name)}
+								class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-md transition duration-200"
+							>
+								Delete
+							</button>
+						</td>
 					</tr>
 				{/each}
 			</tbody>

@@ -66,7 +66,18 @@ export class Database {
 	}
 
 	/**
-	 * Additional database methods can be added here.
-	 * For example, deleting a student, updating student details, etc.
+	 * Deletes a student by name.
+	 * @param name The name of the student to delete.
 	 */
+	async deleteStudent(name: string): Promise<void> {
+		try {
+			await this.prisma.student.delete({
+				where: { name }
+			});
+			console.log('Deleted Student:', name);
+		} catch (error) {
+			console.error('Error deleting student:', error);
+			throw error;
+		}
+	}
 }

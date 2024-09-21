@@ -39,5 +39,20 @@ export const actions: Actions = {
 		} catch (err) {
 			return { success: false, message: 'Failed to add students' };
 		}
+	},
+	deleteStudent: async ({ request }) => {
+		const formData = await request.formData();
+		const name = formData.get('name');
+
+		if (typeof name !== 'string') {
+			return { success: false, message: 'Invalid input' };
+		}
+
+		try {
+			await db.deleteStudent(name);
+			return { success: true, message: 'Student deleted successfully' };
+		} catch (err) {
+			return { success: false, message: 'Failed to delete student' };
+		}
 	}
 };
