@@ -1,7 +1,11 @@
 import { invalidateAll } from '$app/navigation';
 import { redirect, type Cookies } from '@sveltejs/kit';
 
-export const hourTTL = { path: '/', maxAge: 60 * 60 * 1 };
+const ttlSeconds = parseInt(process.env.COOKIE_TTL);
+
+console.log('starting up with cookie TTL of ' + ttlSeconds + ' seconds');
+
+export const cookieTTL = { path: '/', maxAge: ttlSeconds };
 
 export function passwordIsValid(password: string): boolean {
 	return password === process.env.ADMIN_PASSWORD;
@@ -15,7 +19,9 @@ export async function validatePasswordAndRefreshCookie<T>(
 	const password = cookies.get('pass');
 
 	if (!passwordIsValid(password)) {
-		console.error('Password at api route attempted - ' + password + ' route: ' + request.url);
+		if (password) {
+			console.error('Password at api route attempted - ' + password + ' route: ' + request.url);
+		}
 		return { error: 'Unauthorized. Knock it off this is a free app for kids :(' };
 	} else {
 		refreshTTL(cookies, password);
@@ -24,5 +30,5 @@ export async function validatePasswordAndRefreshCookie<T>(
 }
 
 function refreshTTL(cookies: Cookies, password: string): void {
-	cookies.set('pass', password, hourTTL);
+	cookies.set('pass', password, cookieTTL);
 }

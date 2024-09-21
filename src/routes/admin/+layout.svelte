@@ -30,7 +30,7 @@
 			on:submit={submitPassword}
 			class="password-form bg-white shadow-md rounded-lg m-8 w-full max-w-lg flex flex-col w-72 p-8"
 		>
-			<h1 class="text-2xl font-bold mb-6 text-center">Admin Login</h1>
+			<h1 class="text-2xl font-bold mb-2 text-center">Admin Login</h1>
 			<p class="text-center pb-4">Reach out to Will Mitchinson for the password</p>
 			<input
 				type="password"
