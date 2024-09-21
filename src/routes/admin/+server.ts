@@ -1,4 +1,5 @@
 import { json } from '@sveltejs/kit';
+import { passwordIsValid } from '$lib/passwordcheck';
 
 export async function POST({ request }) {
 	const formData = await request.formData();
@@ -8,7 +9,7 @@ export async function POST({ request }) {
 		return { success: false, message: 'Invalid input' };
 	}
 
-	if (password === process.env.ADMIN_PASSWORD) {
+	if (passwordIsValid(password)) {
 		return json({ success: true });
 	} else {
 		return json({ success: false, message: 'Incorrect password' });
