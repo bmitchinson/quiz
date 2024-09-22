@@ -2,7 +2,6 @@
 	class="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-200 to-blue-400 backdrop-blur-md"
 >
 	<div class="bg-white bg-opacity-70 rounded-lg p-8 shadow-lg">
-		<h1 class="text-4xl font-bold mb-6">WIP Quiz App</h1>
 		<div class="flex flex-col space-y-2">
 			<a
 				href="/admin/students"
