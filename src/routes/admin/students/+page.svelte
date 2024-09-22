@@ -53,9 +53,9 @@
 
 <div
 	id="card-container"
-	class="min-h-screen bg-gray-100 flex flex-wrap items-center justify-center p-4 gap-10"
+	class="min-h-screen bg-gradient-to-r from-blue-200 to-blue-400 backdrop-blur-md flex flex-wrap items-center justify-center p-4 gap-10"
 >
-	<div class="bg-white shadow-md rounded-lg p-8 w-full max-w-lg">
+	<div class="bg-white bg-opacity-70 shadow-lg rounded-lg p-8 w-full max-w-lg">
 		<h1 class="text-2xl font-bold mb-6 text-center">Admin View</h1>
 		<form method="post" action="?/addStudents" class="space-y-4">
 			<div>
@@ -84,7 +84,7 @@ bdylan"
 		</form>
 	</div>
 
-	<div class="bg-white shadow-md rounded-lg p-8 w-full max-w-lg">
+	<div class="bg-white bg-opacity-70 shadow-lg rounded-lg p-8 w-full max-w-lg">
 		<h2 class="text-2xl font-bold mb-6 text-center">Existing Students</h2>
 		{#if message}
 			<div
@@ -114,14 +114,14 @@ bdylan"
 								{student.name}
 							</div>
 						</td>
-						<div class="flex justify-center m-2">
+						<td class="flex justify-center m-2">
 							<button
 								on:click={() => deleteStudent(student.name)}
 								class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-md transition duration-200"
 							>
 								Delete
 							</button>
-						</div>
+						</td>
 					</tr>
 				{/each}
 			</tbody>

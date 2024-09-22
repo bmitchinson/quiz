@@ -25,10 +25,12 @@
 </script>
 
 {#if !isAuthenticated && isAuthenticated !== undefined}
-	<div class="flex justify-center items-center min-h-screen">
+	<div
+		class="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-200 to-blue-400 backdrop-blur-md"
+	>
 		<form
 			on:submit={submitPassword}
-			class="password-form bg-white shadow-md rounded-lg m-8 w-full max-w-lg flex flex-col w-72 p-8"
+			class="bg-white bg-opacity-70 shadow-lg rounded-lg p-8 m-8 w-full max-w-lg flex flex-col"
 		>
 			<h1 class="text-2xl font-bold mb-2 text-center">Admin Login</h1>
 			<p class="text-center pb-4">Reach out to Will Mitchinson for the password</p>
