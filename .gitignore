@@ -24,6 +24,6 @@ vite.config.ts.timestamp-*
 test-results/
 
 # Prisma
-/prisma/migrations/
-!prisma/migrations/**/migration.sql
-!prisma/migrations/migration_lock.toml
+/prisma/*
+!/prisma/migrations/
+!/prisma/migrations/**

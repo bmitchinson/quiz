@@ -1,4 +1,4 @@
 - `npx prisma generate` make js classes
-- `npx dotenv -e .env -- npx prisma migrate dev --name {migration_name}` create migration after schema.prisma change
-- `npx dotenv -e .env -- npx prisma migrate deploy` deploy migrations
-- `npx dotenv -e .env -- npx prisma studio` db viewer
+- `npx dotenv -e .env.dev -- npx prisma migrate dev --name {migration_name}` create migration after schema.prisma change
+- `npx dotenv -e .env.dev -- npx prisma migrate deploy` deploy migrations
+- `npx dotenv -e .env.dev -- npx prisma studio` db viewer
