@@ -36,6 +36,6 @@ model Score {
   studentId      Int
   quizId         Int
 
-  student        Student   @relation(fields: [studentId], references: [id])
-  quiz           Quiz      @relation(fields: [quizId], references: [id])
+  student        Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  quiz           Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
 }
