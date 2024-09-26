@@ -10,6 +10,11 @@
 			>Admin: Manage Students</a
 		>
 		<a
+			href="/admin/quizzes"
+			class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition"
+			>Admin: Manage Quizzes</a
+		>
+		<a
 			href="/student"
 			class="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600 transition"
 			>Take a Quiz</a
