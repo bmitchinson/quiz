@@ -9,13 +9,11 @@ jobs:
   backup_and_upload:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Postgres Dump Backup
         uses: tj-actions/pg-dump@v3
         with:
           database_url: ${{ secrets.DATABASE_URL }}
+          postgresql_version: '16'
           path: 'backups/backup.sql'
           options: '-O'
 
@@ -31,4 +29,5 @@ jobs:
             --container-name ${{ secrets.AZURE_STORAGE_CONTAINER }} \
             --name backup-$(date +%Y-%m-%d-%H-%M-%S).sql \
             --file backups/backup.sql \
+            --auth-mode login \
             --overwrite true
