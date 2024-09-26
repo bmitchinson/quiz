@@ -3,8 +3,6 @@ import { redirect, type Cookies } from '@sveltejs/kit';
 
 const ttlSeconds = parseInt(process.env.COOKIE_TTL);
 
-console.log('starting up with cookie TTL of ' + ttlSeconds + ' seconds');
-
 export const cookieTTL = { path: '/', maxAge: ttlSeconds };
 
 export function passwordIsValid(password: string): boolean {
