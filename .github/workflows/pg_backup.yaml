@@ -29,4 +29,5 @@ jobs:
             --container-name ${{ secrets.AZURE_STORAGE_CONTAINER }} \
             --name backup-$(date +%Y-%m-%d-%H-%M-%S).sql \
             --file backups/backup.sql \
+            --auth-mode login \
             --overwrite true
