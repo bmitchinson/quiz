@@ -5,6 +5,8 @@ Scores are recorded for teachers to view to save time grading weekly quizzes.
 
 ![](/docs/screenshot1.jpg)
 
+[![Postgres Backup and Upload](https://github.com/bmitchinson/quiz/actions/workflows/pg_backup.yaml/badge.svg)](https://github.com/bmitchinson/quiz/actions/workflows/pg_backup.yaml)
+
 ### Tools
 
 - vercel / vercel postgres (neon)
