@@ -13,7 +13,7 @@ jobs:
         uses: tj-actions/pg-dump@v3
         with:
           database_url: ${{ secrets.DATABASE_URL }}
-          postgresql_version: '14'
+          postgresql_version: '16'
           path: 'backups/backup.sql'
           options: '-O'
 
