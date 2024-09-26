@@ -10,12 +10,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check .",
-		"format": "prettier --write .",
-		"prisma:generate:dev": "dotenv -e .env -- npx prisma generate",
-		"prisma:migrate:dev": "dotenv -e .env -- npx prisma migrate dev --name",
-		"prisma:migrate:prod": "dotenv -e .env.prod -- npx prisma migrate deploy",
-		"prisma:studio:dev": "dotenv -e .env -- npx prisma studio",
-		"prisma:studio:prod": "dotenv -e .env.prod -- npx prisma studio"
+		"format": "prettier --write ."
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
