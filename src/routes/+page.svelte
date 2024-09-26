@@ -1,3 +1,7 @@
+<svelte:head>
+	<title>Quiz: Home</title>
+</svelte:head>
+
 <div class="bg-white bg-opacity-70 rounded-lg p-8 shadow-lg">
 	<div class="flex flex-col space-y-2">
 		<a

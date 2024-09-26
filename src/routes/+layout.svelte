@@ -2,20 +2,16 @@
 	import '../app.css';
 </script>
 
-<div
-	class="flex flex-col items-center justify-between h-screen bg-gradient-to-r from-blue-200 to-blue-400 backdrop-blur-md"
->
+<div class="flex flex-col items-center h-screen justify-between">
 	<header class="bg-white bg-opacity-70 backdrop-blur-md shadow-lg p-4 w-full">
 		<a href="/"><h1 class="text-3xl font-bold text-center">Quiz App</h1></a>
 	</header>
 
-	<main>
-		<div class="overflow-hidden flex items-center justify-center">
-			<slot />
-		</div>
+	<main class="flex-grow gap-8 flex items-center justify-center flex-wrap w-full my-8">
+		<slot />
 	</main>
 
-	<footer class="w-full text-center bg-white text-gray-700 p-3">
+	<footer class="w-full sticky top-full text-center bg-white text-gray-700 p-3">
 		<p>
 			For feature requests, access requests, or bug reports, please contact mitchinson.dev@gmail.com
 		</p>
