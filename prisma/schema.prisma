@@ -20,6 +20,7 @@ model Student {
 model Quiz {
   id             Int      @id @default(autoincrement())
   title          String   @db.VarChar(50)
+  accessCode     String   @db.VarChar(6)
   questionsData  String   @db.VarChar(500)
   totalQuestions Int
   createdAt      DateTime @default(now())
