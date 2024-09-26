@@ -1,0 +1,34 @@
+name: 'Postgres Backup and Upload'
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # 3am cst
+  workflow_dispatch:
+
+jobs:
+  backup_and_upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Postgres Dump Backup
+        uses: tj-actions/pg-dump@v3
+        with:
+          database_url: ${{ secrets.DATABASE_URL }}
+          path: 'backups/backup.sql'
+          options: '-O'
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Upload backup to Azure Blob Storage
+        run: |
+          az storage blob upload \
+            --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+            --container-name ${{ secrets.AZURE_STORAGE_CONTAINER }} \
+            --name backup-$(date +%Y-%m-%d-%H-%M-%S).sql \
+            --file backups/backup.sql \
+            --overwrite true

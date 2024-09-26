@@ -1,17 +1,18 @@
-<!-- src/routes/+page.svelte -->
-<script>
-	import GoogleLogin from '$lib/components/GoogleLogin.svelte';
-</script>
-
-<div class="flex items-center justify-center min-h-screen">
-	<div class="flex flex-col items-center space-y-4 p-6">
-		<h1 class="text-3xl">Welcome to this login sample!</h1>
-		<GoogleLogin />
-		<h2 class="text-xl" id="email">Email: ~~~</h2>
-		<img
-			src="https://res.cloudinary.com/dheqbiqti/image/upload/v1679284720/theo.png"
-			width={150}
-			height={150}
-		/>
+<div
+	class="flex flex-col items-center justify-center h-screen bg-gradient-to-r from-blue-200 to-blue-400 backdrop-blur-md"
+>
+	<div class="bg-white bg-opacity-70 rounded-lg p-8 shadow-lg">
+		<div class="flex flex-col space-y-2">
+			<a
+				href="/admin/students"
+				class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition"
+				>Admin: Manage Students</a
+			>
+			<a
+				href="/student"
+				class="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600 transition"
+				>Take a Quiz</a
+			>
+		</div>
 	</div>
 </div>
