@@ -114,7 +114,6 @@ export class Database {
 				}
 			});
 
-			await this.prisma.$transaction(insertOperation);
 			console.log('Added Quiz:', title);
 		} catch (error) {
 			console.error('Error adding quiz:', error);
