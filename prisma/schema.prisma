@@ -33,9 +33,9 @@ model Score {
   correctAnswers Int
   timeStarted    DateTime?
   timeFinished   DateTime?
-  studentId      Int
-  quizId         Int
+  studentName    String
+  quizCode       String    @db.VarChar(6)
 
-  student        Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  quiz           Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  student        Student   @relation(fields: [studentName], references: [name], onDelete: Cascade)
+  quiz           Quiz      @relation(fields: [quizCode], references: [accessCode], onDelete: Cascade)
 }
