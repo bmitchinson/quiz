@@ -15,7 +15,7 @@
 			>Teacher: Manage Quizzes</a
 		>
 		<a
-			href="/student"
+			href="/student/takeQuiz"
 			class="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600 transition"
 			>Student: Take a Quiz</a
 		>
