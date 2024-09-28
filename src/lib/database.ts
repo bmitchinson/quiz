@@ -2,16 +2,9 @@
 
 import { PrismaClient, type Quiz } from '@prisma/client';
 
-// Ensure a single instance of PrismaClient is used in development
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-
-export const prisma =
-	globalForPrisma.prisma ||
-	new PrismaClient({
-		log: ['query', 'info', 'warn', 'error']
-	});
-
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+export const prisma = new PrismaClient({
+	log: ['query', 'info', 'warn', 'error']
+});
 
 function generate6DigitCode(): string {
 	return String(Math.floor(100000 + Math.random() * 900000)).padStart(6, '0');
