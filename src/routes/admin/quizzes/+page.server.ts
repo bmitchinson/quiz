@@ -19,13 +19,21 @@ export const actions: Actions = {
 	addQuiz: async ({ request, cookies }) =>
 		validatePasswordAndRefreshCookie(request, cookies, async () => {
 			const formData = await request.formData();
-			const questionData = formData.get('questionData');
+			let questionData = formData.get('questionData');
 			const title = formData.get('title');
+
+			// Step 1: Remove all characters except numbers, operators (+, -, *, /), and newlines
+			questionData = questionData.replace(/[^\d+\-/*\n]/g, '');
+			// Step 2: Remove spaces and tabs
+			questionData = questionData.replace(/[ \t]+/g, '');
+			// Step 3: Replace multiple newlines with a single newline
+			questionData = questionData.replace(/\n+/g, '\n');
 
 			try {
 				await db.addQuiz(title, questionData);
 				return { success: true, message: 'Quiz added successfully' };
 			} catch (err) {
+				console.error('Error adding quiz:', err);
 				return { success: false, message: 'Failed to add quiz' };
 			}
 		}),

@@ -9,7 +9,21 @@
 			associatedScores: number;
 		}[];
 	};
-	console.log('data:', data);
+
+	let questionData = '';
+	let questionDataHasError = false;
+
+	function validateInput() {
+		// Allowed characters: digits, operators, newlines, and spaces
+		const allowedCharsRegex = /^[\d+\-*/\n\s]*$/;
+
+		if (!allowedCharsRegex.test(questionData)) {
+			questionDataHasError = true;
+		} else {
+			questionDataHasError = false;
+		}
+	}
+
 	let message = '';
 	let success = false;
 	let searchQuery = '';
@@ -78,15 +92,21 @@
 		<label for="questionData" class="block text-gray-700 font-medium mb-2">
 			Enter Quiz Questions
 		</label>
-		<p>One math question per line, no "=" or letters. Just numbers and operators.</p>
+		<p class:text-red-500={questionDataHasError}>
+			One math question per line, no "=" or letters. Just numbers and operators (+ - / *).
+		</p>
 		<textarea
 			id="questionData"
 			name="questionData"
 			rows="10"
-			class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+			class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 {questionDataHasError
+				? 'border-red-500 focus:ring-red-500'
+				: 'focus:ring-blue-500'}"
 			placeholder="1+3
 8/2
-(3+2)*6"
+3+2*6"
+			bind:value={questionData}
+			on:input={validateInput}
 		></textarea>
 		<div class="flex justify-center">
 			<button
