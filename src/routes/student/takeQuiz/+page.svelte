@@ -95,11 +95,12 @@
 				results.push({ question: questions[currentQuestionIndex], correct: false });
 			}
 			// Move to the next question after a short delay
+			// TODO: replace timeout with "next question" field
 			setTimeout(() => {
 				isCorrect = null;
 				userAnswer = '';
 				currentQuestionIndex++;
-			}, 1000); // 1-second delay
+			}, 3000);
 		}
 	}
 </script>
@@ -166,10 +167,13 @@
 		<div class="text-8xl font-serif mb-4" style="font-family: 'Times New Roman', Times, serif;">
 			{questions[currentQuestionIndex]} =
 			<input
-				type="text"
+				type="number"
 				class="border-2 border-gray-300 rounded-md p-2 text-4xl w-32 text-center"
 				bind:value={userAnswer}
 			/>
+			{#if isCorrect !== null && !isCorrect}
+				<p class="text-2xl mt-4">Correct answer: {correctAnswer}</p>
+			{/if}
 		</div>
 		<button class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4" on:click={submitAnswer}>
 			Submit
@@ -184,3 +188,17 @@
 		</p>
 	</div>
 {/if}
+
+<style>
+	/* Chrome, Safari, Edge, Opera */
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+
+	/* Firefox */
+	input[type='number'] {
+		-moz-appearance: textfield;
+	}
+</style>

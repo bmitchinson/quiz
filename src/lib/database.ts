@@ -122,7 +122,7 @@ export class Database {
 			await this.prisma.quiz.create({
 				data: {
 					title,
-					questionsData,
+					questionsData: questionsData.replace(/\r?\n/g, '|'),
 					totalQuestions: questionsData.split('\n').length,
 					accessCode: await this.generateUnique6DigitCode()
 				}
@@ -131,6 +131,31 @@ export class Database {
 			console.log('Added Quiz:', title);
 		} catch (error) {
 			console.error('Error adding quiz:', error);
+			throw error;
+		}
+	}
+
+	async getQuiz(accessCode: string): Promise<void> {
+		try {
+			return await this.prisma.quiz.findFirst({
+				where: { accessCode }
+			});
+		} catch (error) {
+			console.error('Error looking up quiz:', error);
+			throw error;
+		}
+	}
+
+	async checkIfScoreExistsForQuizAndStudent(
+		accessCode: string,
+		studentUsername: string
+	): Promise<void> {
+		try {
+			return await this.prisma.score.findFirst({
+				where: { quizCode: accessCode, studentName: studentUsername }
+			});
+		} catch (error) {
+			console.error('Error looking up quiz:', error);
 			throw error;
 		}
 	}

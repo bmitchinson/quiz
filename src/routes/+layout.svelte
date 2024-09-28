@@ -14,11 +14,23 @@
 
 <div class="flex flex-col items-center h-screen justify-between">
 	<header
-		class="bg-white bg-opacity-70 backdrop-blur-md shadow-lg p-4 w-full relative flex items-center justify-center"
+		class="bg-white bg-opacity-70 backdrop-blur-md shadow-lg p-4 w-full relative flex items-center justify-center py-8"
 	>
-		<a href="/" class="z-10">
-			<h1 class="text-3xl font-bold">Quiz App</h1>
-		</a>
+		<div class="absolute left-4 flex items-center space-x-4">
+			<a href="/" class="z-10">
+				<h1 class="text-3xl font-bold">Quiz App</h1>
+			</a>
+			<a
+				href="/"
+				class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300"
+				>Home</a
+			>
+			<a
+				href="/about"
+				class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300"
+				>About</a
+			>
+		</div>
 
 		<!-- Right-side Username and Logout Button -->
 		{#if data.validatedUsername || data.adminPass}
