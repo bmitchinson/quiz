@@ -3,7 +3,6 @@
 
 	// Import actions and data from the server
 	export let data;
-	export let form;
 
 	// State variables
 	let accessCode = '';
@@ -16,6 +15,9 @@
 	let results = [];
 	let isCorrect = null;
 	let correctAnswer = null;
+	let usernameInput = '';
+	let usernameError = null;
+	let validatedUsername = data.validatedUsername ? data.validatedUsername : '';
 
 	async function getQuiz() {
 		if (accessCode) {
@@ -35,6 +37,23 @@
 				accessCodeErr = 'Invalid Access Code';
 				questionsData = '';
 			}
+		}
+	}
+
+	async function validateUsername() {
+		const formData = new FormData();
+		formData.append('usernameInput', usernameInput.toLowerCase());
+		const response = await fetch('?/validateUsername', {
+			method: 'POST',
+			body: formData
+		});
+		const result = deserialize(await response.text());
+		if (result.data.success === true) {
+			location.reload();
+		} else {
+			console.log('error', result.data.message);
+			validatedUsername = '';
+			usernameError = result.data.message;
 		}
 	}
 
@@ -85,7 +104,33 @@
 	}
 </script>
 
-{#if !quizStarted}
+{#if !validatedUsername}
+	<div class="bg-white rounded-lg p-8 shadow-md text-center max-w-xl mx-auto mt-10">
+		<h2 class="text-2xl mb-4">Enter Username</h2>
+		<p>It's your first initial followed by your last name:</p>
+		<p>Example: wmitchinson</p>
+		<form class="flex flex-col items-center">
+			<input
+				data-1p-ignore
+				type="text"
+				name="usernameInput"
+				class="border-2 border-gray-300 rounded-md p-2 text-2xl w-64 text-center my-4"
+				required
+				bind:value={usernameInput}
+			/>
+			{#if usernameError}
+				<p class="text-red-500 mb-2">{usernameError}</p>
+			{/if}
+			<button
+				on:click={validateUsername}
+				class="bg-blue-500 text-white px-4 py-2 rounded-md mt-2"
+				type="submit"
+			>
+				Start
+			</button>
+		</form>
+	</div>
+{:else if !quizStarted}
 	<!-- Show the access code form -->
 	<div class="bg-white rounded-lg p-8 shadow-md text-center max-w-xl mx-auto mt-10">
 		<h2 class="text-4xl mb-4">Enter Quiz Access Code</h2>

@@ -6,7 +6,7 @@ export async function POST({ request, cookies }) {
 	const password = formData.get('password');
 
 	if (passwordIsValid(password)) {
-		cookies.set('pass', formData.get('password'), cookieTTL);
+		cookies.set('adminPass', formData.get('password'), cookieTTL);
 		return json({ success: true });
 	} else {
 		return json({ success: false, message: 'Incorrect password' });

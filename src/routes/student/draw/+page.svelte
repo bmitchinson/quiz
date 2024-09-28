@@ -140,7 +140,7 @@
 				aria-label="Select color {c}"
 			></button>
 		{/each}
-		<button class="tool-button" on:click={erase}>Erase</button>
+		<button class="tool-button" on:click={erase}>Eraser</button>
 		<button class="tool-button" on:click={saveImage}>Save</button>
 	</div>
 

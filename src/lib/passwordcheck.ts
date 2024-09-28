@@ -14,7 +14,7 @@ export async function validatePasswordAndRefreshCookie<T>(
 	cookies: Cookies,
 	callback: (request: Request) => T
 ): Promise<T> {
-	const password = cookies.get('pass');
+	const password = cookies.get('adminPass');
 
 	if (!passwordIsValid(password)) {
 		if (password) {
@@ -28,5 +28,5 @@ export async function validatePasswordAndRefreshCookie<T>(
 }
 
 function refreshTTL(cookies: Cookies, password: string): void {
-	cookies.set('pass', password, cookieTTL);
+	cookies.set('adminPass', password, cookieTTL);
 }

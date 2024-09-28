@@ -2,8 +2,11 @@
 
 import { PrismaClient, type Quiz } from '@prisma/client';
 
+const logLevels =
+	process.env.NODE_ENV === 'production' ? ['warn', 'error'] : ['query', 'info', 'warn', 'error'];
+
 export const prisma = new PrismaClient({
-	log: ['query', 'info', 'warn', 'error']
+	log: logLevels
 });
 
 function generate6DigitCode(): string {
@@ -61,6 +64,17 @@ export class Database {
 			console.log('Added Students:', names);
 		} catch (error) {
 			console.error('Error adding students:', error);
+			throw error;
+		}
+	}
+
+	async findStudentByName(name: string): Promise<void> {
+		try {
+			return await this.prisma.student.findFirst({
+				where: { name }
+			});
+		} catch (error) {
+			console.error('Error finding student:', error);
 			throw error;
 		}
 	}
