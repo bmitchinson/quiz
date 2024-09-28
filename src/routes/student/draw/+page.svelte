@@ -101,6 +101,7 @@
 <div class="container">
 	<div
 		class="canvas-container"
+		role="application"
 		on:mousemove={updateCursor}
 		on:mouseleave={hideCursor}
 		on:touchmove|preventDefault={updateCursor}
@@ -131,11 +132,13 @@
 
 	<div class="controls">
 		{#each colors as c}
-			<div
+			<button
+				type="button"
 				class="color-button {color === c && !isErasing ? 'selected' : ''}"
 				style="background-color: {c};"
 				on:click={() => selectColor(c)}
-			></div>
+				aria-label="Select color {c}"
+			></button>
 		{/each}
 		<button class="tool-button" on:click={erase}>Erase</button>
 		<button class="tool-button" on:click={saveImage}>Save</button>
