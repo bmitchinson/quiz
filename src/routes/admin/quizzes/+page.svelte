@@ -87,6 +87,8 @@
 				name="title"
 				class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
 				placeholder="Week 5 - 4th Grade"
+				required
+				maxlength="30"
 			/>
 		</div>
 		<label for="questionData" class="block text-gray-700 font-medium mb-2">
@@ -99,6 +101,7 @@
 			id="questionData"
 			name="questionData"
 			rows="10"
+			required
 			class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 {questionDataHasError
 				? 'border-red-500 focus:ring-red-500'
 				: 'focus:ring-blue-500'}"
