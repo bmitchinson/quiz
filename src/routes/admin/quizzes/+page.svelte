@@ -14,8 +14,8 @@
 	let questionDataHasError = false;
 
 	function validateInput() {
-		// Allowed characters: digits, operators, newlines, and spaces
-		const allowedCharsRegex = /^[\d+\-*/\n\s]*$/;
+		// Allowed characters: digits, operators, newlines, spaces, and parentheses
+		const allowedCharsRegex = /^[\d+\-*/()\n\s]*$/;
 
 		if (!allowedCharsRegex.test(questionData)) {
 			questionDataHasError = true;
@@ -95,7 +95,8 @@
 			Enter Quiz Questions
 		</label>
 		<p class:text-red-500={questionDataHasError}>
-			One math question per line, no "=" or letters. Just numbers and operators (+ - / *).
+			One math question per line, no "=" or letters. Just numbers, operators (+ - / *), and
+			parenthesis.
 		</p>
 		<textarea
 			id="questionData"
@@ -114,7 +115,10 @@
 		<div class="flex justify-center">
 			<button
 				type="submit"
-				class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+				class="font-semibold py-2 px-4 rounded-md transition duration-200 {questionDataHasError
+					? 'bg-gray-400 text-gray-700 cursor-not-allowed'
+					: 'bg-blue-500 hover:bg-blue-600 text-white'}"
+				disabled={questionDataHasError}
 			>
 				Add Quiz
 			</button>
