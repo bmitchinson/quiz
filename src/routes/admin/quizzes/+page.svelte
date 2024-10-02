@@ -11,17 +11,54 @@
 	};
 
 	let questionData = '';
-	let questionDataHasError = false;
+	let questionDataErrMsg = '';
 
-	function validateInput() {
+	function validateInput(event: InputEvent) {
+		const target = event.target as HTMLTextAreaElement;
+		let value = target.value;
+
+		// Replace multiple newlines with a single newline
+		const newValue = value.replace(/\n{2,}/g, '\n');
+		if (value !== newValue) {
+			value = newValue;
+			questionData = newValue;
+		}
+
 		// Allowed characters: digits, operators, newlines, spaces, and parentheses
 		const allowedCharsRegex = /^[\d+\-*/()\n\s]*$/;
-
-		if (!allowedCharsRegex.test(questionData)) {
-			questionDataHasError = true;
-		} else {
-			questionDataHasError = false;
+		if (!allowedCharsRegex.test(value)) {
+			questionDataErrMsg =
+				'Invalid characters. Only numbers, operators, and parentheses are allowed.';
+			return;
 		}
+
+		// Split into lines and validate each line
+		const lines = value.split('\n');
+		const operatorRegex = /[+\-*/]/;
+
+		for (const line of lines) {
+			const trimmed = line.trim();
+			if (trimmed === '') {
+				questionDataErrMsg = 'Empty lines are not allowed.';
+				return;
+			}
+
+			// Check for at least one operator
+			if (!operatorRegex.test(trimmed)) {
+				questionDataErrMsg = 'Each line must contain at least one operator.';
+				return;
+			}
+
+			// Ensure operators are not at the start or end
+			if (/^[+\-*/]/.test(trimmed) || /[+\-*/]$/.test(trimmed)) {
+				questionDataErrMsg = 'Operators (+ - / *) cannot be at the start or end of a line.';
+				return;
+			}
+		}
+
+		// If all validations pass
+		questionDataErrMsg = '';
+		questionData = value;
 	}
 
 	let message = '';
@@ -94,16 +131,17 @@
 		<label for="questionData" class="block text-gray-700 font-medium mb-2">
 			Enter Quiz Questions
 		</label>
-		<p class:text-red-500={questionDataHasError}>
-			One math question per line, no "=" or letters. Just numbers, operators (+ - / *), and
-			parenthesis.
+		<p class:text-red-500={questionDataErrMsg}>
+			{questionDataErrMsg
+				? questionDataErrMsg
+				: 'One math question per line, no "=" or letters. Just numbers, operators (+ - / *), and parenthesis.'}
 		</p>
 		<textarea
 			id="questionData"
 			name="questionData"
 			rows="10"
 			required
-			class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 {questionDataHasError
+			class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 {questionDataErrMsg
 				? 'border-red-500 focus:ring-red-500'
 				: 'focus:ring-blue-500'}"
 			placeholder="1+3
@@ -115,10 +153,10 @@
 		<div class="flex justify-center">
 			<button
 				type="submit"
-				class="font-semibold py-2 px-4 rounded-md transition duration-200 {questionDataHasError
+				class="font-semibold py-2 px-4 rounded-md transition duration-200 {questionDataErrMsg
 					? 'bg-gray-400 text-gray-700 cursor-not-allowed'
 					: 'bg-blue-500 hover:bg-blue-600 text-white'}"
-				disabled={questionDataHasError}
+				disabled={questionDataErrMsg}
 			>
 				Add Quiz
 			</button>
