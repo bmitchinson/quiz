@@ -94,14 +94,13 @@
 				isCorrect = false;
 				results.push({ question: questions[currentQuestionIndex], correct: false });
 			}
-			// Move to the next question after a short delay
-			// TODO: replace timeout with "next question" field
-			setTimeout(() => {
-				isCorrect = null;
-				userAnswer = '';
-				currentQuestionIndex++;
-			}, 3000);
 		}
+	}
+
+	function goToNextQuestion() {
+		isCorrect = null;
+		userAnswer = '';
+		currentQuestionIndex++;
 	}
 </script>
 
@@ -169,15 +168,24 @@
 			<input
 				type="number"
 				class="border-2 border-gray-300 rounded-md p-2 text-4xl w-32 text-center"
+				disabled={isCorrect !== null}
 				bind:value={userAnswer}
 			/>
 			{#if isCorrect !== null && !isCorrect}
 				<p class="text-2xl mt-4">Correct answer: {correctAnswer}</p>
+			{:else if isCorrect}
+				<p class="text-2xl mt-4">Correct!</p>
 			{/if}
 		</div>
-		<button class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4" on:click={submitAnswer}>
-			Submit
-		</button>
+		{#if isCorrect === null}
+			<button class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4" on:click={submitAnswer}>
+				Submit
+			</button>
+		{:else}
+			<button class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4" on:click={goToNextQuestion}>
+				Next Question
+			</button>
+		{/if}
 	</div>
 {:else}
 	<!-- Show the score -->
