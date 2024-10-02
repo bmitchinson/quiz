@@ -71,7 +71,7 @@ export class Database {
 	async findStudentByName(name: string): Promise<void> {
 		try {
 			return await this.prisma.student.findFirst({
-				where: { name }
+				where: { name, archived: false }
 			});
 		} catch (error) {
 			console.error('Error finding student:', error);
@@ -87,6 +87,7 @@ export class Database {
 		try {
 			const students = await this.prisma.student.findMany({
 				select: { name: true },
+				where: { archived: false },
 				orderBy: { name: 'asc' }
 			});
 			return students;
@@ -97,15 +98,16 @@ export class Database {
 	}
 
 	/**
-	 * Deletes a student by name.
-	 * @param name The name of the student to delete.
+	 * Archives a student by name.
+	 * @param name The name of the student to archive.
 	 */
-	async deleteStudent(name: string): Promise<void> {
+	async archiveStudent(name: string): Promise<void> {
 		try {
-			await this.prisma.student.delete({
-				where: { name }
+			await this.prisma.student.update({
+				where: { name },
+				data: { archived: true }
 			});
-			console.log('Deleted Student:', name);
+			console.log('Archived Student:', name);
 		} catch (error) {
 			console.error('Error deleting student:', error);
 			throw error;
@@ -161,7 +163,7 @@ export class Database {
 	async getQuiz(accessCode: string): Promise<void> {
 		try {
 			return await this.prisma.quiz.findFirst({
-				where: { accessCode }
+				where: { accessCode, archived: false }
 			});
 		} catch (error) {
 			console.error('Error looking up quiz:', error);
@@ -184,15 +186,16 @@ export class Database {
 	}
 
 	/**
-	 * Deletes a quiz by id.
-	 * @param id The id of the quiz to delete.
+	 * Archives a quiz by id.
+	 * @param id The id of the quiz to archives.
 	 */
-	async deleteQuiz(id: number): Promise<void> {
+	async archiveQuiz(id: number): Promise<void> {
 		try {
-			await this.prisma.quiz.delete({
-				where: { id }
+			await this.prisma.quiz.update({
+				where: { id },
+				data: { archived: true }
 			});
-			console.log('Deleted quiz with id:', id);
+			console.log('Archived quiz with id:', id);
 		} catch (error) {
 			console.error('Error deleting quiz:', error);
 			throw error;
@@ -205,6 +208,7 @@ export class Database {
 	async getAllQuizzes(): Promise<Quiz[]> {
 		try {
 			const quizzes = await this.prisma.quiz.findMany({
+				where: { archived: false },
 				orderBy: { createdAt: 'desc' },
 				include: {
 					_count: {

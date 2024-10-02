@@ -44,7 +44,7 @@ export const actions: Actions = {
 			const name = formData.get('name');
 
 			try {
-				await db.deleteStudent(name);
+				await db.archiveStudent(name);
 				return { success: true, message: 'Student deleted successfully' };
 			} catch (err) {
 				return { success: false, message: 'Failed to delete student' };

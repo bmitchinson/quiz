@@ -48,7 +48,7 @@ export const actions: Actions = {
 			const quizId = formData.get('quizId');
 
 			try {
-				await db.deleteQuiz(parseInt(quizId));
+				await db.archiveQuiz(parseInt(quizId));
 				return { success: true, message: 'Quiz deleted successfully' };
 			} catch (err) {
 				return { success: false, message: 'Failed to delete quiz' };
