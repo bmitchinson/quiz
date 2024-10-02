@@ -135,6 +135,29 @@ export class Database {
 		}
 	}
 
+	async addScore(
+		correctAnswers: number,
+		timeStarted: Date,
+		timeFinished: Date,
+		studentName: string,
+		quizCode: string
+	): Promise<void> {
+		try {
+			await this.prisma.score.create({
+				data: {
+					quizCode,
+					studentName,
+					correctAnswers,
+					timeStarted,
+					timeFinished
+				}
+			});
+		} catch (error) {
+			console.error('Error adding score:', error);
+			throw error;
+		}
+	}
+
 	async getQuiz(accessCode: string): Promise<void> {
 		try {
 			return await this.prisma.quiz.findFirst({

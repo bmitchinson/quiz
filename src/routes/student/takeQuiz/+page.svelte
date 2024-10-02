@@ -19,6 +19,9 @@
 	let usernameError = null;
 	let validatedUsername = data.validatedUsername ? data.validatedUsername : '';
 
+	let timeStarted = null;
+	let timeFinished = null;
+
 	async function getQuiz() {
 		if (accessCode) {
 			const formData = new FormData();
@@ -33,8 +36,9 @@
 			if (result.data.success === true) {
 				questionsData = result.data.message;
 				accessCodeErr = '';
+				timeStarted = new Date();
 			} else {
-				accessCodeErr = 'Invalid Access Code';
+				accessCodeErr = result.data.message;
 				questionsData = '';
 			}
 		}
@@ -51,7 +55,6 @@
 		if (result.data.success === true) {
 			location.reload();
 		} else {
-			console.log('error', result.data.message);
 			validatedUsername = '';
 			usernameError = result.data.message;
 		}
@@ -82,18 +85,37 @@
 		quizStarted = true;
 	}
 
+	function postCompletedScore() {
+		console.log('posting score');
+		const formData = new FormData();
+		formData.append('correctAnswers', results.filter((r) => r.correct).length);
+		formData.append('timeStarted', timeStarted);
+		formData.append('timeFinished', timeFinished);
+		formData.append('quizCode', accessCode);
+
+		fetch('?/postCompletedScore', {
+			method: 'POST',
+			body: formData
+		}).then(() => {
+			console.log('score posted ✅');
+		});
+	}
+
 	// Function to handle answer submission
 	function submitAnswer() {
 		if (userAnswer) {
 			// Check if user's answer matches the correct answer
 			if (parseFloat(userAnswer) === correctAnswer) {
-				console.log('correct');
 				isCorrect = true;
 				results.push({ question: questions[currentQuestionIndex], correct: true });
 			} else {
 				isCorrect = false;
 				results.push({ question: questions[currentQuestionIndex], correct: false });
 			}
+		}
+		if (currentQuestionIndex === questions.length - 1) {
+			timeFinished = new Date();
+			postCompletedScore();
 		}
 	}
 
@@ -163,28 +185,36 @@
       {isCorrect === true ? 'bg-green-200' : ''}
       {isCorrect === false ? 'bg-red-200' : ''}"
 	>
-		<div class="text-8xl font-serif mb-4" style="font-family: 'Times New Roman', Times, serif;">
+		<div
+			class="flex gap-7 text-8xl font-serif mb-4"
+			style="font-family: 'Times New Roman', Times, serif;"
+		>
 			{questions[currentQuestionIndex]} =
 			<input
 				type="number"
-				class="border-2 border-gray-300 rounded-md p-2 text-4xl w-32 text-center"
+				class="border-2 border-gray-300 rounded-md p-2 text-4xl w-32 text-center pb-4"
 				disabled={isCorrect !== null}
+				required
 				bind:value={userAnswer}
 			/>
-			{#if isCorrect !== null && !isCorrect}
-				<p class="text-2xl mt-4">Correct answer: {correctAnswer}</p>
-			{:else if isCorrect}
-				<p class="text-2xl mt-4">Correct!</p>
-			{/if}
 		</div>
 		{#if isCorrect === null}
-			<button class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4" on:click={submitAnswer}>
+			<button
+				class="{`${userAnswer ? 'bg-blue-500' : 'bg-gray-500 cursor-not-allowed opacity-50'}`} text-white px-4 py-2 rounded-md mt-4"
+				disabled={!userAnswer}
+				on:click={submitAnswer}
+			>
 				Submit
 			</button>
 		{:else}
 			<button class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4" on:click={goToNextQuestion}>
 				Next Question
 			</button>
+		{/if}
+		{#if isCorrect !== null && !isCorrect}
+			<p class="text-2xl mt-4">Correct answer: {correctAnswer}</p>
+		{:else if isCorrect}
+			<p class="text-2xl mt-4">Correct!</p>
 		{/if}
 	</div>
 {:else}

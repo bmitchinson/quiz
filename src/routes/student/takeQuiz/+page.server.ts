@@ -14,9 +14,11 @@ export const actions: Actions = {
 		// Validate access code and retrieve questions
 		const quiz = await db.getQuiz(accessCode);
 		if (quiz) {
-			if (
-				await db.checkIfScoreExistsForQuizAndStudent(accessCode, cookies.get('validatedUsername'))
-			) {
+			const check = await db.checkIfScoreExistsForQuizAndStudent(
+				accessCode,
+				cookies.get('validatedUsername')
+			);
+			if (check) {
 				return { success: false, message: "You've already taken this quiz :)" };
 			} else {
 				return { success: true, message: quiz.questionsData };
@@ -38,5 +40,19 @@ export const actions: Actions = {
 			console.log(`Rejecting attempted username ${usernameInput}`);
 			return { success: false, message: `Username "${usernameInput}" not found` };
 		}
+	},
+	postCompletedScore: async ({ request, cookies }) => {
+		const data = await request.formData();
+
+		const correctAnswers = parseInt(data.get('correctAnswers'));
+		const timeStarted = new Date(data.get('timeStarted'));
+		const timeFinished = new Date(data.get('timeFinished'));
+		const studentName = cookies.get('validatedUsername');
+		const quizCode = data.get('quizCode');
+
+		return await db
+			.addScore(correctAnswers, timeStarted, timeFinished, studentName, quizCode)
+			.then(() => ({ success: true }))
+			.catch((e) => ({ success: false }));
 	}
 };
