@@ -9,7 +9,7 @@
 		<hr class="self-center w-16 border-t border-gray-300" />
 
 		<p class="text-base">
-			If it's broken in anyway, let me know! If this site is making your job difficult, I'd like to
+			If it's broken in any way, let me know! If this site is making your job difficult, I'd like to
 			address that ASAP.
 		</p>
 
@@ -25,7 +25,7 @@
 		<p class="text-base">
 			- Ben Mitchinson <a href="https://mitchinson.dev" style="color: cornflowerblue">
 				(https://mitchinson.dev)
-			</a>
+			</a> mitchinson.dev@gmail.com
 		</p>
 		<p>
 			<a href="https://github.com/bmitchinson/quiz" style="color: cornflowerblue">
