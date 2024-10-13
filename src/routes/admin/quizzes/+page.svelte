@@ -85,7 +85,7 @@
 			<input
 				id="title"
 				name="title"
-				class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+				class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
 				placeholder="Week 5 - 4th Grade"
 				required
 				maxlength="30"
@@ -105,7 +105,7 @@
 			required
 			class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 {questionDataHasError
 				? 'border-red-500 focus:ring-red-500'
-				: 'focus:ring-blue-500'}"
+				: 'focus:ring-[#26561b]'}"
 			placeholder="1+3
 8/2
 3+2*6"
@@ -117,7 +117,7 @@
 				type="submit"
 				class="font-semibold py-2 px-4 rounded-md transition duration-200 {questionDataHasError
 					? 'bg-gray-400 text-gray-700 cursor-not-allowed'
-					: 'bg-blue-500 hover:bg-blue-600 text-white'}"
+					: 'bg-[#26561b] hover:bg-[#316f23] text-white'}"
 				disabled={questionDataHasError}
 			>
 				Add Quiz
@@ -139,7 +139,7 @@
 		type="text"
 		placeholder="Search by title"
 		bind:value={searchQuery}
-		class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+		class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
 	/>
 	<table class="min-w-full bg-white">
 		<thead>

@@ -22,12 +22,12 @@
 			</a>
 			<a
 				href="/"
-				class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300"
+				class="bg-[#26561b] hover:bg-[#316f23] text-white px-4 py-2 rounded-md transition duration-300"
 				>Home</a
 			>
 			<a
 				href="/about"
-				class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300"
+				class="bg-[#26561b] hover:bg-[#316f23] text-white px-4 py-2 rounded-md transition duration-300"
 				>About</a
 			>
 		</div>
@@ -39,7 +39,7 @@
 					<span class="text-lg font-medium">{data.validatedUsername}</span>
 				{/if}
 				<button
-					class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300"
+					class="bg-[#26561b] hover:bg-[#316f23] text-white px-4 py-2 rounded-md transition duration-300"
 					on:click={logout}
 				>
 					Logout

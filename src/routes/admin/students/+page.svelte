@@ -67,7 +67,7 @@
 				id="lastNames"
 				name="lastNames"
 				rows="10"
-				class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+				class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
 				placeholder="jmitchell
 jdenver
 bdylan"
@@ -76,7 +76,7 @@ bdylan"
 		<div class="flex justify-center">
 			<button
 				type="submit"
-				class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+				class="bg-[#26561b] hover:bg-[#316f23] text-white font-semibold py-2 px-4 rounded-md transition duration-200"
 			>
 				Add Students
 			</button>
@@ -97,7 +97,7 @@ bdylan"
 		type="text"
 		placeholder="Search by last name"
 		bind:value={searchQuery}
-		class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+		class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
 	/>
 	<table class="min-w-full bg-white">
 		<thead>
