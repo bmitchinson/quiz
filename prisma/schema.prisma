@@ -7,13 +7,23 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Student {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  archived  Boolean  @default(false)
-  createdAt DateTime @default(now())
+model Teacher {
+  id       Int       @id @default(autoincrement())
+  name     String
+  grade    Int       @db.SmallInt
+  students Student[] @relation("TeacherStudents")
+}
 
-  scores    Score[]
+model Student {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  archived    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  teacherId   Int
+  teacher     Teacher  @relation("TeacherStudents", fields: [teacherId], references: [id], onDelete: Cascade)
+  
+  scores      Score[]
 }
 
 model Quiz {
