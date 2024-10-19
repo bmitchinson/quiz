@@ -11,11 +11,11 @@ export const POST = async ({ request, cookies }) => {
 				? json({ success: true })
 				: json({ success: false, errorMsg: 'Invalid admin login' });
 		case 'Student':
-			cookies.delete('validatedUsername', { path: '/' });
-			return json({ success: true });
+			// cookies.delete('validatedUsername', { path: '/' });
+			return json();
 		case 'Teacher':
-			cookies.delete('validatedUsername', { path: '/' });
-			return json({ success: true });
+			// cookies.delete('validatedUsername', { path: '/' });
+			return json();
 	}
 };
 

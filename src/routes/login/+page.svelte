@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
-	import { browser } from '$app/environment';
 	let requestedLoginType = '';
 	let inputValue = '';
 	let errorMsg = '';
 	let passwordPrompt = '';
+	let selectedGrade = 0;
+	let selectedTeacher = '';
 	let passwordPlaceholder = '';
 
 	// Handle form submission
@@ -15,7 +15,12 @@
 		const response = await fetch('/api/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ loginType: requestedLoginType, inputValue })
+			body: JSON.stringify({
+				loginType: requestedLoginType,
+				inputValue,
+				selectedGrade,
+				selectedTeacher
+			})
 		});
 
 		const result = await response.json();
@@ -78,14 +83,80 @@
 		class="bg-white shadow-lg rounded-lg p-8 m-8 w-full max-w-lg flex flex-col"
 	>
 		<h1 class="text-2xl font-bold mb-2 text-center">{requestedLoginType} Login</h1>
-		<p class="text-center pb-4">{passwordPrompt}</p>
-		<input
-			type="password"
-			bind:value={inputValue}
-			placeholder={passwordPlaceholder}
-			required
-			class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
-		/>
+
+		{#if requestedLoginType === 'Student'}
+			<div class="mb-4">
+				<span class="block mb-2 font-semibold">Select Grade:</span>
+				<div class="flex space-x-2 relative">
+					{#each [{ t: 'st', v: 1 }, { t: 'nd', v: 2 }, { t: 'rd', v: 3 }, { t: 'th', v: 4 }, { t: 'th', v: 5 }] as { t, v }, i}
+						<label class="flex items-center cursor-pointer">
+							<input
+								type="radio"
+								name="grade"
+								bind:group={selectedGrade}
+								value={v}
+								class="hidden-input {i === 0 ? 'first-input' : ''}"
+								autocomplete="off"
+								data-1p-ignore
+								required
+							/>
+							<div
+								class={'px-4 py-2 border rounded-md transition-colors duration-200 ' +
+									(selectedGrade === v ? 'bg-[#26561b] text-white' : '')}
+							>
+								{v}{t}
+							</div>
+						</label>
+					{/each}
+				</div>
+			</div>
+			<div class="mb-4">
+				<span class="block mb-2 font-semibold">Select Teacher:</span>
+				<select bind:value={selectedTeacher} class="w-full px-3 py-2 border rounded-md" required>
+					<option value="" disabled selected>Select your teacher</option>
+					{#each ['mitchinson', 'davis', 'smith'] as teacher}
+						<option value={teacher}>{teacher}</option>
+					{/each}
+				</select>
+			</div>
+			<div class="mb-4">
+				<span class="block mb-2 font-semibold">Enter Name</span>
+				<p class="text-center pb-4">First Initial + Last Name - Example: mmouse</p>
+				<input
+					type="text"
+					bind:value={inputValue}
+					placeholder={passwordPlaceholder}
+					autocomplete="off"
+					data-1p-ignore
+					required
+					class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
+				/>
+			</div>
+		{/if}
+		{#if requestedLoginType === 'Admin'}
+			<p class="text-center pb-4">{passwordPrompt}</p>
+			<input
+				type="password"
+				bind:value={inputValue}
+				placeholder={passwordPlaceholder}
+				autocomplete="off"
+				data-1p-ignore
+				required
+				class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
+			/>
+		{:else if requestedLoginType === 'Teacher'}
+			<p class="text-center pb-4">{passwordPrompt}</p>
+			<input
+				type="text"
+				bind:value={inputValue}
+				placeholder={passwordPlaceholder}
+				autocomplete="off"
+				data-1p-ignore
+				required
+				class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
+			/>
+		{/if}
+
 		<div class="w-full flex gap-2">
 			<button
 				type="reset"
@@ -101,6 +172,7 @@
 				Submit
 			</button>
 		</div>
+
 		<div>
 			{#if errorMsg}
 				<div class="mt-4 message error">
@@ -122,5 +194,21 @@
 	}
 	.large-text {
 		font-size: 2em;
+	}
+
+	/* hacks to move the browser "required" tooltip */
+	/* Hide the input visually but keep it in the DOM */
+	.hidden-input {
+		position: absolute;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	/* Adjust the position of the first input */
+	.first-input {
+		/* Position where you want the tooltip to appear */
+		top: 30px; /* Adjust as needed */
+		left: 35.57%; /* Center horizontally */
+		transform: translateX(-35.57%);
 	}
 </style>
