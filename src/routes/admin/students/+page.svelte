@@ -55,7 +55,7 @@
 	<title>Quiz: Manage Students</title>
 </svelte:head>
 
-<div class="bg-white bg-opacity-70 shadow-lg rounded-lg p-8 w-full max-w-lg">
+<div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
 	<h1 class="text-2xl font-bold mb-6 text-center">Manage Students</h1>
 	<form method="post" action="?/addStudents" class="space-y-4">
 		<div>
@@ -84,7 +84,7 @@ bdylan"
 	</form>
 </div>
 
-<div class="bg-white bg-opacity-70 shadow-lg rounded-lg p-8 w-full max-w-lg">
+<div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
 	<h2 class="text-2xl font-bold mb-6 text-center">Existing Students</h2>
 	{#if message}
 		<div

@@ -27,7 +27,7 @@
 {#if !isAuthenticated && isAuthenticated !== undefined}
 	<form
 		on:submit={submitPassword}
-		class="bg-white bg-opacity-70 shadow-lg rounded-lg p-8 m-8 w-full max-w-lg flex flex-col"
+		class="bg-white shadow-lg rounded-lg p-8 m-8 w-full max-w-lg flex flex-col"
 	>
 		<h1 class="text-2xl font-bold mb-2 text-center">Teacher Login</h1>
 		<p class="text-center pb-4">Reach out to Will Mitchinson for the password</p>

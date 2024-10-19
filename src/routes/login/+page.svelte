@@ -47,25 +47,20 @@
 
 <!-- Initial Selection -->
 {#if !loginType}
-	<div class="bg-white bg-opacity-70 rounded-lg p-8 shadow-lg">
+	<div class="bg-white rounded-lg p-8 shadow-lg">
 		<div class="flex flex-col space-y-2">
-			<!-- Teacher Button -->
-			<button
-				on:click={() => (loginType = 'teacher')}
-				class="flex justify-beginning large-text bg-[#26561b] text-white px-4 py-2 rounded shadow hover:bg-[#316f23] transition w-full"
-			>
-				<span>🍎 Teacher</span>
-			</button>
-
-			<!-- Admin Button -->
 			<button
 				on:click={() => (loginType = 'admin')}
 				class="flex justify-beginning large-text items-center bg-[#26561b] text-white px-4 py-2 rounded shadow hover:bg-[#316f23] transition w-full"
 			>
 				<span>📔 Admin</span>
 			</button>
-
-			<!-- Student Button -->
+			<button
+				on:click={() => (loginType = 'teacher')}
+				class="flex justify-beginning large-text bg-[#26561b] text-white px-4 py-2 rounded shadow hover:bg-[#316f23] transition w-full"
+			>
+				<span>🍎 Teacher</span>
+			</button>
 			<button
 				on:click={() => (loginType = 'student')}
 				class="flex justify-beginning large-text items-center bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition w-full"
@@ -80,7 +75,7 @@
 {#if loginType === 'admin'}
 	<form
 		on:submit|preventDefault={submitForm}
-		class="bg-white bg-opacity-70 shadow-lg rounded-lg p-8 m-8 w-full max-w-lg flex flex-col"
+		class="bg-white shadow-lg rounded-lg p-8 m-8 w-full max-w-lg flex flex-col"
 	>
 		<h1 class="text-2xl font-bold mb-2 text-center">Admin Login</h1>
 		<p class="text-center pb-4">Please enter the admin password.</p>
@@ -109,7 +104,7 @@
 {#if loginType === 'teacher'}
 	<form
 		on:submit|preventDefault={submitForm}
-		class="bg-white bg-opacity-70 shadow-lg rounded-lg p-8 m-8 w-full max-w-lg flex flex-col"
+		class="bg-white shadow-lg rounded-lg p-8 m-8 w-full max-w-lg flex flex-col"
 	>
 		<h1 class="text-2xl font-bold mb-2 text-center">Teacher Login</h1>
 		<p class="text-center pb-4">Enter your first initial and last name (e.g., JSmith).</p>
@@ -138,7 +133,7 @@
 {#if loginType === 'student'}
 	<form
 		on:submit|preventDefault={submitForm}
-		class="bg-white bg-opacity-70 shadow-lg rounded-lg p-8 m-8 w-full max-w-lg flex flex-col"
+		class="bg-white shadow-lg rounded-lg p-8 m-8 w-full max-w-lg flex flex-col"
 	>
 		<h1 class="text-2xl font-bold mb-2 text-center">Student Login</h1>
 		<p class="text-center pb-4">Enter your first initial and last name (e.g., MMouse).</p>

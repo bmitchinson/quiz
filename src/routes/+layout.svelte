@@ -14,7 +14,7 @@
 
 <div class="flex flex-col items-center h-screen justify-between">
 	<header
-		class="bg-white bg-opacity-70 backdrop-blur-md shadow-lg p-4 w-full relative flex items-center justify-center py-8"
+		class="bg-white backdrop-blur-md shadow-lg p-4 w-full relative flex items-center justify-center py-8"
 	>
 		<div class="absolute left-4 flex items-center space-x-4">
 			<a href="/" class="z-10">
