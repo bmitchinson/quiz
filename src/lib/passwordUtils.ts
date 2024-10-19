@@ -5,18 +5,18 @@ const ttlSeconds = parseInt(process.env.COOKIE_TTL);
 
 export const cookieTTL = { path: '/', maxAge: ttlSeconds };
 
-export function passwordIsValid(password: string): boolean {
+export function adminPasswordIsValid(password: string): boolean {
 	return password === process.env.ADMIN_PASSWORD;
 }
 
-export async function validatePasswordAndRefreshCookie<T>(
+export async function validateAuthAndRefreshCookie<T>(
 	request: Request,
 	cookies: Cookies,
 	callback: (request: Request) => T
 ): Promise<T> {
 	const password = cookies.get('adminPass');
 
-	if (!passwordIsValid(password)) {
+	if (!adminPasswordIsValid(password)) {
 		if (password) {
 			console.error('Password at api route attempted - ' + password + ' route: ' + request.url);
 		}

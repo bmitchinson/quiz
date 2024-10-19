@@ -2,10 +2,9 @@
 	import { goto } from '$app/navigation';
 	let loginType = '';
 	let inputValue = '';
-	let message = '';
+	let errorMsg = '';
 	let passwordPrompt = '';
 	let passwordPlaceholder = '';
-	let success = false;
 
 	// Handle form submission
 	async function submitForm(event: Event) {
@@ -18,20 +17,17 @@
 		});
 
 		const result = await response.json();
-		if (response.ok) {
-			success = true;
-			message = result.message;
-			// Redirect or perform actions based on loginType
-			if (loginType === 'admin') {
-				goto('/admin/dashboard');
-			} else if (loginType === 'teacher') {
+		console.log('result', result);
+		if (result.success) {
+			if (loginType === 'Admin') {
+				goto('/admin');
+			} else if (loginType === 'Teacher') {
 				goto('/teacher/dashboard');
-			} else if (loginType === 'student') {
+			} else if (loginType === 'Student') {
 				goto('/student/dashboard');
 			}
 		} else {
-			success = false;
-			message = result.error;
+			errorMsg = result.errorMsg;
 		}
 	}
 
@@ -43,7 +39,7 @@
 				? 'Please enter the admin password'
 				: 'Enter your first initial and last name - Ex: JSmith';
 		passwordPlaceholder = loginType === 'Admin' ? 'Admin Password' : 'Name';
-		message = '';
+		errorMsg = '';
 	}
 </script>
 
@@ -103,13 +99,13 @@
 			>
 				Submit
 			</button>
-			<div>
-				{#if message}
-					<div class={`mt-4 message ${success ? 'success' : 'error'}`}>
-						{message}
-					</div>
-				{/if}
-			</div>
+		</div>
+		<div>
+			{#if errorMsg}
+				<div class="mt-4 message error">
+					{errorMsg}
+				</div>
+			{/if}
 		</div>
 	</form>
 {/if}
@@ -118,10 +114,6 @@
 	.message {
 		padding: 1rem;
 		border-radius: 0.25rem;
-	}
-	.success {
-		background-color: #d4edda;
-		color: #155724;
 	}
 	.error {
 		background-color: #f8d7da;

@@ -1,12 +1,12 @@
 import type { Actions, PageServerLoad } from './$types';
 import { Database } from '$lib/database';
 import { error } from '@sveltejs/kit';
-import { validatePasswordAndRefreshCookie } from '../../../lib/passwordcheck';
+import { validateAuthAndRefreshCookie } from '../../../lib/passwordUtils';
 
 const db = new Database();
 
 export const load: PageServerLoad = async ({ request, cookies }) =>
-	validatePasswordAndRefreshCookie(request, cookies, async () => {
+	validateAuthAndRefreshCookie(request, cookies, async () => {
 		try {
 			const students = await db.getAllStudents();
 			return { students };
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ request, cookies }) =>
 
 export const actions: Actions = {
 	addStudents: async ({ request, cookies }) =>
-		validatePasswordAndRefreshCookie(request, cookies, async () => {
+		validateAuthAndRefreshCookie(request, cookies, async () => {
 			const formData = await request.formData();
 			const lastNamesRaw = formData.get('lastNames');
 
@@ -39,7 +39,7 @@ export const actions: Actions = {
 		}),
 
 	deleteStudent: async ({ request, cookies }) =>
-		validatePasswordAndRefreshCookie(request, cookies, async () => {
+		validateAuthAndRefreshCookie(request, cookies, async () => {
 			const formData = await request.formData();
 			const name = formData.get('name');
 

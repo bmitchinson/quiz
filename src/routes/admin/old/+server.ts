@@ -1,11 +1,11 @@
 import { json } from '@sveltejs/kit';
-import { cookieTTL, passwordIsValid } from '$lib/passwordcheck';
+import { cookieTTL, adminPasswordIsValid } from '$lib/passwordUtils';
 
 export async function POST({ request, cookies }) {
 	const formData = await request.formData();
 	const password = formData.get('password');
 
-	if (passwordIsValid(password)) {
+	if (adminPasswordIsValid(password)) {
 		cookies.set('adminPass', formData.get('password'), cookieTTL);
 		return json({ success: true });
 	} else {
