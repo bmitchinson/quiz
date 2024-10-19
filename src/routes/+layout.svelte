@@ -56,6 +56,6 @@
 		<p>
 			For feature requests, access requests, or bug reports, please contact mitchinson.dev@gmail.com
 		</p>
-		<p>Made w 🩵 in Des Moines 🌽</p>
+		<p>Made w 💚 in Des Moines 🌽</p>
 	</footer>
 </div>

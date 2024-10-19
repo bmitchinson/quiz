@@ -60,13 +60,13 @@
 			</button>
 			<button
 				on:click={() => (requestedLoginType = 'Teacher')}
-				class="flex justify-beginning large-text bg-[#26561b] text-white px-4 py-2 rounded shadow hover:bg-[#316f23] transition w-full"
+				class="flex justify-beginning large-text bg-[#26561b] hover:bg-[#316f23] text-white px-4 py-2 rounded shadow transition w-full"
 			>
 				<span>🍎 Teacher</span>
 			</button>
 			<button
 				on:click={() => (requestedLoginType = 'Student')}
-				class="flex justify-beginning large-text items-center bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 transition w-full"
+				class="flex justify-beginning large-text items-center bg-[#26561b] text-white px-4 py-2 rounded shadow hover:bg-[#316f23] transition w-full"
 			>
 				<span>🧑‍🎓 Student</span>
 			</button>
@@ -90,7 +90,7 @@
 			<button
 				type="reset"
 				on:click={() => (requestedLoginType = '')}
-				class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-md transition duration-200 w-full"
+				class="bg-gray-400 text-white font-semibold py-2 px-4 rounded-md transition duration-200 w-full"
 			>
 				Back
 			</button>
