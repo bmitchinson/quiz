@@ -12,6 +12,8 @@ model Teacher {
   name     String
   grade    Int       @db.SmallInt
   students Student[] @relation("TeacherStudents")
+  // end-of-year: add year "2324" attr to teacher, update teacher login to query
+  //     that year
 }
 
 model Student {
