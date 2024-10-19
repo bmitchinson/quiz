@@ -98,6 +98,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Student: Drawing</title>
+</svelte:head>
+
 <div class="container">
 	<div
 		class="canvas-container"

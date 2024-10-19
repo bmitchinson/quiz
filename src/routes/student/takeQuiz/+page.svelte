@@ -132,6 +132,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Student: Take Quiz</title>
+</svelte:head>
+
 {#if !validatedUsername}
 	<div class="bg-white rounded-lg p-8 shadow-md text-center max-w-xl mx-auto mt-10">
 		<h2 class="text-2xl mb-4">Enter Username</h2>
