@@ -145,7 +145,7 @@
 			{/if}
 			<button
 				on:click={validateUsername}
-				class="bg-blue-500 text-white px-4 py-2 rounded-md mt-2"
+				class="bg-[#26561b] text-white px-4 py-2 rounded-md mt-2"
 				type="submit"
 			>
 				Start
@@ -170,7 +170,7 @@
 			{/if}
 			<button
 				on:click={getQuiz}
-				class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4"
+				class="bg-[#26561b] text-white px-4 py-2 rounded-md mt-4"
 				type="submit"
 			>
 				Start Quiz
@@ -200,14 +200,14 @@
 		</div>
 		{#if isCorrect === null}
 			<button
-				class="{`${userAnswer ? 'bg-blue-500' : 'bg-gray-500 cursor-not-allowed opacity-50'}`} text-white px-4 py-2 rounded-md mt-4"
+				class="{`${userAnswer ? 'bg-[#26561b]' : 'bg-gray-500 cursor-not-allowed opacity-50'}`} text-white px-4 py-2 rounded-md mt-4"
 				disabled={!userAnswer}
 				on:click={submitAnswer}
 			>
 				Submit
 			</button>
 		{:else}
-			<button class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4" on:click={goToNextQuestion}>
+			<button class="bg-[#26561b] text-white px-4 py-2 rounded-md mt-4" on:click={goToNextQuestion}>
 				Next Question
 			</button>
 		{/if}
