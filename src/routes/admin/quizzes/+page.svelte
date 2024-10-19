@@ -17,18 +17,31 @@
 		const target = event.target as HTMLTextAreaElement;
 		let value = target.value;
 
-		// Replace multiple newlines with a single newline
-		const newValue = value.replace(/\n{2,}/g, '\n');
-		if (value !== newValue) {
-			value = newValue;
-			questionData = newValue;
-		}
+		// Step 1: Remove all characters except numbers, operators (+, -, x, /), parentheses, and newlines
+		value = value.replace(/[^\d+\-/x()\n]/g, '');
+
+		// Step 2: Remove spaces and tabs
+		value = value.replace(/[ \t]+/g, '');
+
+		// Step 3: Replace multiple newlines with a single newline
+		value = value.replace(/\n{2,}/g, '\n');
+
+		// Step 4: Ensure one space before and after each operator (+, -, x, /)
+		// (Optional: Uncomment if you want to format operators with spaces)
+		// value = value.replace(/\s*([+\-x/])\s*/g, ' $1 ');
+
+		// Step 5: Replace existing newline characters with a | symbol
+		// (Optional: Uncomment if you want to replace newlines with a pipe)
+		// value = value.replace(/\n/g, '|');
+
+		// Update the textarea value if modifications were made in Steps 1-3
+		target.value = value;
 
 		// Allowed characters: digits, operators, newlines, spaces, and parentheses
 		const allowedCharsRegex = /^[\d+\-x/()\n\s]*$/;
 		if (!allowedCharsRegex.test(value)) {
 			questionDataErrMsg =
-				'Invalid characters. Only numbers, operators, and parentheses are allowed.';
+				'Invalid characters. Only numbers, operators (+, -, x, /), and parentheses are allowed.';
 			return;
 		}
 
@@ -51,7 +64,14 @@
 
 			// Ensure operators are not at the start or end
 			if (/^[+\-x/]/.test(trimmed) || /[+\-x/]$/.test(trimmed)) {
-				questionDataErrMsg = 'Operators (+ - / x) cannot be at the start or end of a line.';
+				questionDataErrMsg = 'Operators (+, -, x, /) cannot be at the start or end of a line.';
+				return;
+			}
+
+			// Step 6: Ensure there are no consecutive operators (+, -, x, /)
+			const consecutiveOperatorsRegex = /[+\-x/]{2,}/;
+			if (consecutiveOperatorsRegex.test(trimmed)) {
+				questionDataErrMsg = 'Consecutive operators (+, -, x, /) are not allowed.';
 				return;
 			}
 		}

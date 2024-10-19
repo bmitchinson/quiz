@@ -32,6 +32,8 @@ export const actions: Actions = {
 			questionData = questionData.replace(/\s*([+\-x/])\s*/g, ' $1 ');
 			// Step 5: Replace existing newline characters with a | symbol
 			questionData = questionData.replace(/\n/g, '|');
+			// Step 6: Ensure there are no consecutive operators (+, -, x, /)
+			questionData = questionData.replace(/([+\-x/])\s*([+\-x/])/g, '$1');
 
 			try {
 				await db.addQuiz(title, questionData);
