@@ -126,6 +126,10 @@
 		userAnswer = '';
 		currentQuestionIndex++;
 	}
+
+	function showDivisionSymbols(question: String): String {
+		return question.replace(/\//g, '÷');
+	}
 </script>
 
 {#if !validatedUsername}
@@ -191,7 +195,7 @@
 			class="flex gap-7 text-8xl font-serif mb-4"
 			style="font-family: 'Times New Roman', Times, serif;"
 		>
-			{questions[currentQuestionIndex]} =
+			{showDivisionSymbols(questions[currentQuestionIndex])} =
 			<input
 				type="number"
 				class="border-2 border-gray-300 rounded-md p-2 text-4xl w-32 text-center pb-4"
