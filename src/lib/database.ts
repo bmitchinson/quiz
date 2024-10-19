@@ -9,8 +9,8 @@ export const prisma = new PrismaClient({
 	log: logLevels
 });
 
-function generate6DigitCode(): string {
-	return String(Math.floor(100000 + Math.random() * 900000)).padStart(6, '0');
+function generate4DigitCode(): string {
+	return String(Math.floor(1000 + Math.random() * 9000)).padStart(4, '0');
 }
 
 /**
@@ -24,11 +24,11 @@ export class Database {
 		this.prisma = prisma;
 	}
 
-	async generateUnique6DigitCode(): string {
+	async generateUnique4DigitCode(): string {
 		let attempts = 0;
 
 		while (attempts < 10) {
-			let accessCode = generate6DigitCode();
+			let accessCode = generate4DigitCode();
 
 			const existingEntity = await prisma.quiz.findUnique({
 				where: { accessCode }
@@ -41,7 +41,7 @@ export class Database {
 			attempts++;
 		}
 
-		throw new Error('Failed to generate a unique quiz code after 10 attempts');
+		throw new Error('Failed to generate a unique 4 digit quiz code after 10 attempts');
 	}
 
 	/**
@@ -126,7 +126,7 @@ export class Database {
 					title,
 					questionsData: questionsData.replace(/\r?\n/g, '|'),
 					totalQuestions: questionsData.split('\n').length,
-					accessCode: await this.generateUnique6DigitCode()
+					accessCode: await this.generateUnique4DigitCode()
 				}
 			});
 
