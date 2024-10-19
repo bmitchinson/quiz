@@ -1,23 +1,32 @@
-<svelte:head>
-	<title>Quiz: Home</title>
-</svelte:head>
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { browser } from '$app/environment';
 
-<div class="bg-white rounded-lg p-8 shadow-lg">
-	<div class="flex flex-col space-y-2">
-		<a
-			href="/admin/students"
-			class="bg-[#26561b] text-white px-4 py-2 rounded shadow hover:bg-[#316f23] transition"
-			>Teacher: Manage Students</a
-		>
-		<a
-			href="/admin/quizzes"
-			class="bg-[#26561b] text-white px-4 py-2 rounded shadow hover:bg-[#316f23] transition"
-			>Teacher: Manage Quizzes</a
-		>
-		<a
-			href="/student/takeQuiz"
-			class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-[#316f23] transition"
-			>Student: Take a Quiz</a
-		>
-	</div>
-</div>
+	export let data;
+
+	onMount(() => {
+		if (browser) {
+			if (!data.loginType) {
+				// Redirect to /login if not logged in
+				goto('/login', { replaceState: true });
+			} else {
+				// Redirect based on loginType
+				switch (data.loginType) {
+					case 'Admin':
+						goto('/admin', { replaceState: true });
+						break;
+					case 'Student':
+						goto('/student/takeQuiz', { replaceState: true });
+						break;
+					case 'Teacher':
+						goto('/teacher', { replaceState: true });
+						break;
+					default:
+						goto('/login', { replaceState: true });
+						break;
+				}
+			}
+		}
+	});
+</script>

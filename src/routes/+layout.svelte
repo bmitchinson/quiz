@@ -10,6 +10,8 @@
 			location.reload();
 		});
 	};
+
+	$: userText = data.loginType === 'Admin' ? 'Admin' : `${data.loginType}: ${data.loginName}`;
 </script>
 
 <div class="flex flex-col items-center h-screen justify-between">
@@ -33,11 +35,9 @@
 		</div>
 
 		<!-- Right-side Username and Logout Button -->
-		{#if data.validatedUsername || data.adminPass}
+		{#if data.loginType}
 			<div class="absolute right-4 flex items-center space-x-4">
-				{#if data.validatedUsername}
-					<span class="text-lg font-medium">{data.validatedUsername}</span>
-				{/if}
+				<span class="text-lg font-medium">{userText}</span>
 				<button
 					class="bg-[#26561b] hover:bg-[#316f23] text-white px-4 py-2 rounded-md transition duration-300"
 					on:click={logout}

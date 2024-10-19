@@ -1,5 +1,7 @@
+import { clearCookies } from '$lib/passwordUtils';
+import { json } from '@sveltejs/kit';
+
 export const POST = async ({ cookies }) => {
-	cookies.delete('validatedUsername', { path: '/' });
-	cookies.delete('adminPass', { path: '/' });
-	return json({ success: true });
+	clearCookies(cookies);
+	return json({});
 };

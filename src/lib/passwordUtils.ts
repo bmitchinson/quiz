@@ -30,3 +30,8 @@ export async function validateAuthAndRefreshCookie<T>(
 function refreshTTL(cookies: Cookies, password: string): void {
 	cookies.set('adminPass', password, cookieTTL);
 }
+
+export function clearCookies(cookies: Cookies): void {
+	cookies.delete('loginType', { path: '/' });
+	cookies.delete('loginName', { path: '/' });
+}
