@@ -131,7 +131,7 @@
 </script>
 
 <svelte:head>
-	<title>Quiz: Manage Quizzes</title>
+	<title>Admin: Manage Quizzes</title>
 </svelte:head>
 
 <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
