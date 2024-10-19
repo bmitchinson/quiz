@@ -25,7 +25,7 @@
 		}
 
 		// Allowed characters: digits, operators, newlines, spaces, and parentheses
-		const allowedCharsRegex = /^[\d+\-*/()\n\s]*$/;
+		const allowedCharsRegex = /^[\d+\-x/()\n\s]*$/;
 		if (!allowedCharsRegex.test(value)) {
 			questionDataErrMsg =
 				'Invalid characters. Only numbers, operators, and parentheses are allowed.';
@@ -34,7 +34,7 @@
 
 		// Split into lines and validate each line
 		const lines = value.split('\n');
-		const operatorRegex = /[+\-*/]/;
+		const operatorRegex = /[+\-x/]/;
 
 		for (const line of lines) {
 			const trimmed = line.trim();
@@ -50,8 +50,8 @@
 			}
 
 			// Ensure operators are not at the start or end
-			if (/^[+\-*/]/.test(trimmed) || /[+\-*/]$/.test(trimmed)) {
-				questionDataErrMsg = 'Operators (+ - / *) cannot be at the start or end of a line.';
+			if (/^[+\-x/]/.test(trimmed) || /[+\-x/]$/.test(trimmed)) {
+				questionDataErrMsg = 'Operators (+ - / x) cannot be at the start or end of a line.';
 				return;
 			}
 		}
@@ -134,7 +134,7 @@
 		<p class:text-red-500={questionDataErrMsg}>
 			{questionDataErrMsg
 				? questionDataErrMsg
-				: 'One math question per line, no "=" or letters. Just numbers, operators (+ - / *), and parenthesis.'}
+				: 'One math question per line, no "=" or letters. Just numbers, operators (+ - / x), and parenthesis.'}
 		</p>
 		<textarea
 			id="questionData"

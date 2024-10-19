@@ -64,10 +64,12 @@
 	function evaluateExpression(expression) {
 		try {
 			// Remove any unwanted characters (whitelist numbers, operators, parentheses)
-			const safeExpression = expression.replace(/[^-()\d/*+.\s]/g, '');
+			const safeExpression = expression.replace(/[^-()\d/x+.\s]/g, '');
+			// Replace X with * for evaluating multiplication
+			const safeExpressionWithFixedMultiplication = safeExpression.replace(/x/g, '*');
 			// Evaluate the expression
 			// eslint-disable-next-line no-new-func
-			return Function(`'use strict'; return (${safeExpression})`)();
+			return Function(`'use strict'; return (${safeExpressionWithFixedMultiplication})`)();
 		} catch (e) {
 			console.error('Error evaluating expression:', e);
 			return null;
