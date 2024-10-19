@@ -146,7 +146,7 @@
 				: 'focus:ring-[#26561b]'}"
 			placeholder="1+3
 8/2
-3+2*6"
+3+2"
 			bind:value={questionData}
 			on:input={validateInput}
 		></textarea>
