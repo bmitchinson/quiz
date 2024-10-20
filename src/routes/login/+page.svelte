@@ -34,7 +34,7 @@
 			} else if (requestedLoginType === 'Teacher') {
 				goto('/teacher/dashboard');
 			} else if (requestedLoginType === 'Student') {
-				goto('/student/dashboard');
+				goto('/student/takeQuiz');
 			}
 		} else {
 			errorMsg = result.errorMsg;

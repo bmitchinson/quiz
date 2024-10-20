@@ -25,4 +25,5 @@ export async function validateAdmin<T>(
 export function clearCookies(cookies: Cookies): void {
 	cookies.delete('loginType', { path: '/' });
 	cookies.delete('loginName', { path: '/' });
+	cookies.delete('studentId', { path: '/' });
 }

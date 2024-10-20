@@ -162,14 +162,14 @@ export class Database {
 		correctAnswers: number,
 		timeStarted: Date,
 		timeFinished: Date,
-		studentName: string,
+		studentId: string,
 		quizCode: string
 	): Promise<void> {
 		try {
 			await this.prisma.score.create({
 				data: {
 					quizCode,
-					studentName,
+					studentId,
 					correctAnswers,
 					timeStarted,
 					timeFinished
@@ -254,7 +254,7 @@ export class Database {
 			if (!studentName || !teacherName) {
 				throw new Error('Missing student or teacher name on db lookup');
 			}
-			return await this.prisma.student.findFirst({
+			const student = await this.prisma.student.findFirst({
 				where: {
 					name: studentName,
 					teacher: {
@@ -262,6 +262,11 @@ export class Database {
 					}
 				}
 			});
+			if (student) {
+				return student.id;
+			} else {
+				return 0;
+			}
 		} catch (error) {
 			console.error('Error checking if student has teacher:', error);
 			throw error;

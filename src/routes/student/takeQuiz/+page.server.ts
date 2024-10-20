@@ -27,31 +27,17 @@ export const actions: Actions = {
 			return { success: false, message: 'Invalid Access Code' };
 		}
 	},
-	validateUsername: async ({ request, cookies }) => {
-		const data = await request.formData();
-		const usernameInput = data.get('usernameInput');
-		console.log('validating', usernameInput);
-
-		// Validate access code and retrieve questions
-		if (await db.findStudentByName(usernameInput)) {
-			cookies.set('validatedUsername', usernameInput, { path: '/', maxAge: 31_536_000 }); // 1 year
-			return { success: true, message: usernameInput };
-		} else {
-			console.log(`Rejecting attempted username ${usernameInput}`);
-			return { success: false, message: `Username "${usernameInput}" not found` };
-		}
-	},
 	postCompletedScore: async ({ request, cookies }) => {
 		const data = await request.formData();
 
 		const correctAnswers = parseInt(data.get('correctAnswers'));
 		const timeStarted = new Date(data.get('timeStarted'));
 		const timeFinished = new Date(data.get('timeFinished'));
-		const studentName = cookies.get('validatedUsername');
+		const studentId = parseInt(cookies.get('studentId'));
 		const quizCode = data.get('quizCode');
 
 		return await db
-			.addScore(correctAnswers, timeStarted, timeFinished, studentName, quizCode)
+			.addScore(correctAnswers, timeStarted, timeFinished, studentId, quizCode)
 			.then(() => ({ success: true }))
 			.catch((e) => ({ success: false }));
 	}

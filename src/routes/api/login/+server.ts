@@ -42,9 +42,11 @@ const validateStudentAndUpdateCookies = async (
 	teacherName: String,
 	cookies: Cookies
 ): Promise<boolean> => {
-	if (await db.studentBelongsToTeacher(studentName, teacherName)) {
+	const studentId = await db.studentBelongsToTeacher(studentName, teacherName);
+	if (studentId) {
 		cookies.set('loginType', 'Student', cookieTTL);
 		cookies.set('loginName', studentName, cookieTTL);
+		cookies.set('studentId', studentId, cookieTTL);
 		console.log('student', studentName, 'belongs to teacher', teacherName);
 		return true;
 	} else {
