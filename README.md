@@ -7,11 +7,16 @@ Scores are recorded for teachers to view to save time grading weekly quizzes.
 
 [![Postgres Backup and Upload](https://github.com/bmitchinson/quiz/actions/workflows/pg_backup.yaml/badge.svg)](https://github.com/bmitchinson/quiz/actions/workflows/pg_backup.yaml)
 
+note: the code quality here is all over the place! This is a deliberate exercise
+in trying to use AI CodeGen as much as possible, to learn about when the downsides
+kick in. My production team code does not look like this 👍
+
 ### Tools
 
-- vercel / vercel postgres (neon)
+- vercel hosting w sveltekit instead of react
+- vercel postgres (neon) + supabase
+- prismadb
 - cloudflare
-- sveltekit
 - tailwind
 - lots and lots of chatgpt o1 as an exercise in AI codegen for rapid
   development

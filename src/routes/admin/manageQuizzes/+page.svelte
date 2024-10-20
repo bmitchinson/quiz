@@ -131,10 +131,10 @@
 </script>
 
 <svelte:head>
-	<title>Quiz: Manage Quizzes</title>
+	<title>Admin: Manage Quizzes</title>
 </svelte:head>
 
-<div class="bg-white bg-opacity-70 shadow-lg rounded-lg p-8 w-full max-w-lg">
+<div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
 	<h1 class="text-2xl font-bold mb-6 text-center">Quiz Management</h1>
 	<form method="post" action="?/addQuiz" class="space-y-4">
 		<div>
@@ -184,7 +184,7 @@
 	</form>
 </div>
 
-<div class="bg-white bg-opacity-70 shadow-lg rounded-lg p-8 w-full max-w-xl">
+<div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-xl">
 	<h2 class="text-2xl font-bold mb-6 text-center">Existing Quizzes</h2>
 	{#if message}
 		<div

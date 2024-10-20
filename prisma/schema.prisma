@@ -7,13 +7,25 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Student {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  archived  Boolean  @default(false)
-  createdAt DateTime @default(now())
+model Teacher {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  grade    Int       @db.SmallInt
+  students Student[] @relation("TeacherStudents")
+  // end-of-year: add year "2324" attr to teacher, update teacher login to query
+  //     that year
+}
 
-  scores    Score[]
+model Student {
+  id          Int      @id @default(autoincrement())
+  name        String   
+  archived    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  teacherId   Int
+  teacher     Teacher  @relation("TeacherStudents", fields: [teacherId], references: [id], onDelete: Cascade)
+  
+  scores      Score[]
 }
 
 model Quiz {
@@ -33,9 +45,9 @@ model Score {
   correctAnswers Int
   timeStarted    DateTime?
   timeFinished   DateTime?
-  studentName    String
+  studentId      Int
   quizCode       String    @db.VarChar(6)
 
-  student        Student   @relation(fields: [studentName], references: [name], onDelete: Cascade)
+  student        Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
   quiz           Quiz      @relation(fields: [quizCode], references: [accessCode], onDelete: Cascade)
 }

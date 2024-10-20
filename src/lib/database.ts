@@ -44,50 +44,70 @@ export class Database {
 		throw new Error('Failed to generate a unique 4 digit quiz code after 10 attempts');
 	}
 
-	/**
-	 * Adds multiple unique student last names to the database.
-	 * Uses upsert to avoid duplicates.
-	 * @param names Array of unique student last names.
-	 */
-	async addStudents(names: string[]): Promise<void> {
+	async addTeacher(name: string, grade: number): Promise<void> {
 		try {
-			const createPromises = names.map((name) => {
-				const lowerName = name.toLowerCase();
-				return this.prisma.student.upsert({
-					where: { name },
-					update: {},
-					create: { name: lowerName }
-				});
+			await this.prisma.teacher.create({
+				data: {
+					name,
+					grade
+				}
 			});
 
-			await this.prisma.$transaction(createPromises);
-			console.log('Added Students:', names);
+			console.log('Added teacher:', name);
+		} catch (error) {
+			console.error('Error adding teacher:', error);
+			throw error;
+		}
+	}
+
+	async getTeacher(lastname: string): Promise<void> {
+		try {
+			return await this.prisma.teacher.findFirst({
+				where: { name: lastname }
+			});
+		} catch (error) {
+			console.error('Error looking up teacher:', error);
+			throw error;
+		}
+	}
+
+	async addStudents(students: { studentName: string; teacherName: string }[]): Promise<void> {
+		try {
+			await this.prisma.$transaction(async (prisma) => {
+				for (const { studentName: name, teacherName } of students) {
+					const lowerName = name.toLowerCase();
+					const teacher = await prisma.teacher.findUnique({
+						where: { name: teacherName }
+					});
+					if (!teacher) {
+						throw new Error(`Teacher with name ${teacherName} not found`);
+					}
+					await prisma.student.create({
+						data: {
+							name: lowerName,
+							teacherId: teacher.id
+						}
+					});
+				}
+			});
+			console.log(
+				'Added Students:',
+				students.map((s) => s.studentName)
+			);
 		} catch (error) {
 			console.error('Error adding students:', error);
 			throw error;
 		}
 	}
 
-	async findStudentByName(name: string): Promise<void> {
+	async getStudentsOfTeacher(teacherId: int): Promise<string[]> {
 		try {
-			return await this.prisma.student.findFirst({
-				where: { name, archived: false }
-			});
-		} catch (error) {
-			console.error('Error finding student:', error);
-			throw error;
-		}
-	}
-
-	/**
-	 * Retrieves all student last names from the database.
-	 * @returns Array of student last names.
-	 */
-	async getAllStudents(): Promise<string[]> {
-		try {
+			if (teacherId === null) {
+				throw new Error('Missing teacher id');
+			}
 			const students = await this.prisma.student.findMany({
 				select: { name: true },
-				where: { archived: false },
+				where: { archived: false, teacherId },
 				orderBy: { name: 'asc' }
 			});
 			return students;
@@ -97,14 +117,12 @@ export class Database {
 		}
 	}
 
-	/**
-	 * Archives a student by name.
-	 * @param name The name of the student to archive.
-	 */
-	async archiveStudent(name: string): Promise<void> {
+	async archiveStudent(name: string, teacherId: int): Promise<void> {
 		try {
-			await this.prisma.student.update({
-				where: { name },
+			// using updateMany instead of update because prisma doesn't know that
+			// name is unique within a teacherId
+			await this.prisma.student.updateMany({
+				where: { name, teacherId },
 				data: { archived: true }
 			});
 			console.log('Archived Student:', name);
@@ -124,9 +142,9 @@ export class Database {
 			await this.prisma.quiz.create({
 				data: {
 					title,
+					accessCode: await this.generateUnique4DigitCode(),
 					questionsData: questionsData.replace(/\r?\n/g, '|'),
-					totalQuestions: questionsData.split('\n').length,
-					accessCode: await this.generateUnique4DigitCode()
+					totalQuestions: questionsData.split('\n').length
 				}
 			});
 
@@ -141,14 +159,14 @@ export class Database {
 		correctAnswers: number,
 		timeStarted: Date,
 		timeFinished: Date,
-		studentName: string,
+		studentId: string,
 		quizCode: string
 	): Promise<void> {
 		try {
 			await this.prisma.score.create({
 				data: {
 					quizCode,
-					studentName,
+					studentId,
 					correctAnswers,
 					timeStarted,
 					timeFinished
@@ -176,6 +194,9 @@ export class Database {
 		studentUsername: string
 	): Promise<void> {
 		try {
+			if (!accessCode || !studentUsername) {
+				throw new Error('Missing access code or student name on score db lookup');
+			}
 			return await this.prisma.score.findFirst({
 				where: { quizCode: accessCode, studentName: studentUsername }
 			});
@@ -224,6 +245,30 @@ export class Database {
 			}));
 		} catch (error) {
 			console.error('Error fetching quizzes:', error);
+			throw error;
+		}
+	}
+
+	async studentBelongsToTeacher(studentName: string, teacherName: string): Promise<boolean> {
+		try {
+			if (!studentName || !teacherName) {
+				throw new Error('Missing student or teacher name on db lookup');
+			}
+			const student = await this.prisma.student.findFirst({
+				where: {
+					name: studentName,
+					teacher: {
+						name: teacherName
+					}
+				}
+			});
+			if (student) {
+				return student.id;
+			} else {
+				return 0;
+			}
+		} catch (error) {
+			console.error('Error checking if student has teacher:', error);
 			throw error;
 		}
 	}

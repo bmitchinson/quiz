@@ -10,11 +10,13 @@
 			location.reload();
 		});
 	};
+
+	$: userText = data.loginType === 'Admin' ? 'Admin' : `${data.loginType}: ${data.loginName}`;
 </script>
 
 <div class="flex flex-col items-center h-screen justify-between">
 	<header
-		class="bg-white bg-opacity-70 backdrop-blur-md shadow-lg p-4 w-full relative flex items-center justify-center py-8"
+		class="bg-white backdrop-blur-md shadow-lg p-4 w-full relative flex items-center justify-center py-8"
 	>
 		<div class="absolute left-4 flex items-center space-x-4">
 			<a href="/" class="z-10">
@@ -33,11 +35,9 @@
 		</div>
 
 		<!-- Right-side Username and Logout Button -->
-		{#if data.validatedUsername || data.adminPass}
+		{#if data.loginType}
 			<div class="absolute right-4 flex items-center space-x-4">
-				{#if data.validatedUsername}
-					<span class="text-lg font-medium">{data.validatedUsername}</span>
-				{/if}
+				<span class="text-lg font-medium">{userText}</span>
 				<button
 					class="bg-[#26561b] hover:bg-[#316f23] text-white px-4 py-2 rounded-md transition duration-300"
 					on:click={logout}
@@ -56,6 +56,6 @@
 		<p>
 			For feature requests, access requests, or bug reports, please contact mitchinson.dev@gmail.com
 		</p>
-		<p>Made w 🩵 in Des Moines 🌽</p>
+		<p>Made w 💚 in Des Moines 🌽</p>
 	</footer>
 </div>
