@@ -52,7 +52,7 @@
 </script>
 
 <svelte:head>
-	<title>Quiz: Manage Students</title>
+	<title>Teacher: Manage Students</title>
 </svelte:head>
 
 <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">

@@ -2,11 +2,10 @@
 	import { goto } from '$app/navigation';
 	let requestedLoginType = '';
 	let inputValue = '';
+	let teacherName = '';
 	let errorMsg = '';
-	let passwordPrompt = '';
 	let selectedGrade = 1;
 	let selectedTeacher = '';
-	let passwordPlaceholder = '';
 
 	export let data;
 	$: teacherOptions = data.teachers
@@ -23,7 +22,8 @@
 			body: JSON.stringify({
 				loginType: requestedLoginType,
 				inputValue,
-				selectedTeacher
+				selectedTeacher,
+				teacherName
 			})
 		});
 
@@ -32,7 +32,7 @@
 			if (requestedLoginType === 'Admin') {
 				goto('/admin');
 			} else if (requestedLoginType === 'Teacher') {
-				goto('/teacher/dashboard');
+				goto('/teacher');
 			} else if (requestedLoginType === 'Student') {
 				goto('/student/takeQuiz');
 			}
@@ -44,11 +44,6 @@
 	// Reset input values when loginType changes
 	$: if (requestedLoginType) {
 		inputValue = '';
-		passwordPrompt =
-			requestedLoginType === 'Admin'
-				? 'Please enter the admin password'
-				: 'Enter your first initial and last name - Ex: JSmith';
-		passwordPlaceholder = requestedLoginType === 'Admin' ? 'Admin Password' : 'Name';
 		errorMsg = '';
 	}
 </script>
@@ -129,32 +124,39 @@
 				<input
 					type="text"
 					bind:value={inputValue}
-					placeholder={passwordPlaceholder}
+					placeholder="mmouse"
 					autocomplete="off"
 					data-1p-ignore
 					required
 					class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
 				/>
 			</div>
-		{/if}
-		<!-- TODO: add password to teacher login field -->
-		{#if requestedLoginType === 'Admin'}
-			<p class="text-center pb-4">{passwordPrompt}</p>
+		{:else if requestedLoginType === 'Admin'}
+			<p class="text-center pb-4">Please enter the admin password</p>
 			<input
 				type="password"
 				bind:value={inputValue}
-				placeholder={passwordPlaceholder}
+				placeholder="Admin Password"
 				autocomplete="off"
 				data-1p-ignore
 				required
 				class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
 			/>
 		{:else if requestedLoginType === 'Teacher'}
-			<p class="text-center pb-4">{passwordPrompt}</p>
+			<p class="text-center pb-4">Last Name</p>
 			<input
 				type="text"
+				bind:value={teacherName}
+				placeholder="Smith"
+				autocomplete="off"
+				data-1p-ignore
+				required
+				class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
+			/>
+			<input
+				type="password"
 				bind:value={inputValue}
-				placeholder={passwordPlaceholder}
+				placeholder="Universal Teacher Password"
 				autocomplete="off"
 				data-1p-ignore
 				required

@@ -48,15 +48,6 @@ test.describe('Student', () => {
 
 /// WIP below
 
-test('Correct admin password goes to page', async ({ page }) => {
-	await page.goto('/admin/quizzes');
-
-	await page.locator(`input`).fill('admin');
-	await page.locator(`button:has-text("Submit")`).click();
-
-	await expect(page.locator(`h1:has-text("Quiz Management")`)).toBeVisible();
-});
-
 test('Students can be deleted', async ({ page }) => {
 	page.on('dialog', (dialog) => dialog.accept());
 

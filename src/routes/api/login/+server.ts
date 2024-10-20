@@ -1,5 +1,10 @@
 import { json, type Cookies } from '@sveltejs/kit';
-import { cookieTTL, adminPasswordIsValid, clearCookies } from '$lib/passwordUtils';
+import {
+	cookieTTL,
+	adminPasswordIsValid,
+	clearCookies,
+	teacherPasswordIsValid
+} from '$lib/passwordUtils';
 import { Database } from '$lib/database';
 
 const db = new Database();
@@ -20,8 +25,9 @@ export const POST = async ({ request, cookies }) => {
 				: json({ success: false, errorMsg: 'Invalid student login' });
 			break;
 		case 'Teacher':
-			// cookies.delete('validatedUsername', { path: '/' });
-			return json();
+			return (await validateTeacherAndUpdateCookies(data.inputValue, data.teacherName, cookies))
+				? json({ success: true })
+				: json({ success: false, errorMsg: 'Invalid teacher login' });
 			break;
 	}
 };
@@ -52,6 +58,24 @@ const validateStudentAndUpdateCookies = async (
 	} else {
 		clearCookies(cookies);
 		console.log('student', studentName, 'does not belong to teacher', teacherName);
+		return false;
+	}
+};
+
+const validateTeacherAndUpdateCookies = async (
+	teacherPassword: String,
+	teacherName: String,
+	cookies: Cookies
+): Promise<boolean> => {
+	const teacher = await db.getTeacher(teacherName);
+	if (teacher && teacherPasswordIsValid(teacherPassword)) {
+		cookies.set('loginType', 'Teacher', cookieTTL);
+		cookies.set('loginName', teacherName, cookieTTL);
+		cookies.set('teacherId', teacher.id, cookieTTL);
+		return true;
+	} else {
+		clearCookies(cookies);
+		console.log('teacher', teacherName, 'does not exist or password is invalid');
 		return false;
 	}
 };

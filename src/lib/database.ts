@@ -60,6 +60,17 @@ export class Database {
 		}
 	}
 
+	async getTeacher(lastname: string): Promise<void> {
+		try {
+			return await this.prisma.teacher.findFirst({
+				where: { name: lastname }
+			});
+		} catch (error) {
+			console.error('Error looking up teacher:', error);
+			throw error;
+		}
+	}
+
 	async addStudents(students: { studentName: string; teacherName: string }[]): Promise<void> {
 		try {
 			await this.prisma.$transaction(async (prisma) => {

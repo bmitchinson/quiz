@@ -9,6 +9,10 @@ export function adminPasswordIsValid(password: string): boolean {
 	return password === process.env.ADMIN_PASSWORD;
 }
 
+export function teacherPasswordIsValid(password: string): boolean {
+	return password === process.env.TEACHER_PASSWORD;
+}
+
 export async function validateAdmin<T>(
 	request: Request,
 	cookies: Cookies,
@@ -26,4 +30,5 @@ export function clearCookies(cookies: Cookies): void {
 	cookies.delete('loginType', { path: '/' });
 	cookies.delete('loginName', { path: '/' });
 	cookies.delete('studentId', { path: '/' });
+	cookies.delete('teacherId', { path: '/' });
 }

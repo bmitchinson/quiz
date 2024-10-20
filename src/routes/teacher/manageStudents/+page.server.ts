@@ -5,15 +5,14 @@ import { validateAdmin } from '../../../lib/passwordUtils';
 
 const db = new Database();
 
-export const load: PageServerLoad = async ({ request, cookies }) =>
-	validateAdmin(request, cookies, async () => {
-		try {
-			const students = await db.getAllStudents();
-			return { students };
-		} catch (err) {
-			throw error(500, 'Failed to load students');
-		}
-	});
+export const load: PageServerLoad = async ({ request, cookies }) => {
+	try {
+		const students = await db.getAllStudents();
+		return { students };
+	} catch (err) {
+		throw error(500, 'Failed to load students');
+	}
+};
 
 export const actions: Actions = {
 	addStudents: async ({ request, cookies }) =>

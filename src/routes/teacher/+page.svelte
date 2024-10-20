@@ -16,7 +16,7 @@
 			href="/teacher/scores"
 			class="bg-[#26561b] text-white flex items-center justify-center px-4 py-2 rounded shadow hover:bg-[#316f23] transition"
 		>
-			View Scores
+			View Class Scores
 		</a>
 	</div>
 </div>
