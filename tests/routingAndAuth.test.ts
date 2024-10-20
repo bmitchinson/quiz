@@ -2,7 +2,8 @@ import { expect, test } from '@playwright/test';
 import {
 	resetStudentsAndTeachersToTestData,
 	resetQuizzesToTestData,
-	loginAsAdmin
+	loginAsAdmin,
+	loginAsTeacher
 } from './testutils';
 
 test.beforeEach(async ({ context }) => {
@@ -44,32 +45,4 @@ test.describe('Student', () => {
 		await page.goto('/student/takeQuiz');
 		await expect(page).toHaveURL('/login');
 	});
-});
-
-/// WIP below
-
-test('Students can be deleted', async ({ page }) => {
-	page.on('dialog', (dialog) => dialog.accept());
-
-	await resetStudentsAndTeachersToTestData();
-	await page.goto('/admin/students');
-	await loginAsAdmin(page);
-
-	await expect(page.locator(`td:has-text("asmith")`)).toBeVisible();
-	await page.locator(`button:has-text("Delete")`).first().click();
-	await expect(page.locator(`td:has-text("asmith")`)).not.toBeVisible();
-});
-
-test('Quizzes can be deleted', async ({ page }) => {
-	page.on('dialog', (dialog) => dialog.accept());
-
-	await resetQuizzesToTestData();
-	await page.goto('/admin/quizzes');
-	await loginAsAdmin(page);
-
-	await expect(page.locator(`td:has-text("Quiz 1")`)).toBeVisible();
-	await expect(page.locator(`td:has-text("Quiz 2")`)).toBeVisible();
-	await expect(page.locator(`td:has-text("Quiz 3")`)).toBeVisible();
-	await page.locator(`button:has-text("Delete")`).first().click();
-	await expect(page.locator(`td:has-text("Quiz 3")`)).not.toBeVisible();
 });

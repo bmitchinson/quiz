@@ -111,15 +111,14 @@ export class Database {
 		}
 	}
 
-	/**
-	 * Retrieves all student last names from the database.
-	 * @returns Array of student last names.
-	 */
-	async getAllStudents(): Promise<string[]> {
+	async getStudentsOfTeacher(teacherId: int): Promise<string[]> {
 		try {
+			if (teacherId === null) {
+				throw new Error('Missing teacher id');
+			}
 			const students = await this.prisma.student.findMany({
 				select: { name: true },
-				where: { archived: false },
+				where: { archived: false, teacherId },
 				orderBy: { name: 'asc' }
 			});
 			return students;
@@ -129,14 +128,12 @@ export class Database {
 		}
 	}
 
-	/**
-	 * Archives a student by name.
-	 * @param name The name of the student to archive.
-	 */
-	async archiveStudent(name: string): Promise<void> {
+	async archiveStudent(name: string, teacherId: int): Promise<void> {
 		try {
-			await this.prisma.student.update({
-				where: { name },
+			// using updateMany instead of update because prisma doesn't know that
+			// name is unique within a teacherId
+			await this.prisma.student.updateMany({
+				where: { name, teacherId },
 				data: { archived: true }
 			});
 			console.log('Archived Student:', name);

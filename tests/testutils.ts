@@ -9,6 +9,14 @@ export const loginAsAdmin = async (page) => {
 	await page.locator(`button:has-text("Submit")`).click();
 };
 
+export const loginAsTeacher = async (page) => {
+	await page.goto('/login');
+	await page.locator(`button:has-text("Teacher")`).click();
+	await page.locator(`#teacherName`).fill('mitchinson');
+	await page.locator(`#teacherPassword`).fill('teacher');
+	await page.locator(`button:has-text("Submit")`).click();
+};
+
 export async function resetStudentsAndTeachersToTestData(): Promise<void> {
 	await db.prisma.student.deleteMany({});
 	await db.prisma.teacher.deleteMany({});

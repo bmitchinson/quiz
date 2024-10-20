@@ -108,7 +108,7 @@ bdylan"
 		</thead>
 		<tbody>
 			{#each paginatedStudents as student}
-				<tr class="p-2">
+				<tr class="p-2 student-row">
 					<td class="py-2 px-4 border-b m-2">
 						<div class="flex justify-center">
 							{student.name}

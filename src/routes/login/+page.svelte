@@ -83,6 +83,7 @@
 	>
 		<h1 class="text-2xl font-bold mb-2 text-center">{requestedLoginType} Login</h1>
 
+		<!-- NOTE: Student -->
 		{#if requestedLoginType === 'Student'}
 			<div class="mb-4">
 				<span class="block mb-2 font-semibold">Select Grade:</span>
@@ -131,6 +132,7 @@
 					class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
 				/>
 			</div>
+			<!-- NOTE: Admin -->
 		{:else if requestedLoginType === 'Admin'}
 			<p class="text-center pb-4">Please enter the admin password</p>
 			<input
@@ -142,9 +144,11 @@
 				required
 				class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
 			/>
+			<!-- NOTE: Teacher -->
 		{:else if requestedLoginType === 'Teacher'}
 			<p class="text-center pb-4">Last Name</p>
 			<input
+				id="teacherName"
 				type="text"
 				bind:value={teacherName}
 				placeholder="Smith"
@@ -154,6 +158,7 @@
 				class="w-full px-3 py-2 mb-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
 			/>
 			<input
+				id="teacherPassword"
 				type="password"
 				bind:value={inputValue}
 				placeholder="Universal Teacher Password"
