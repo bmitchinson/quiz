@@ -5,19 +5,30 @@ const db = new Database();
 export async function resetStudentsAndTeachersToTestData(): Promise<void> {
 	await db.prisma.student.deleteMany({});
 	await db.prisma.teacher.deleteMany({});
-	await db.addTeacher('teacher1', 1);
+	await db.addTeacher('mr_firstgrade', 1);
 	await db.addTeacher('mitchinson', 2);
+	await db.addTeacher('mrs_thirdgrade', 3);
+	await db.addTeacher('mr_fourthgrade', 4);
+	await db.addTeacher('mrs_fourthgrade', 4);
+	await db.addTeacher('mrs_fifthgrade', 5);
 	await db.addStudents([
-		{ studentName: 'asmith', teacherName: 'mitchinson' },
-		{ studentName: 'bjohnson', teacherName: 'mitchinson' },
-		{ studentName: 'cbrown', teacherName: 'mitchinson' },
-		{ studentName: 'dtaylor', teacherName: 'mitchinson' },
-		{ studentName: 'eclark', teacherName: 'mitchinson' },
-		{ studentName: 'fmiller', teacherName: 'teacher1' },
-		{ studentName: 'gwilson', teacherName: 'teacher1' },
-		{ studentName: 'hmoore', teacherName: 'teacher1' },
-		{ studentName: 'ijones', teacherName: 'teacher1' },
-		{ studentName: 'jgarcia', teacherName: 'teacher1' }
+		{ studentName: 'firstgrader1', teacherName: 'mr_firstgrade' },
+		{ studentName: 'firstgrader2', teacherName: 'mr_firstgrade' },
+		{ studentName: 'firstgrader3', teacherName: 'mr_firstgrade' },
+		{ studentName: 'firstgrader4', teacherName: 'mr_firstgrade' },
+		{ studentName: 'firstgrader5', teacherName: 'mr_firstgrade' },
+		{ studentName: 'secondgrader1', teacherName: 'mitchinson' },
+		{ studentName: 'secondgrader2', teacherName: 'mitchinson' },
+		{ studentName: 'secondgrader3', teacherName: 'mitchinson' },
+		{ studentName: 'secondgrader4', teacherName: 'mitchinson' },
+		{ studentName: 'thirdgrader1', teacherName: 'mrs_thirdgrade' },
+		{ studentName: 'thirdgrader2', teacherName: 'mrs_thirdgrade' },
+		{ studentName: 'fourthgrader1', teacherName: 'mr_fourthgrade' },
+		{ studentName: 'fourthgrader2', teacherName: 'mr_fourthgrade' },
+		{ studentName: 'fourthgrader3', teacherName: 'mrs_fourthgrade' },
+		{ studentName: 'fourthgrader4', teacherName: 'mrs_fourthgrade' },
+		{ studentName: 'fifthgrader1', teacherName: 'mrs_fifthgrade' },
+		{ studentName: 'fifthgrader2', teacherName: 'mrs_fifthgrade' }
 	]);
 }
 

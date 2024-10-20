@@ -4,9 +4,14 @@
 	let inputValue = '';
 	let errorMsg = '';
 	let passwordPrompt = '';
-	let selectedGrade = 0;
+	let selectedGrade = 1;
 	let selectedTeacher = '';
 	let passwordPlaceholder = '';
+
+	export let data;
+	$: teacherOptions = data.teachers
+		.filter((teacher) => teacher.grade === selectedGrade)
+		.map((teacher) => teacher.name);
 
 	// Handle form submission
 	async function submitForm(event: Event) {
@@ -113,7 +118,7 @@
 				<span class="block mb-2 font-semibold">Select Teacher:</span>
 				<select bind:value={selectedTeacher} class="w-full px-3 py-2 border rounded-md" required>
 					<option value="" disabled selected>Select your teacher</option>
-					{#each ['mitchinson', 'davis', 'smith'] as teacher}
+					{#each teacherOptions as teacher}
 						<option value={teacher}>{teacher}</option>
 					{/each}
 				</select>
