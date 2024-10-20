@@ -137,6 +137,7 @@
 				/>
 			</div>
 		{/if}
+		<!-- TODO: add password to teacher login field -->
 		{#if requestedLoginType === 'Admin'}
 			<p class="text-center pb-4">{passwordPrompt}</p>
 			<input

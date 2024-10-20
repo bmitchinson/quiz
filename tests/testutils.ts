@@ -2,6 +2,13 @@ import { Database } from '$lib/database';
 
 const db = new Database();
 
+export const loginAsAdmin = async (page) => {
+	await page.goto('/login');
+	await page.locator(`button:has-text("Admin")`).click();
+	await page.locator(`input`).fill('admin');
+	await page.locator(`button:has-text("Submit")`).click();
+};
+
 export async function resetStudentsAndTeachersToTestData(): Promise<void> {
 	await db.prisma.student.deleteMany({});
 	await db.prisma.teacher.deleteMany({});
