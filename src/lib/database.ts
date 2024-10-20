@@ -44,24 +44,45 @@ export class Database {
 		throw new Error('Failed to generate a unique 4 digit quiz code after 10 attempts');
 	}
 
-	/**
-	 * Adds multiple unique student last names to the database.
-	 * Uses upsert to avoid duplicates.
-	 * @param names Array of unique student last names.
-	 */
-	async addStudents(names: string[]): Promise<void> {
+	async addTeacher(name: string, grade: number): Promise<void> {
 		try {
-			const createPromises = names.map((name) => {
-				const lowerName = name.toLowerCase();
-				return this.prisma.student.upsert({
-					where: { name },
-					update: {},
-					create: { name: lowerName }
-				});
+			await this.prisma.teacher.create({
+				data: {
+					name,
+					grade
+				}
 			});
 
-			await this.prisma.$transaction(createPromises);
-			console.log('Added Students:', names);
+			console.log('Added teacher:', name);
+		} catch (error) {
+			console.error('Error adding teacher:', error);
+			throw error;
+		}
+	}
+
+	async addStudents(students: { studentName: string; teacherName: string }[]): Promise<void> {
+		try {
+			await this.prisma.$transaction(async (prisma) => {
+				for (const { studentName: name, teacherName } of students) {
+					const lowerName = name.toLowerCase();
+					const teacher = await prisma.teacher.findUnique({
+						where: { name: teacherName }
+					});
+					if (!teacher) {
+						throw new Error(`Teacher with name ${teacherName} not found`);
+					}
+					await prisma.student.create({
+						data: {
+							name: lowerName,
+							teacherId: teacher.id
+						}
+					});
+				}
+			});
+			console.log(
+				'Added Students:',
+				students.map((s) => s.studentName)
+			);
 		} catch (error) {
 			console.error('Error adding students:', error);
 			throw error;
@@ -124,9 +145,9 @@ export class Database {
 			await this.prisma.quiz.create({
 				data: {
 					title,
+					accessCode: await this.generateUnique4DigitCode(),
 					questionsData: questionsData.replace(/\r?\n/g, '|'),
-					totalQuestions: questionsData.split('\n').length,
-					accessCode: await this.generateUnique4DigitCode()
+					totalQuestions: questionsData.split('\n').length
 				}
 			});
 
@@ -224,6 +245,23 @@ export class Database {
 			}));
 		} catch (error) {
 			console.error('Error fetching quizzes:', error);
+			throw error;
+		}
+	}
+
+	async studentBelongsToTeacher(studentName: string, teacherName: string): Promise<boolean> {
+		try {
+			const student = await this.prisma.student.findFirst({
+				where: {
+					name: studentName,
+					teacher: {
+						name: teacherName
+					}
+				}
+			});
+			return student !== null;
+		} catch (error) {
+			console.error('Error checking if student has teacher:', error);
 			throw error;
 		}
 	}

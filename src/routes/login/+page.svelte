@@ -18,7 +18,6 @@
 			body: JSON.stringify({
 				loginType: requestedLoginType,
 				inputValue,
-				selectedGrade,
 				selectedTeacher
 			})
 		});

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { resetStudentsToTestData, resetQuizzesToTestData } from './testutils';
+import { resetStudentsAndTeachersToTestData, resetQuizzesToTestData } from './testutils';
 
 const teacherQuizPrompt = 'Teacher: Manage Quizzes';
 const teacherStudentPrompt = 'Teacher: Manage Students';
@@ -51,10 +51,10 @@ test('Correct admin password goes to page', async ({ page }) => {
 	await expect(page.locator(`h1:has-text("Quiz Management")`)).toBeVisible();
 });
 
-test('Students can be deleted', async ({ page }) => {
+test.only('Students can be deleted', async ({ page }) => {
 	page.on('dialog', (dialog) => dialog.accept());
 
-	await resetStudentsToTestData();
+	await resetStudentsAndTeachersToTestData();
 	await page.goto('/admin/students');
 	await login(page);
 
