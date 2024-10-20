@@ -194,6 +194,9 @@ export class Database {
 		studentUsername: string
 	): Promise<void> {
 		try {
+			if (!accessCode || !studentUsername) {
+				throw new Error('Missing access code or student name on score db lookup');
+			}
 			return await this.prisma.score.findFirst({
 				where: { quizCode: accessCode, studentName: studentUsername }
 			});

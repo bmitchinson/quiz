@@ -17,7 +17,7 @@
 	let correctAnswer = null;
 	let usernameInput = '';
 	let usernameError = null;
-	let validatedUsername = data.validatedUsername ? data.validatedUsername : '';
+	let studentName = data.studentName ? data.studentName : '';
 
 	let timeStarted = null;
 	let timeFinished = null;

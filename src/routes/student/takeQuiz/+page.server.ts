@@ -3,12 +3,12 @@ import { Database } from '$lib/database';
 const db = new Database();
 
 export const load: LayoutServerLoad = async ({ cookies }) => ({
-	validatedUsername: cookies.get('validatedUsername')
+	studentName: cookies.get('loginName')
 });
 
 export const actions: Actions = {
 	getQuiz: async ({ request, cookies }) =>
-		validateRole(request, cookies, 'Admin', async () => {
+		validateRole(request, cookies, 'Student', async () => {
 			const data = await request.formData();
 			const accessCode = data.get('accessCode');
 
@@ -17,7 +17,7 @@ export const actions: Actions = {
 			if (quiz) {
 				const check = await db.checkIfScoreExistsForQuizAndStudent(
 					accessCode,
-					cookies.get('validatedUsername')
+					cookies.get('loginName')
 				);
 				if (check) {
 					return { success: false, message: "You've already taken this quiz :)" };
