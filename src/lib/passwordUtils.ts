@@ -13,13 +13,14 @@ export function teacherPasswordIsValid(password: string): boolean {
 	return password === process.env.TEACHER_PASSWORD;
 }
 
-export async function validateAdmin<T>(
+export async function validateRole<T>(
 	request: Request,
 	cookies: Cookies,
+	requiredRole: string,
 	callback: (request: Request) => T
 ): Promise<T> {
-	if (!cookies.get('loginType') === 'Admin') {
-		console.error('Password at api route attempted - ' + password + ' route: ' + request.url);
+	if (!cookies.get('loginType') === requiredRole) {
+		console.error('Bad actor attempt on route: ' + request.url);
 		return { error: 'Unauthorized. Knock it off this is a free app for kids :(' };
 	} else {
 		return callback(request);

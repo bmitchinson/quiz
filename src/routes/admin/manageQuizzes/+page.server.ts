@@ -1,12 +1,12 @@
 import type { Actions, PageServerLoad } from './$types';
 import { Database } from '$lib/database';
 import { error } from '@sveltejs/kit';
-import { validateAdmin } from '../../../lib/passwordUtils';
+import { validateRole } from '$lib/passwordUtils';
 
 const db = new Database();
 
 export const load: PageServerLoad = async ({ request, cookies }) =>
-	validateAdmin(request, cookies, async () => {
+	validateRole(request, cookies, 'Admin', async () => {
 		try {
 			const quizzes = await db.getAllQuizzes();
 			return { quizzes };
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ request, cookies }) =>
 
 export const actions: Actions = {
 	addQuiz: async ({ request, cookies }) =>
-		validateAdmin(request, cookies, async () => {
+		validateRole(request, cookies, 'Admin', async () => {
 			const formData = await request.formData();
 			let questionData = formData.get('questionData');
 			const title = formData.get('title');
@@ -45,7 +45,7 @@ export const actions: Actions = {
 		}),
 
 	deleteQuiz: async ({ request, cookies }) =>
-		validateAdmin(request, cookies, async () => {
+		validateRole(request, cookies, 'Admin', async () => {
 			const formData = await request.formData();
 			const quizId = formData.get('quizId');
 

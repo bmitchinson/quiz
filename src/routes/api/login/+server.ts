@@ -67,15 +67,17 @@ const validateTeacherAndUpdateCookies = async (
 	teacherName: String,
 	cookies: Cookies
 ): Promise<boolean> => {
-	const teacher = await db.getTeacher(teacherName);
-	if (teacher && teacherPasswordIsValid(teacherPassword)) {
-		cookies.set('loginType', 'Teacher', cookieTTL);
-		cookies.set('loginName', teacherName, cookieTTL);
-		cookies.set('teacherId', teacher.id, cookieTTL);
-		return true;
-	} else {
-		clearCookies(cookies);
-		console.log('teacher', teacherName, 'does not exist or password is invalid');
-		return false;
+	if (teacherPasswordIsValid(teacherPassword)) {
+		const teacher = await db.getTeacher(teacherName);
+		if (teacher) {
+			cookies.set('loginType', 'Teacher', cookieTTL);
+			cookies.set('loginName', teacherName, cookieTTL);
+			cookies.set('teacherId', teacher.id, cookieTTL);
+			return true;
+		} else {
+			clearCookies(cookies);
+			console.log('teacher', teacherName, 'does not exist or password is invalid');
+			return false;
+		}
 	}
 };

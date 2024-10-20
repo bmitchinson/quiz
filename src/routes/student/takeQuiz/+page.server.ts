@@ -1,4 +1,4 @@
-import { Database } from '../../../lib/database';
+import { Database } from '$lib/database';
 
 const db = new Database();
 
@@ -7,38 +7,41 @@ export const load: LayoutServerLoad = async ({ cookies }) => ({
 });
 
 export const actions: Actions = {
-	getQuiz: async ({ request, cookies }) => {
-		const data = await request.formData();
-		const accessCode = data.get('accessCode');
+	getQuiz: async ({ request, cookies }) =>
+		validateRole(request, cookies, 'Admin', async () => {
+			const data = await request.formData();
+			const accessCode = data.get('accessCode');
 
-		// Validate access code and retrieve questions
-		const quiz = await db.getQuiz(accessCode);
-		if (quiz) {
-			const check = await db.checkIfScoreExistsForQuizAndStudent(
-				accessCode,
-				cookies.get('validatedUsername')
-			);
-			if (check) {
-				return { success: false, message: "You've already taken this quiz :)" };
+			// Validate access code and retrieve questions
+			const quiz = await db.getQuiz(accessCode);
+			if (quiz) {
+				const check = await db.checkIfScoreExistsForQuizAndStudent(
+					accessCode,
+					cookies.get('validatedUsername')
+				);
+				if (check) {
+					return { success: false, message: "You've already taken this quiz :)" };
+				} else {
+					return { success: true, message: quiz.questionsData };
+				}
 			} else {
-				return { success: true, message: quiz.questionsData };
+				return { success: false, message: 'Invalid Access Code' };
 			}
-		} else {
-			return { success: false, message: 'Invalid Access Code' };
-		}
-	},
-	postCompletedScore: async ({ request, cookies }) => {
-		const data = await request.formData();
+		}),
 
-		const correctAnswers = parseInt(data.get('correctAnswers'));
-		const timeStarted = new Date(data.get('timeStarted'));
-		const timeFinished = new Date(data.get('timeFinished'));
-		const studentId = parseInt(cookies.get('studentId'));
-		const quizCode = data.get('quizCode');
+	postCompletedScore: async ({ request, cookies }) =>
+		validateRole(request, cookies, 'Student', async () => {
+			const data = await request.formData();
 
-		return await db
-			.addScore(correctAnswers, timeStarted, timeFinished, studentId, quizCode)
-			.then(() => ({ success: true }))
-			.catch((e) => ({ success: false }));
-	}
+			const correctAnswers = parseInt(data.get('correctAnswers'));
+			const timeStarted = new Date(data.get('timeStarted'));
+			const timeFinished = new Date(data.get('timeFinished'));
+			const studentId = parseInt(cookies.get('studentId'));
+			const quizCode = data.get('quizCode');
+
+			return await db
+				.addScore(correctAnswers, timeStarted, timeFinished, studentId, quizCode)
+				.then(() => ({ success: true }))
+				.catch((e) => ({ success: false }));
+		})
 };

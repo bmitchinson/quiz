@@ -1,7 +1,7 @@
 import type { Actions, PageServerLoad } from './$types';
 import { Database } from '$lib/database';
 import { error } from '@sveltejs/kit';
-import { validateAdmin } from '../../../lib/passwordUtils';
+import { validateRole } from '$lib/passwordUtils';
 
 const db = new Database();
 
@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ request, cookies }) => {
 
 export const actions: Actions = {
 	addStudents: async ({ request, cookies }) =>
-		validateAdmin(request, cookies, async () => {
+		validateRole(request, cookies, 'Admin', async () => {
 			const formData = await request.formData();
 			const lastNamesRaw = formData.get('lastNames');
 
@@ -38,7 +38,7 @@ export const actions: Actions = {
 		}),
 
 	deleteStudent: async ({ request, cookies }) =>
-		validateAdmin(request, cookies, async () => {
+		validateRole(request, cookies, 'Admin', async () => {
 			const formData = await request.formData();
 			const name = formData.get('name');
 

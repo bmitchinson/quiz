@@ -100,17 +100,6 @@ export class Database {
 		}
 	}
 
-	async findStudentByName(name: string): Promise<void> {
-		try {
-			return await this.prisma.student.findFirst({
-				where: { name, archived: false }
-			});
-		} catch (error) {
-			console.error('Error finding student:', error);
-			throw error;
-		}
-	}
-
 	async getStudentsOfTeacher(teacherId: int): Promise<string[]> {
 		try {
 			if (teacherId === null) {
