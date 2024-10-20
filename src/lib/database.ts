@@ -251,7 +251,10 @@ export class Database {
 
 	async studentBelongsToTeacher(studentName: string, teacherName: string): Promise<boolean> {
 		try {
-			const student = await this.prisma.student.findFirst({
+			if (!studentName || !teacherName) {
+				throw new Error('Missing student or teacher name on db lookup');
+			}
+			return await this.prisma.student.findFirst({
 				where: {
 					name: studentName,
 					teacher: {
@@ -259,7 +262,6 @@ export class Database {
 					}
 				}
 			});
-			return student !== null;
 		} catch (error) {
 			console.error('Error checking if student has teacher:', error);
 			throw error;

@@ -1,5 +1,8 @@
 import { json, type Cookies } from '@sveltejs/kit';
-import { cookieTTL, adminPasswordIsValid } from '$lib/passwordUtils';
+import { cookieTTL, adminPasswordIsValid, clearCookies } from '$lib/passwordUtils';
+import { Database } from '$lib/database';
+
+const db = new Database();
 
 export const POST = async ({ request, cookies }) => {
 	const data = await request.json();
@@ -10,12 +13,16 @@ export const POST = async ({ request, cookies }) => {
 			return validateAdminAndUpdateCookies(data.inputValue, cookies)
 				? json({ success: true })
 				: json({ success: false, errorMsg: 'Invalid admin login' });
+			break;
 		case 'Student':
-			// cookies.delete('validatedUsername', { path: '/' });
-			return json();
+			return (await validateStudentAndUpdateCookies(data.inputValue, data.selectedTeacher, cookies))
+				? json({ success: true })
+				: json({ success: false, errorMsg: 'Invalid student login' });
+			break;
 		case 'Teacher':
 			// cookies.delete('validatedUsername', { path: '/' });
 			return json();
+			break;
 	}
 };
 
@@ -25,8 +32,24 @@ const validateAdminAndUpdateCookies = (password: String, cookies: Cookies): bool
 		cookies.set('loginName', 'Admin', cookieTTL);
 		return true;
 	} else {
-		cookies.delete('loginType', { path: '/' });
-		cookies.delete('loginName', { path: '/' });
+		clearCookies(cookies);
+		return false;
+	}
+};
+
+const validateStudentAndUpdateCookies = async (
+	studentName: String,
+	teacherName: String,
+	cookies: Cookies
+): Promise<boolean> => {
+	if (await db.studentBelongsToTeacher(studentName, teacherName)) {
+		cookies.set('loginType', 'Student', cookieTTL);
+		cookies.set('loginName', studentName, cookieTTL);
+		console.log('student', studentName, 'belongs to teacher', teacherName);
+		return true;
+	} else {
+		clearCookies(cookies);
+		console.log('student', studentName, 'does not belong to teacher', teacherName);
 		return false;
 	}
 };
