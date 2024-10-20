@@ -9,7 +9,7 @@ generator client {
 
 model Teacher {
   id       Int       @id @default(autoincrement())
-  name     String
+  name     String    @unique
   grade    Int       @db.SmallInt
   students Student[] @relation("TeacherStudents")
   // end-of-year: add year "2324" attr to teacher, update teacher login to query
