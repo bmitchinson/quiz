@@ -29,8 +29,9 @@ export async function validateRole<T>(
 	callback: (request: Request) => T
 ): Promise<T> {
 	if (!cookies.get('loginType') === requiredRole) {
+		clearCookies(cookies);
 		console.error('Bad actor attempt on route: ' + request.url);
-		return { error: 'Unauthorized. Knock it off this is a free app for kids :(' };
+		return { error: 'Unauthorized. Knock it off this is a free app for a school district :(' };
 	} else {
 		return callback(request);
 	}

@@ -14,8 +14,8 @@ test.describe('Teacher', () => {
 		await expect(page.locator(`td:has-text("secondgrader3")`)).toBeVisible();
 		await expect(page.locator(`td:has-text("secondgrader4")`)).toBeVisible();
 		await expect(page.locator('.student-row')).toHaveCount(4);
-		await page.locator(`button:has-text("Delete")`).first().click();
-		await expect(page.locator(`td:has-text("secondgrader1")`)).not.toBeVisible();
+		await page.locator(`button:has-text("Delete")`).nth(3).click();
+		await expect(page.locator(`td:has-text("secondgrader4")`)).not.toBeVisible();
 		await expect(page.locator('.student-row')).toHaveCount(3);
 	});
 });
