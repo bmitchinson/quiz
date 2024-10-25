@@ -1,8 +1,9 @@
 import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
+import { getSignedCookieValue } from '$lib/signedCookie';
 
 export const load: LayoutServerLoad = async ({ cookies, url }) => {
-	const loginType = cookies.get('loginType');
+	const loginType = await getSignedCookieValue('loginType', cookies);
 
 	if (!loginType && url.pathname !== '/login') {
 		throw redirect(302, '/login');
@@ -10,6 +11,6 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
 
 	return {
 		loginType,
-		loginName: cookies.get('loginName')
+		loginName: await getSignedCookieValue('loginName', cookies)
 	};
 };

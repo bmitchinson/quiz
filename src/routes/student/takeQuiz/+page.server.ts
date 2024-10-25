@@ -1,9 +1,10 @@
 import { Database } from '$lib/database';
+import { getSignedCookieValue } from '$lib/signedCookie';
 
 const db = new Database();
 
 export const load: LayoutServerLoad = async ({ cookies }) => ({
-	studentName: cookies.get('loginName')
+	studentName: await getSignedCookieValue('loginName', cookies)
 });
 
 export const actions: Actions = {
@@ -17,7 +18,7 @@ export const actions: Actions = {
 			if (quiz) {
 				const check = await db.checkIfScoreExistsForQuizAndStudent(
 					accessCode,
-					cookies.get('loginName')
+					await getSignedCookieValue('loginName', cookies)
 				);
 				if (check) {
 					return { success: false, message: "You've already taken this quiz :)" };
@@ -36,7 +37,7 @@ export const actions: Actions = {
 			const correctAnswers = parseInt(data.get('correctAnswers'));
 			const timeStarted = new Date(data.get('timeStarted'));
 			const timeFinished = new Date(data.get('timeFinished'));
-			const studentId = parseInt(cookies.get('studentId'));
+			const studentId = parseInt(await getSignedCookieValue('studentId', cookies));
 			const quizCode = data.get('quizCode');
 
 			return await db

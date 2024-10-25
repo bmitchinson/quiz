@@ -1,11 +1,7 @@
 import { json, type Cookies } from '@sveltejs/kit';
-import {
-	cookieTTL,
-	adminPasswordIsValid,
-	clearCookies,
-	teacherPasswordIsValid
-} from '$lib/passwordUtils';
+import { adminPasswordIsValid, clearCookies, teacherPasswordIsValid } from '$lib/passwordUtils';
 import { Database } from '$lib/database';
+import { setSignedCookieValue } from '$lib/signedCookie';
 
 const db = new Database();
 
@@ -15,7 +11,7 @@ export const POST = async ({ request, cookies }) => {
 
 	switch (loginType) {
 		case 'Admin':
-			return validateAdminAndUpdateCookies(data.inputValue, cookies)
+			return (await validateAdminAndUpdateCookies(data.inputValue, cookies))
 				? json({ success: true })
 				: json({ success: false, errorMsg: 'Invalid admin login' });
 			break;
@@ -32,10 +28,10 @@ export const POST = async ({ request, cookies }) => {
 	}
 };
 
-const validateAdminAndUpdateCookies = (password: String, cookies: Cookies): boolean => {
+const validateAdminAndUpdateCookies = async (password: String, cookies: Cookies): boolean => {
 	if (adminPasswordIsValid(password)) {
-		cookies.set('loginType', 'Admin', cookieTTL);
-		cookies.set('loginName', 'Admin', cookieTTL);
+		await setSignedCookieValue('loginType', 'Admin', cookies);
+		await setSignedCookieValue('loginName', 'Admin', cookies);
 		return true;
 	} else {
 		clearCookies(cookies);
@@ -50,10 +46,9 @@ const validateStudentAndUpdateCookies = async (
 ): Promise<boolean> => {
 	const studentId = await db.studentBelongsToTeacher(studentName, teacherName);
 	if (studentId) {
-		cookies.set('loginType', 'Student', cookieTTL);
-		cookies.set('loginName', studentName, cookieTTL);
-		cookies.set('studentId', studentId, cookieTTL);
-		console.log('student', studentName, 'belongs to teacher', teacherName);
+		await setSignedCookieValue('loginType', 'Student', cookies);
+		await setSignedCookieValue('loginName', studentName, cookies);
+		await setSignedCookieValue('studentId', studentId.toString(), cookies);
 		return true;
 	} else {
 		clearCookies(cookies);
@@ -70,9 +65,9 @@ const validateTeacherAndUpdateCookies = async (
 	if (teacherPasswordIsValid(teacherPassword)) {
 		const teacher = await db.getTeacher(teacherName);
 		if (teacher) {
-			cookies.set('loginType', 'Teacher', cookieTTL);
-			cookies.set('loginName', teacherName, cookieTTL);
-			cookies.set('teacherId', teacher.id, cookieTTL);
+			await setSignedCookieValue('loginType', 'Teacher', cookies);
+			await setSignedCookieValue('loginName', teacherName, cookies);
+			await setSignedCookieValue('teacherId', teacher.id.toString(), cookies);
 			return true;
 		}
 	}

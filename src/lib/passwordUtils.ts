@@ -1,13 +1,11 @@
 import { invalidateAll } from '$app/navigation';
 import { redirect, type Cookies } from '@sveltejs/kit';
 import { get } from 'svelte/store';
+import { getSignedCookieValue } from './signedCookie';
+import { env } from '$env/dynamic/private';
 
-const ttlSeconds = parseInt(getEnv('COOKIE_TTL'));
-
-export const cookieTTL = { path: '/', maxAge: ttlSeconds };
-
-function getEnv(name: string): string {
-	const value = process.env[name];
+export function getEnv(name: string): string {
+	const value = env[name];
 	if (!value) {
 		throw new Error(`Missing environment variable ${name}`);
 	}
@@ -28,7 +26,7 @@ export async function validateRole<T>(
 	requiredRole: string,
 	callback: (request: Request) => T
 ): Promise<T> {
-	if (!cookies.get('loginType') === requiredRole) {
+	if (!(await getSignedCookieValue('loginType', cookies)) === requiredRole) {
 		clearCookies(cookies);
 		console.error('Bad actor attempt on route: ' + request.url);
 		return { error: 'Unauthorized. Knock it off this is a free app for a school district :(' };
