@@ -1,16 +1,25 @@
 import { invalidateAll } from '$app/navigation';
 import { redirect, type Cookies } from '@sveltejs/kit';
+import { get } from 'svelte/store';
 
-const ttlSeconds = parseInt(process.env.COOKIE_TTL);
+const ttlSeconds = parseInt(getEnv('COOKIE_TTL'));
 
 export const cookieTTL = { path: '/', maxAge: ttlSeconds };
 
+function getEnv(name: string): string {
+	const value = process.env[name];
+	if (!value) {
+		throw new Error(`Missing environment variable ${name}`);
+	}
+	return value;
+}
+
 export function adminPasswordIsValid(password: string): boolean {
-	return password === process.env.ADMIN_PASSWORD;
+	return password === getEnv('ADMIN_PASSWORD');
 }
 
 export function teacherPasswordIsValid(password: string): boolean {
-	return password === process.env.TEACHER_PASSWORD;
+	return password === getEnv('TEACHER_PASSWORD');
 }
 
 export async function validateRole<T>(
