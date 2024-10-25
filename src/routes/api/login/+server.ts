@@ -74,10 +74,10 @@ const validateTeacherAndUpdateCookies = async (
 			cookies.set('loginName', teacherName, cookieTTL);
 			cookies.set('teacherId', teacher.id, cookieTTL);
 			return true;
-		} else {
-			clearCookies(cookies);
-			console.log('teacher', teacherName, 'does not exist or password is invalid');
-			return false;
 		}
 	}
+
+	clearCookies(cookies);
+	console.log('teacher:', teacherName, 'used invalid teacher password:', teacherPassword);
+	return false;
 };
