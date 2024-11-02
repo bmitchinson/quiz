@@ -1,4 +1,4 @@
-import { resetQuizzesToTestData, resetStudentsAndTeachersToTestData } from '../tests/testutils';
+import { resetQuizzesToTestData, initializeTeachersData } from '../tests/testutils';
 
 resetQuizzesToTestData();
-resetStudentsAndTeachersToTestData();
+initializeTeachersData();

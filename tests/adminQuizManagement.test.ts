@@ -1,10 +1,12 @@
 import test, { expect } from '@playwright/test';
-import { loginAsAdmin, resetQuizzesToTestData } from './testutils';
+import { clearAllDbEntries, initializeTestQuizzes, loginAsAdmin } from './testutils';
 
 test('Quizzes can be deleted', async ({ page }) => {
 	page.on('dialog', (dialog) => dialog.accept());
 
-	await resetQuizzesToTestData();
+	await clearAllDbEntries();
+
+	await initializeTestQuizzes();
 	await page.goto('/login');
 	await loginAsAdmin(page);
 	await page.locator('a:has-text("Manage Quizzes")').click();

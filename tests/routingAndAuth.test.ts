@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import {
-	resetStudentsAndTeachersToTestData,
+	initializeTeachersData,
 	resetQuizzesToTestData,
 	loginAsAdmin,
 	loginAsTeacher

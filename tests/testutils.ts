@@ -17,15 +17,23 @@ export const loginAsTeacher = async (page) => {
 	await page.locator(`button:has-text("Submit")`).click();
 };
 
-export async function resetStudentsAndTeachersToTestData(): Promise<void> {
+export const clearAllDbEntries = async () => {
 	await db.prisma.student.deleteMany({});
 	await db.prisma.teacher.deleteMany({});
+	await db.prisma.quiz.deleteMany({});
+	await db.prisma.score.deleteMany({});
+};
+
+export async function initializeTestTeachers(): Promise<void> {
 	await db.addTeacher('mr_firstgrade', 1);
 	await db.addTeacher('mitchinson', 2);
 	await db.addTeacher('mrs_thirdgrade', 3);
 	await db.addTeacher('mr_fourthgrade', 4);
 	await db.addTeacher('mrs_fourthgrade', 4);
 	await db.addTeacher('mrs_fifthgrade', 5);
+}
+
+export async function initializeTestStudents(): Promise<void> {
 	await db.addStudents([
 		{ studentName: 'firstgrader1', teacherName: 'mr_firstgrade' },
 		{ studentName: 'firstgrader2', teacherName: 'mr_firstgrade' },
@@ -47,7 +55,7 @@ export async function resetStudentsAndTeachersToTestData(): Promise<void> {
 	]);
 }
 
-export async function resetQuizzesToTestData(): Promise<void> {
+export async function initializeTestQuizzes(): Promise<void> {
 	await db.prisma.quiz.deleteMany({});
 	await db.addQuiz('Quiz 1', '1+2\n3+4\n5+6');
 	await db.addQuiz('Quiz 2', '1+2\n3+4\n5+6');
