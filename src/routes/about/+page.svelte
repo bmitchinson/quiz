@@ -1,7 +1,10 @@
+<script>
+	import Wave from '$lib/components/wave.svelte';
+</script>
+
 <div class="bg-white rounded-lg p-8 shadow-lg max-w-lg">
 	<div class="flex flex-col space-y-4">
-		<!-- todo: make text larger and hand wave like site -->
-		<p class="text-base">Hello! 👋</p>
+		<Wave />
 		<hr class="self-center w-16 border-t border-gray-300" />
 		<p class="text-base">
 			I wrote this app for students to take math quizzes in an effort to save teachers time grading.
