@@ -111,8 +111,8 @@
 		currentQuestionIndex++;
 	}
 
-	function showDivisionSymbols(question: String): String {
-		return question.replace(/\//g, '÷');
+	function showReadableOpSymbols(question: String): String {
+		return question.replace(/\//g, '÷').replace('*', 'x');
 	}
 </script>
 
@@ -156,9 +156,11 @@
 		<div
 			class="flex gap-7 text-8xl font-serif mb-4"
 			style="font-family: 'Times New Roman', Times, serif;"
+			id="displayedQuestion"
 		>
-			{showDivisionSymbols(questions[currentQuestionIndex])} =
+			{showReadableOpSymbols(questions[currentQuestionIndex])} =
 			<input
+				id="userAnswer"
 				type="number"
 				class="border-2 border-gray-300 rounded-md p-2 text-4xl w-32 text-center pb-4"
 				disabled={isCorrect !== null}
@@ -180,9 +182,9 @@
 			</button>
 		{/if}
 		{#if isCorrect !== null && !isCorrect}
-			<p class="text-2xl mt-4">Correct answer: {correctAnswer}</p>
+			<p id="result-msg" class="text-2xl mt-4">Correct answer: {correctAnswer}</p>
 		{:else if isCorrect}
-			<p class="text-2xl mt-4">Correct!</p>
+			<p id="result-msg" class="text-2xl mt-4">Correct!</p>
 		{/if}
 	</div>
 {:else}

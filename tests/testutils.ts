@@ -1,4 +1,5 @@
 import { Database } from '$lib/database';
+import type { Score } from '@prisma/client';
 
 const db = new Database();
 
@@ -60,8 +61,24 @@ export async function initializeTestStudents(): Promise<void> {
 }
 
 export async function initializeTestQuizzes(): Promise<void> {
-	await db.prisma.quiz.deleteMany({});
 	await db.addQuiz('Quiz 1', '1+2\n3+4\n5+6');
 	await db.addQuiz('Quiz 2', '1+2\n3+4\n5+6');
-	await db.addQuiz('Quiz 3', '7+8\n9+1\n4+6');
+	await db.addQuiz(
+		'Quiz 3',
+		`1+3
+4/4
+9-0
+5*5`
+	);
+}
+
+export async function getQuizAccessCodeByTitle(title: string): Promise<string> {
+	return (await db.prisma.quiz.findFirst({ where: { title } })).accessCode;
+}
+
+export async function getScore(quizCode: string) {
+	return await db.prisma.score.findFirst({
+		where: { quizCode },
+		include: { student: true }
+	});
 }

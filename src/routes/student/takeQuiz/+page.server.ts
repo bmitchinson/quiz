@@ -1,5 +1,6 @@
 import { Database } from '$lib/database';
 import { getSignedCookieValue } from '$lib/signedCookie';
+import { validateRole } from '$lib/passwordUtils';
 
 const db = new Database();
 

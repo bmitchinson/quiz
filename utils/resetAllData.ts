@@ -1,4 +1,11 @@
-import { resetQuizzesToTestData, initializeTeachersData } from '../tests/testutils';
+import {
+	clearAllDbEntries,
+	initializeTestQuizzes,
+	initializeTestStudents,
+	initializeTestTeachers
+} from '../tests/testutils';
 
-resetQuizzesToTestData();
-initializeTeachersData();
+await clearAllDbEntries();
+await initializeTestTeachers();
+await initializeTestStudents();
+await initializeTestQuizzes();

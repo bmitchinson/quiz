@@ -101,6 +101,7 @@
 								required
 							/>
 							<div
+								id="grade-btn-{v}"
 								class={'px-4 py-2 border rounded-md transition-colors duration-200 ' +
 									(selectedGrade === v ? 'bg-[#26561b] text-white' : '')}
 							>
@@ -123,6 +124,7 @@
 				<span class="block mb-2 font-semibold">Enter Name</span>
 				<p class="text-center pb-4">First Initial + Last Name - Example: mmouse</p>
 				<input
+					id="studentName"
 					type="text"
 					bind:value={inputValue}
 					placeholder="mmouse"

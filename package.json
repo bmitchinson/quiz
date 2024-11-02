@@ -8,7 +8,7 @@
 		"db:reset": "tsx utils/resetAllData.ts",
 		"db:view": "dotenv -e .env -- npx prisma studio",
 		"preview": "vite preview",
-		"test": "playwright test",
+		"test": "playwright test --workers=1",
 		"test:gui": "playwright test --ui --workers=1",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
