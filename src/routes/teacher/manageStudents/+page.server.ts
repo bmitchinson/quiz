@@ -21,12 +21,13 @@ export const actions: Actions = {
 	addStudents: async ({ request, cookies }) =>
 		validateRole(request, cookies, 'Teacher', async () => {
 			const formData = await request.formData();
-			const lastNamesRaw = formData.get('lastNames');
+			const lastNamesRawString = formData.get('lastNames');
 			const teacherName = await getSignedCookieValue('loginName', cookies);
 
 			const uniqueLastNames = Array.from(
 				new Set(
-					lastNamesRaw
+					lastNamesRawString
+						.replace(/[^A-Za-z\n]/g, '')
 						.split('\n')
 						.map((studentName) => studentName.trim())
 						.filter((studentName) => studentName.length > 0)
@@ -36,9 +37,6 @@ export const actions: Actions = {
 						}))
 				)
 			);
-
-			console.log('lastNamesRaw:', lastNamesRaw);
-			console.log('uniqueLastNames:', uniqueLastNames);
 
 			try {
 				await db.addStudents(uniqueLastNames);

@@ -24,6 +24,10 @@ export const clearAllDbEntries = async () => {
 	await db.prisma.score.deleteMany({});
 };
 
+export const amountOfStudentsForTeacher = async (teacherName: string): Promise<number> => {
+	return (await db.prisma.student.findMany({ where: { teacher: { name: teacherName } } })).length;
+};
+
 export async function initializeTestTeachers(): Promise<void> {
 	await db.addTeacher('mr_firstgrade', 1);
 	await db.addTeacher('mitchinson', 2);
