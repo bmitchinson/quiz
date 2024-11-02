@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "dotenv -e .env -- npx vite dev",
 		"build": "prisma generate && vite build",
-		"db:reset": "tsx utils/resetAllData.ts",
+		"db:seed": "tsx utils/seedData.ts",
 		"db:view": "dotenv -e .env -- npx prisma studio",
 		"preview": "vite preview",
 		"test": "playwright test --workers=1",

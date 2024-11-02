@@ -82,3 +82,8 @@ export async function getScore(quizCode: string) {
 		include: { student: true }
 	});
 }
+
+export async function printQuizCodes() {
+	const quizzes = await db.prisma.quiz.findMany({});
+	quizzes.forEach((quiz) => console.log(quiz.title, quiz.accessCode));
+}

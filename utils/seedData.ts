@@ -2,10 +2,13 @@ import {
 	clearAllDbEntries,
 	initializeTestQuizzes,
 	initializeTestStudents,
-	initializeTestTeachers
+	initializeTestTeachers,
+	printQuizCodes
 } from '../tests/testutils';
 
 await clearAllDbEntries();
 await initializeTestTeachers();
 await initializeTestStudents();
 await initializeTestQuizzes();
+
+await printQuizCodes();
