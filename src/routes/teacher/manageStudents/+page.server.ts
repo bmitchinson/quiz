@@ -19,18 +19,26 @@ export const load: PageServerLoad = async ({ request, cookies }) => {
 
 export const actions: Actions = {
 	addStudents: async ({ request, cookies }) =>
-		validateRole(request, cookies, 'Admin', async () => {
+		validateRole(request, cookies, 'Teacher', async () => {
 			const formData = await request.formData();
 			const lastNamesRaw = formData.get('lastNames');
+			const teacherName = await getSignedCookieValue('loginName', cookies);
 
 			const uniqueLastNames = Array.from(
 				new Set(
 					lastNamesRaw
 						.split('\n')
-						.map((name) => name.trim())
-						.filter((name) => name.length > 0)
+						.map((studentName) => studentName.trim())
+						.filter((studentName) => studentName.length > 0)
+						.map((studentName) => ({
+							studentName,
+							teacherName
+						}))
 				)
 			);
+
+			console.log('lastNamesRaw:', lastNamesRaw);
+			console.log('uniqueLastNames:', uniqueLastNames);
 
 			try {
 				await db.addStudents(uniqueLastNames);
@@ -41,7 +49,7 @@ export const actions: Actions = {
 		}),
 
 	deleteStudent: async ({ request, cookies }) =>
-		validateRole(request, cookies, 'Admin', async () => {
+		validateRole(request, cookies, 'Teacher', async () => {
 			const formData = await request.formData();
 			const name = formData.get('name');
 

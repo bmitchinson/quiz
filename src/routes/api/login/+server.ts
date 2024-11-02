@@ -11,57 +11,58 @@ export const POST = async ({ request, cookies }) => {
 
 	switch (loginType) {
 		case 'Admin':
-			return (await validateAdminAndUpdateCookies(data.inputValue, cookies))
+			return (await checkAdminLoginAndSetCookies(data.inputValue, cookies))
 				? json({ success: true })
 				: json({ success: false, errorMsg: 'Invalid admin login' });
 			break;
 		case 'Student':
-			return (await validateStudentAndUpdateCookies(data.inputValue, data.selectedTeacher, cookies))
+			return (await checkStudentLoginAndSetCookies(data.inputValue, data.selectedTeacher, cookies))
 				? json({ success: true })
 				: json({ success: false, errorMsg: 'Invalid student login' });
 			break;
 		case 'Teacher':
-			return (await validateTeacherAndUpdateCookies(data.inputValue, data.teacherName, cookies))
+			return (await checkTeacherLoginAndSetCookies(data.inputValue, data.teacherName, cookies))
 				? json({ success: true })
 				: json({ success: false, errorMsg: 'Invalid teacher login' });
 			break;
 	}
 };
 
-const validateAdminAndUpdateCookies = async (password: String, cookies: Cookies): boolean => {
+const checkAdminLoginAndSetCookies = async (password: String, cookies: Cookies): boolean => {
+	clearCookies(cookies);
 	if (adminPasswordIsValid(password)) {
 		await setSignedCookieValue('loginType', 'Admin', cookies);
 		await setSignedCookieValue('loginName', 'Admin', cookies);
 		return true;
 	} else {
-		clearCookies(cookies);
 		return false;
 	}
 };
 
-const validateStudentAndUpdateCookies = async (
+const checkStudentLoginAndSetCookies = async (
 	studentName: String,
 	teacherName: String,
 	cookies: Cookies
 ): Promise<boolean> => {
 	const studentId = await db.studentBelongsToTeacher(studentName, teacherName);
+	clearCookies(cookies);
 	if (studentId) {
 		await setSignedCookieValue('loginType', 'Student', cookies);
 		await setSignedCookieValue('loginName', studentName, cookies);
 		await setSignedCookieValue('studentId', studentId.toString(), cookies);
 		return true;
 	} else {
-		clearCookies(cookies);
 		console.log('student', studentName, 'does not belong to teacher', teacherName);
 		return false;
 	}
 };
 
-const validateTeacherAndUpdateCookies = async (
+const checkTeacherLoginAndSetCookies = async (
 	teacherPassword: String,
 	teacherName: String,
 	cookies: Cookies
 ): Promise<boolean> => {
+	clearCookies(cookies);
 	if (teacherPasswordIsValid(teacherPassword)) {
 		const teacher = await db.getTeacher(teacherName);
 		if (teacher) {
@@ -71,8 +72,6 @@ const validateTeacherAndUpdateCookies = async (
 			return true;
 		}
 	}
-
-	clearCookies(cookies);
 	console.log('teacher:', teacherName, 'used invalid teacher password:', teacherPassword);
 	return false;
 };
