@@ -18,10 +18,23 @@ export const loginAsTeacher = async (page) => {
 	await page.locator(`button:has-text("Submit")`).click();
 };
 
+export const loginAsStudentSecondgrader4 = async (page) => {
+	await page.goto('/login');
+	await page.locator(`button:has-text("Student")`).click();
+	await page.locator(`div[id="grade-btn-2"]`).click();
+	await page.selectOption('select', 'mitchinson');
+	await page.locator(`#studentName`).fill('secondgrader4');
+	await page.locator(`button:has-text("Submit")`).click();
+};
+
 export const clearAllDbEntries = async () => {
 	await db.prisma.student.deleteMany({});
 	await db.prisma.teacher.deleteMany({});
 	await db.prisma.quiz.deleteMany({});
+	await clearDbScores();
+};
+
+export const clearDbScores = async () => {
 	await db.prisma.score.deleteMany({});
 };
 
@@ -86,4 +99,18 @@ export async function getScore(quizCode: string) {
 export async function printQuizCodes() {
 	const quizzes = await db.prisma.quiz.findMany({});
 	quizzes.forEach((quiz) => console.log(quiz.title, quiz.accessCode));
+}
+
+export async function createScoreForQuiz3ForStudent(name: string) {
+	const quizCode = await getQuizAccessCodeByTitle('Quiz 3');
+	const student = await db.prisma.student.findFirst({ where: { name } });
+	await db.prisma.score.create({
+		data: {
+			quiz: {
+				connect: { accessCode: quizCode }
+			},
+			student: { connect: { id: student.id } },
+			correctAnswers: 2
+		}
+	});
 }

@@ -6,29 +6,31 @@
 import test, { expect } from '@playwright/test';
 import {
 	clearAllDbEntries,
+	clearDbScores,
+	createScoreForQuiz3ForStudent,
 	getQuizAccessCodeByTitle,
 	getScore,
 	initializeTestQuizzes,
 	initializeTestStudents,
-	initializeTestTeachers
+	initializeTestTeachers,
+	loginAsStudentSecondgrader4 as loginAsStudentSecondGrader4
 } from './testutils';
 
-test.beforeEach(async () => {
+test.beforeAll(async () => {
 	await clearAllDbEntries();
 	await initializeTestTeachers();
 	await initializeTestStudents();
 	await initializeTestQuizzes();
 });
 
+test.beforeEach(async () => {
+	await clearDbScores();
+});
+
 test('Taking a quiz', async ({ page }) => {
 	const quizCode = await getQuizAccessCodeByTitle('Quiz 3');
 
-	await page.goto('/login');
-	await page.locator(`button:has-text("Student")`).click();
-	await page.locator(`div[id="grade-btn-2"]`).click();
-	await page.selectOption('select', 'mitchinson');
-	await page.locator(`#studentName`).fill('secondgrader4');
-	await page.locator(`button:has-text("Submit")`).click();
+	await loginAsStudentSecondGrader4(page);
 
 	await page.locator(`h2:has-text("Enter Quiz Access Code")`);
 
@@ -61,14 +63,22 @@ test('Taking a quiz', async ({ page }) => {
 	expect(await page.locator('p:has-text("You got 2 out of 4 correct.")')).toBeVisible();
 
 	const score = await getScore(quizCode);
+
+	while (!score) {
+		await getScore(quizCode);
+	}
+
 	expect(score.correctAnswers).toBe(2);
 	expect(score.student.name).toBe('secondgrader4');
 });
 
-/* test('Student cannot retake quiz', async ({ page }) => {
-  - create score
-  - get access code
-  - attempt to take quiz
-  - see error 
-})
-*/
+test('Student cannot retake quiz', async ({ page }) => {
+	await createScoreForQuiz3ForStudent('secondgrader4');
+	const quizCode = await getQuizAccessCodeByTitle('Quiz 3');
+
+	await loginAsStudentSecondGrader4(page);
+
+	await page.locator('input[name="accessCode"]').fill(quizCode);
+	await page.locator('button:has-text("Start Quiz")').click();
+	await expect(page.locator('p:has-text("You\'ve already taken this quiz :)")')).toBeVisible();
+});
