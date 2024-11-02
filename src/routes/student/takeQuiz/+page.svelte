@@ -15,12 +15,15 @@
 	let results = [];
 	let isCorrect = null;
 	let correctAnswer = null;
-	let usernameInput = '';
-	let usernameError = null;
-	let studentName = data.studentName ? data.studentName : '';
 
 	let timeStarted = null;
 	let timeFinished = null;
+
+	let submissionDisabled = true;
+
+	$: {
+		submissionDisabled = userAnswer === '' || userAnswer === null;
+	}
 
 	async function getQuiz() {
 		if (accessCode) {
@@ -89,7 +92,7 @@
 
 	// Function to handle answer submission
 	function submitAnswer() {
-		if (userAnswer) {
+		if (!submissionDisabled) {
 			// Check if user's answer matches the correct answer
 			if (parseFloat(userAnswer) === correctAnswer) {
 				isCorrect = true;
@@ -170,8 +173,8 @@
 		</div>
 		{#if isCorrect === null}
 			<button
-				class="{`${userAnswer ? 'bg-[#26561b]' : 'bg-gray-500 cursor-not-allowed opacity-50'}`} text-white px-4 py-2 rounded-md mt-4"
-				disabled={!userAnswer}
+				class="{`${submissionDisabled ? 'bg-gray-500 cursor-not-allowed opacity-50' : 'bg-[#26561b]'}`} text-white px-4 py-2 rounded-md mt-4"
+				disabled={submissionDisabled}
 				on:click={submitAnswer}
 			>
 				Submit

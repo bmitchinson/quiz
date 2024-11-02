@@ -37,24 +37,24 @@ test('Taking a quiz', async ({ page }) => {
 
 	expect(await page.locator('div[id="displayedQuestion"]').innerText()).toBe('1+3 =');
 	await page.locator('input[id="userAnswer"]').fill('4');
-	await page.locator('button:has-text("Submit")').click();
+	await page.locator('button:has-text("Submit"):not([disabled])').click();
 	expect(await page.locator('p[id="result-msg"]:has-text("Correct!")')).toBeVisible();
 	await page.locator('button:has-text("Next Question")').click();
 
 	expect(await page.locator('div[id="displayedQuestion"]').innerText()).toBe('4÷4 =');
-	await page.locator('input[id="userAnswer"]').fill('2');
-	await page.locator('button:has-text("Submit")').click();
+	await page.locator('input[id="userAnswer"]').fill('0');
+	await page.locator('button:has-text("Submit"):not([disabled])').click();
 	expect(await page.locator('p[id="result-msg"]:has-text("Correct answer: 1")')).toBeVisible();
 	await page.locator('button:has-text("Next Question")').click();
 
 	expect(await page.locator('div[id="displayedQuestion"]').innerText()).toBe('9-0 =');
 	await page.locator('input[id="userAnswer"]').fill('9');
-	await page.locator('button:has-text("Submit")').click();
+	await page.locator('button:has-text("Submit"):not([disabled])').click();
 	await page.locator('button:has-text("Next Question")').click();
 
 	expect(await page.locator('div[id="displayedQuestion"]').innerText()).toBe('5x5 =');
 	await page.locator('input[id="userAnswer"]').fill('25');
-	await page.locator('button:has-text("Submit")').click();
+	await page.locator('button:has-text("Submit"):not([disabled])').click();
 	await page.locator('button:has-text("Next Question")').click();
 
 	expect(await page.locator('h2:has-text("Quiz Complete")')).toBeVisible();
