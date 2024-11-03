@@ -23,7 +23,7 @@ test.describe('Admin', () => {
 		await expect(page).toHaveURL('/login');
 	});
 
-	test.only('logging in as admin allows for managing quizzes', async ({ page }) => {
+	test('logging in as admin allows for managing quizzes', async ({ page }) => {
 		await loginAsAdmin(page);
 		await page.locator(`a:has-text("Manage Quizzes")`).click();
 		await expect(page.locator(`h1:has-text("Create Quiz")`)).toBeVisible();

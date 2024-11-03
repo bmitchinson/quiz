@@ -1,15 +1,16 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import RadioButtons from '../../lib/components/RadioButtons.svelte';
 	let requestedLoginType = '';
 	let inputValue = '';
 	let teacherName = '';
 	let errorMsg = '';
-	let selectedGrade = 1;
+	let selectedGrade = '1';
 	let selectedTeacher = '';
 
 	export let data;
 	$: teacherOptions = data.teachers
-		.filter((teacher) => teacher.grade === selectedGrade)
+		.filter((teacher) => teacher.grade === parseInt(selectedGrade))
 		.map((teacher) => teacher.name);
 
 	// Handle form submission
@@ -88,27 +89,16 @@
 			<div class="mb-4">
 				<span class="block mb-2 font-semibold">Select Grade:</span>
 				<div class="flex space-x-2 relative">
-					{#each [{ t: 'st', v: 1 }, { t: 'nd', v: 2 }, { t: 'rd', v: 3 }, { t: 'th', v: 4 }, { t: 'th', v: 5 }] as { t, v }, i}
-						<label class="flex items-center cursor-pointer">
-							<input
-								type="radio"
-								name="grade"
-								bind:group={selectedGrade}
-								value={v}
-								class="hidden-input {i === 0 ? 'first-input' : ''}"
-								autocomplete="off"
-								data-1p-ignore
-								required
-							/>
-							<div
-								id="grade-btn-{v}"
-								class={'px-4 py-2 border rounded-md transition-colors duration-200 ' +
-									(selectedGrade === v ? 'bg-[#26561b] text-white' : '')}
-							>
-								{v}{t}
-							</div>
-						</label>
-					{/each}
+					<RadioButtons
+						options={[
+							{ t: 'st', v: '1' },
+							{ t: 'nd', v: '2' },
+							{ t: 'rd', v: '3' },
+							{ t: 'th', v: '4' },
+							{ t: 'th', v: '5' }
+						]}
+						bind:selectedOptionValue={selectedGrade}
+					/>
 				</div>
 			</div>
 			<div class="mb-4">
@@ -208,21 +198,5 @@
 	}
 	.large-text {
 		font-size: 2em;
-	}
-
-	/* hacks to move the browser "required" tooltip */
-	/* Hide the input visually but keep it in the DOM */
-	.hidden-input {
-		position: absolute;
-		opacity: 0;
-		pointer-events: none;
-	}
-
-	/* Adjust the position of the first input */
-	.first-input {
-		/* Position where you want the tooltip to appear */
-		top: 30px; /* Adjust as needed */
-		left: 35.57%; /* Center horizontally */
-		transform: translateX(-35.57%);
 	}
 </style>
