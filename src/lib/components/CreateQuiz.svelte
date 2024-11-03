@@ -6,6 +6,9 @@
 
 	let currentStep = 1;
 	let title = '';
+	let grade = '';
+	let quarter = '';
+	let testId = '';
 
 	function validateInput(event: InputEvent) {
 		const target = event.target as HTMLTextAreaElement;
@@ -79,42 +82,72 @@
 <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
 	<form method="post" action="?/addQuiz" class="space-y-4">
 		{#if currentStep === 1}
-			<!-- NOTE: title view -->
+			<!-- NOTE: Grade, Quarter, Test Selection View -->
 			<h1 class="text-2xl font-bold mb-6 text-center">Create Quiz</h1>
+			<!-- Grade Selection -->
 			<div>
-				<label for="title" class="block text-gray-700 font-medium mb-2">Enter Quiz Title:</label>
-				<input
-					id="title"
-					name="title"
-					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
-					placeholder="Week 5 - 4th Grade"
-					required
-					maxlength="30"
-					bind:value={title}
-				/>
+				<label class="block text-gray-700 font-medium mb-2">Select Grade:</label>
+				<div class="flex space-x-4">
+					{#each ['1st', '2nd', '3rd', '4th', '5th'] as g}
+						<label>
+							<input type="radio" name="grade" value={g} bind:group={grade} />
+							{g}
+						</label>
+					{/each}
+				</div>
 			</div>
+			<!-- Quarter Selection -->
+			<div>
+				<label class="block text-gray-700 font-medium mb-2">Select Quarter:</label>
+				<div class="flex space-x-4">
+					{#each [1, 2, 3, 4] as q}
+						<label>
+							<input type="radio" name="quarter" value={q} bind:group={quarter} />
+							{q}
+						</label>
+					{/each}
+				</div>
+			</div>
+			<!-- Test Selection -->
+			<div>
+				<label class="block text-gray-700 font-medium mb-2">Select Test:</label>
+				<div class="flex space-x-4">
+					{#each ['A', 'B', 'C', 'D'] as t}
+						<label>
+							<input type="radio" name="test" value={t} bind:group={testId} />
+							{t}
+						</label>
+					{/each}
+				</div>
+			</div>
+			<!-- Add Questions Button -->
 			<div class="flex justify-center">
 				<button
 					type="button"
-					class={getButtonStyles(!title)}
+					class={getButtonStyles(!(grade && quarter && testId))}
 					on:click={() => (currentStep = 2)}
-					disabled={!title}
+					disabled={!(grade && quarter && testId)}
 				>
 					Add Questions
 				</button>
 			</div>
 		{:else if currentStep === 2}
 			<!-- NOTE: Questions View -->
-			<!-- Hidden input to pass the title to the backend -->
-			<input type="hidden" name="title" value={title} />
-			<label for="questionData" class="block text-gray-700 font-medium mb-2"
-				>Enter questions for quiz: "{title}"</label
-			>
+			<!-- Hidden inputs to pass grade, quarter, and test to the backend -->
+			<input type="hidden" name="grade" value={grade} />
+			<input type="hidden" name="quarter" value={quarter} />
+			<input type="hidden" name="test" value={testId} />
+			<!-- Display Selected Options -->
+			<label for="questionData" class="block text-gray-700 font-medium mb-2">
+				Enter questions for quiz: Grade {grade}, Quarter {quarter}, Test {testId}
+			</label>
+			<!-- Error Message -->
 			<p class:text-red-500={questionDataErrMsg}>
 				{questionDataErrMsg
 					? questionDataErrMsg
 					: 'One math question per line, no "=" or letters. Just numbers, operators (+ - / x), and parentheses.'}
 			</p>
+			<!-- Questions Textarea -->
 			<textarea
 				id="questionData"
 				name="questionData"
@@ -129,6 +162,7 @@
 				bind:value={questionData}
 				on:input={validateInput}
 			></textarea>
+			<!-- Navigation Buttons -->
 			<div class="flex justify-between">
 				<button
 					type="button"
