@@ -148,13 +148,13 @@
 {:else if currentQuestionIndex < questions.length}
 	<!-- Show the quiz question -->
 	<div
-		class="rounded-lg p-8 shadow-md text-center max-w-xl mx-auto mt-10
+		class="rounded-lg p-8 shadow-md text-center mx-auto mt-10
       {isCorrect === null ? 'bg-white' : ''}
       {isCorrect === true ? 'bg-green-200' : ''}
       {isCorrect === false ? 'bg-red-200' : ''}"
 	>
 		<div
-			class="flex gap-7 text-8xl font-serif mb-4"
+			class="flex gap-7 text-6xl font-serif mb-4"
 			style="font-family: 'Times New Roman', Times, serif;"
 			id="displayedQuestion"
 		>

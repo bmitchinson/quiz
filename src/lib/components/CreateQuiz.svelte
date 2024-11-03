@@ -47,7 +47,7 @@
 
 			// Check for at least one operator
 			if (!operatorRegex.test(trimmed)) {
-				questionDataErrMsg = 'Each line must contain at least one operator.';
+				questionDataErrMsg = 'Each line must contain at least one operator: (+, -, x, /)';
 				return;
 			}
 
