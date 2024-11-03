@@ -1,5 +1,5 @@
 <script>
-	import Wave from '$lib/components/wave.svelte';
+	import Wave from '$lib/components/Wave.svelte';
 </script>
 
 <div class="bg-white rounded-lg p-8 shadow-lg max-w-lg">
