@@ -7,7 +7,7 @@ import test, { expect } from '@playwright/test';
 import {
 	clearAllDbEntries,
 	clearDbScores,
-	createScoreForQuiz3ForStudent,
+	createScoreForQuiz3ByStudentName,
 	getQuizAccessCodeByTitle,
 	getScore,
 	initializeTestQuizzes,
@@ -73,7 +73,7 @@ test('Taking a quiz', async ({ page }) => {
 });
 
 test('Student cannot retake quiz', async ({ page }) => {
-	await createScoreForQuiz3ForStudent('secondgrader4');
+	await createScoreForQuiz3ByStudentName('secondgrader4');
 	const quizCode = await getQuizAccessCodeByTitle('Quiz 3');
 
 	await loginAsStudentSecondGrader4(page);

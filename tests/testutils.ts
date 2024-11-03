@@ -97,13 +97,17 @@ export async function getScore(quizCode: string) {
 }
 
 export async function printQuizCodes() {
-	const quizzes = await db.prisma.quiz.findMany({});
+	const quizzes = await getQuizzes();
 	quizzes.forEach((quiz) => console.log(quiz.title, quiz.accessCode));
 }
 
-export async function createScoreForQuiz3ForStudent(name: string) {
+export async function getQuizzes() {
+	return await db.prisma.quiz.findMany({});
+}
+
+export async function createScoreForQuiz3ByStudentName(studentName: string) {
 	const quizCode = await getQuizAccessCodeByTitle('Quiz 3');
-	const student = await db.prisma.student.findFirst({ where: { name } });
+	const student = await db.prisma.student.findFirst({ where: { name: studentName } });
 	await db.prisma.score.create({
 		data: {
 			quiz: {
