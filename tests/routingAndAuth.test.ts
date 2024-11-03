@@ -23,10 +23,11 @@ test.describe('Admin', () => {
 		await expect(page).toHaveURL('/login');
 	});
 
-	test('logging in as admin allows for managing quizzes', async ({ page }) => {
+	test.only('logging in as admin allows for managing quizzes', async ({ page }) => {
 		await loginAsAdmin(page);
 		await page.locator(`a:has-text("Manage Quizzes")`).click();
-		await expect(page.locator(`h1:has-text("Quiz Management")`)).toBeVisible();
+		await expect(page.locator(`h1:has-text("Create Quiz")`)).toBeVisible();
+		await expect(page.locator(`h1:has-text("Existing Quizzes")`)).toBeVisible();
 	});
 
 	test('Invalid admin password shows message', async ({ page }) => {

@@ -66,7 +66,7 @@
 
 <CreateQuiz />
 <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-xl">
-	<h2 class="text-2xl font-bold mb-6 text-center">Existing Quizzes</h2>
+	<h1 class="text-2xl font-bold mb-6 text-center">Existing Quizzes</h1>
 	{#if message}
 		<div
 			class={`mb-4 p-4 rounded ${success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}

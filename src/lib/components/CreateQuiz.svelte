@@ -1,6 +1,11 @@
 <script lang="ts">
+	import { getButtonStyles } from '../cssUtils';
+
 	let questionData = '';
 	let questionDataErrMsg = '';
+
+	let currentStep = 1;
+	let title = '';
 
 	function validateInput(event: InputEvent) {
 		const target = event.target as HTMLTextAreaElement;
@@ -72,51 +77,74 @@
 </script>
 
 <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
-	<h1 class="text-2xl font-bold mb-6 text-center">Quiz Management</h1>
 	<form method="post" action="?/addQuiz" class="space-y-4">
-		<div>
-			<label for="title" class="block text-gray-700 font-medium mb-2"> Enter Quiz Title </label>
-			<input
-				id="title"
-				name="title"
-				class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
-				placeholder="Week 5 - 4th Grade"
+		{#if currentStep === 1}
+			<!-- NOTE: title view -->
+			<h1 class="text-2xl font-bold mb-6 text-center">Create Quiz</h1>
+			<div>
+				<label for="title" class="block text-gray-700 font-medium mb-2">Enter Quiz Title:</label>
+				<input
+					id="title"
+					name="title"
+					class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#26561b]"
+					placeholder="Week 5 - 4th Grade"
+					required
+					maxlength="30"
+					bind:value={title}
+				/>
+			</div>
+			<div class="flex justify-center">
+				<button
+					type="button"
+					class={getButtonStyles(!title)}
+					on:click={() => (currentStep = 2)}
+					disabled={!title}
+				>
+					Add Questions
+				</button>
+			</div>
+		{:else if currentStep === 2}
+			<!-- NOTE: Questions View -->
+			<!-- Hidden input to pass the title to the backend -->
+			<input type="hidden" name="title" value={title} />
+			<label for="questionData" class="block text-gray-700 font-medium mb-2"
+				>Enter questions for quiz: "{title}"</label
+			>
+			<p class:text-red-500={questionDataErrMsg}>
+				{questionDataErrMsg
+					? questionDataErrMsg
+					: 'One math question per line, no "=" or letters. Just numbers, operators (+ - / x), and parentheses.'}
+			</p>
+			<textarea
+				id="questionData"
+				name="questionData"
+				rows="10"
 				required
-				maxlength="30"
-			/>
-		</div>
-		<label for="questionData" class="block text-gray-700 font-medium mb-2">
-			Enter Quiz Questions
-		</label>
-		<p class:text-red-500={questionDataErrMsg}>
-			{questionDataErrMsg
-				? questionDataErrMsg
-				: 'One math question per line, no "=" or letters. Just numbers, operators (+ - / x), and parenthesis.'}
-		</p>
-		<textarea
-			id="questionData"
-			name="questionData"
-			rows="10"
-			required
-			class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 {questionDataErrMsg
-				? 'border-red-500 focus:ring-red-500'
-				: 'focus:ring-[#26561b]'}"
-			placeholder="1+3
+				class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 {questionDataErrMsg
+					? 'border-red-500 focus:ring-red-500'
+					: 'focus:ring-[#26561b]'}"
+				placeholder="1+3
 8/2
 3+2"
-			bind:value={questionData}
-			on:input={validateInput}
-		></textarea>
-		<div class="flex justify-center">
-			<button
-				type="submit"
-				class="font-semibold py-2 px-4 rounded-md transition duration-200 {questionDataErrMsg
-					? 'bg-gray-400 text-gray-700 cursor-not-allowed'
-					: 'bg-[#26561b] hover:bg-[#316f23] text-white'}"
-				disabled={questionDataErrMsg}
-			>
-				Add Quiz
-			</button>
-		</div>
+				bind:value={questionData}
+				on:input={validateInput}
+			></textarea>
+			<div class="flex justify-between">
+				<button
+					type="button"
+					class="font-semibold py-2 px-4 rounded-md transition duration-200 bg-gray-500 hover:bg-gray-600 text-white"
+					on:click={() => (currentStep = 1)}
+				>
+					Back
+				</button>
+				<button
+					type="submit"
+					class={getButtonStyles(!!questionDataErrMsg)}
+					disabled={!!questionDataErrMsg}
+				>
+					Create Quiz
+				</button>
+			</div>
+		{/if}
 	</form>
 </div>

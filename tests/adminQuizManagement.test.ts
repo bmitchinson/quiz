@@ -19,14 +19,16 @@ test('Quizzes can be deleted', async ({ page }) => {
 	await expect(page.locator(`td:has-text("Quiz 3")`)).not.toBeVisible();
 });
 
-test('Old: Quizzes can be created', async ({ page }) => {
+test('Quizzes can be created', async ({ page }) => {
 	await loginAsAdmin(page);
 	await page.locator('a:has-text("Manage Quizzes")').click();
 
 	await page.locator(`input[id="title"]`).fill('Playwright Quiz');
+	await page.locator(`button:has-text("Add Questions")`).click();
+
 	await page.locator(`textarea[id="questionData"]`).fill('1+2\n3+4\n5+6');
 
-	await page.locator(`button:has-text("Add Quiz")`).click();
+	await page.locator(`button:has-text("Create Quiz")`).click();
 
 	let quizzes = await getQuizzes();
 	while (quizzes.length < 1) {
