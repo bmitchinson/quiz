@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { deserialize } from '$app/forms';
 
-	// Import actions and data from the server
-	export let data;
-
 	// State variables
 	let accessCode = '';
 	let accessCodeErr = '';

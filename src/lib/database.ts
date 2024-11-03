@@ -144,7 +144,13 @@ export class Database {
 					title,
 					accessCode: await this.generateUnique4DigitCode(),
 					questionsData: questionsData.replace(/\r?\n/g, '|'),
-					totalQuestions: questionsData.split('\n').length
+					totalQuestions: questionsData.split('\n').length,
+					// todo:
+					year: 0,
+					grade: 0,
+					quarter: 0,
+					sequenceLetter: 'A'
+					// end
 				}
 			});
 

@@ -4,10 +4,6 @@ import { validateRole } from '$lib/passwordUtils';
 
 const db = new Database();
 
-export const load: LayoutServerLoad = async ({ cookies }) => ({
-	studentName: await getSignedCookieValue('loginName', cookies)
-});
-
 export const actions: Actions = {
 	getQuiz: async ({ request, cookies }) =>
 		validateRole(request, cookies, 'Student', async () => {

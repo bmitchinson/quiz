@@ -30,12 +30,20 @@ model Student {
 
 model Quiz {
   id             Int      @id @default(autoincrement())
-  title          String   @unique @db.VarChar(50)
   accessCode     String   @unique @db.VarChar(6)
   questionsData  String   @db.VarChar(500)
   totalQuestions Int
   archived       Boolean  @default(false)
   createdAt      DateTime @default(now())
+
+  // old
+  title          String   @unique @db.VarChar(50)
+
+  // new
+  year           Int
+  grade          Int
+  quarter        Int
+  sequenceLetter String  @db.VarChar(1)
 
   scores         Score[]
 }
