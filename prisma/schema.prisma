@@ -37,7 +37,8 @@ model Quiz {
   createdAt      DateTime @default(now())
 
   // old
-  title          String   @unique @db.VarChar(50)
+  title          String   @db.VarChar(50)
+  // todo: remove title
 
   // new
   year           Int
