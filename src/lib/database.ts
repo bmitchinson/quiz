@@ -211,7 +211,7 @@ export class Database {
 		}
 	}
 
-	async checkIfQuizExists(year: number, grade: number, quarter: number, sequenceLetter: string) {
+	async getQuizByMetadata(year: number, grade: number, quarter: number, sequenceLetter: string) {
 		try {
 			return await this.prisma.quiz.findFirst({
 				where: {

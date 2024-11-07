@@ -8,7 +8,7 @@ import {
 	clearAllDbEntries,
 	clearDbScores,
 	createScoreForQuiz3ByStudentName,
-	getQuizAccessCodeByTitle,
+	getQuizByMetadata,
 	getScore,
 	initializeTestQuizzes,
 	initializeTestStudents,
@@ -28,7 +28,12 @@ test.beforeEach(async () => {
 });
 
 test('Taking a quiz', async ({ page }) => {
-	const quizCode = await getQuizAccessCodeByTitle('Quiz 3');
+	const quizCode = await getQuizByMetadata({
+		year: 2425,
+		grade: 3,
+		quarter: 1,
+		sequenceLetter: 'A'
+	}).then((quiz) => quiz?.accessCode);
 
 	await loginAsStudentSecondGrader4(page);
 
@@ -74,11 +79,16 @@ test('Taking a quiz', async ({ page }) => {
 
 test('Student cannot retake quiz', async ({ page }) => {
 	await createScoreForQuiz3ByStudentName('secondgrader4');
-	const quizCode = await getQuizAccessCodeByTitle('Quiz 3');
+	const quiz = await getQuizByMetadata({
+		year: 2425,
+		grade: 3,
+		quarter: 1,
+		sequenceLetter: 'A'
+	});
 
 	await loginAsStudentSecondGrader4(page);
 
-	await page.locator('input[name="accessCode"]').fill(quizCode);
+	await page.locator('input[name="accessCode"]').fill(quiz?.accessCode);
 	await page.locator('button:has-text("Start Quiz")').click();
 	await expect(page.locator('p:has-text("You\'ve already taken this quiz :)")')).toBeVisible();
 });

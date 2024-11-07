@@ -13,6 +13,6 @@ export const POST = async ({ request, cookies }) => {
 	};
 
 	return db
-		.checkIfQuizExists(2425, grade, quarter, sequenceLetter)
+		.getQuizByMetadata(2425, grade, quarter, sequenceLetter)
 		.then((quiz) => json({ quizExists: !!quiz }));
 };

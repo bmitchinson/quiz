@@ -76,7 +76,11 @@
 	{/if}
 	<div class="flex flex-col items-center mb-6">
 		<p class="block text-gray-700 font-medium mb-2">Grade Filter</p>
-		<RadioButtons name="grade" options={gradesWithAll} bind:selectedOptionValue={selectedGrade} />
+		<RadioButtons
+			name="grade-filter"
+			options={gradesWithAll}
+			bind:selectedOptionValue={selectedGrade}
+		/>
 	</div>
 	<table class="min-w-full bg-white">
 		<thead>

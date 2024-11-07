@@ -1,5 +1,6 @@
 import { Database } from '$lib/database';
 import type { Score } from '@prisma/client';
+import { getReadableTitleOfQuiz } from '$lib/dataUtils';
 
 const db = new Database();
 
@@ -74,10 +75,10 @@ export async function initializeTestStudents(): Promise<void> {
 }
 
 export async function initializeTestQuizzes(): Promise<void> {
-	await db.addQuiz('Quiz 1', '1+2\n3+4\n5+6');
-	await db.addQuiz('Quiz 2', '1+2\n3+4\n5+6');
+	await db.addQuiz({ year: 2425, grade: 1, quarter: 1, sequenceLetter: 'A' }, '1+2\n3+4\n5+6');
+	await db.addQuiz({ year: 2425, grade: 2, quarter: 1, sequenceLetter: 'A' }, '1+2\n3+4\n5+6');
 	await db.addQuiz(
-		'Quiz 3',
+		{ year: 2425, grade: 3, quarter: 1, sequenceLetter: 'A' },
 		`1+3
 4/4
 9-0
@@ -85,8 +86,13 @@ export async function initializeTestQuizzes(): Promise<void> {
 	);
 }
 
-export async function getQuizAccessCodeByTitle(title: string): Promise<string> {
-	return (await db.prisma.quiz.findFirst({ where: { title } })).accessCode;
+export async function getQuizByMetadata(opts: {
+	year: number;
+	grade: number;
+	quarter: number;
+	sequenceLetter: string;
+}) {
+	return await db.getQuizByMetadata(opts.year, opts.grade, opts.quarter, opts.sequenceLetter);
 }
 
 export async function getScore(quizCode: string) {
@@ -98,7 +104,7 @@ export async function getScore(quizCode: string) {
 
 export async function printQuizCodes() {
 	const quizzes = await getQuizzes();
-	quizzes.forEach((quiz) => console.log(quiz.title, quiz.accessCode));
+	quizzes.forEach((quiz) => console.log(`${getReadableTitleOfQuiz(quiz)} - ${quiz.accessCode}`));
 }
 
 export async function getQuizzes() {
@@ -106,12 +112,17 @@ export async function getQuizzes() {
 }
 
 export async function createScoreForQuiz3ByStudentName(studentName: string) {
-	const quizCode = await getQuizAccessCodeByTitle('Quiz 3');
+	const quiz = await getQuizByMetadata({
+		year: 2425,
+		grade: 3,
+		quarter: 1,
+		sequenceLetter: 'A'
+	});
 	const student = await db.prisma.student.findFirst({ where: { name: studentName } });
 	await db.prisma.score.create({
 		data: {
 			quiz: {
-				connect: { accessCode: quizCode }
+				connect: { accessCode: quiz?.accessCode }
 			},
 			student: { connect: { id: student.id } },
 			correctAnswers: 2
