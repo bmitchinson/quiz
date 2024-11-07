@@ -173,7 +173,7 @@
 				</button>
 			</div>
 			{#if quizAlreadyExistsErrMsg}
-				<div class="text-red-500">
+				<div id="quiz-exists-err" class="text-red-500">
 					{quizAlreadyExistsErrMsg}
 				</div>
 			{/if}

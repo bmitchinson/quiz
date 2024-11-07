@@ -19,8 +19,19 @@ test('Quizzes can be deleted', async ({ page }) => {
 	await expect(page.locator(`td:has-text("G3-Q1-A")`)).not.toBeVisible();
 });
 
-// todo:
-// quiz can't be deleted if one already exists
+test("Quizzes can't be created if one already exists", async ({ page }) => {
+	await initializeTestQuizzes();
+
+	await loginAsAdmin(page);
+	await page.locator('a:has-text("Manage Quizzes")').click();
+
+	await page.locator('div[id="grade-select-1"]').click();
+	await page.locator('div[id="quarter-select-1"]').click();
+	await page.locator('div[id="sequenceLetter-select-A"]').click();
+	await page.locator(`button:has-text("Continue")`).click();
+
+	await expect(page.locator(`div[id="quiz-exists-err"]`)).toBeVisible();
+});
 
 test('Quizzes can be created', async ({ page }) => {
 	await loginAsAdmin(page);
