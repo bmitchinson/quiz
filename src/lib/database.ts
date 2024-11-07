@@ -186,7 +186,7 @@ export class Database {
 		}
 	}
 
-	async getQuiz(accessCode: string): Promise<void> {
+	async getQuiz(accessCode: string) {
 		try {
 			return await this.prisma.quiz.findFirst({
 				where: { accessCode, archived: false }
