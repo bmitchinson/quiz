@@ -1,29 +1,32 @@
 <script lang="ts">
 	export let options = [] as { t: string; v: string }[];
 	export let selectedOptionValue = '';
+	export let name = '';
 </script>
 
-{#each options as { t, v }, i}
-	<label class="flex items-center cursor-pointer">
-		<input
-			type="radio"
-			name="grade"
-			bind:group={selectedOptionValue}
-			value={v}
-			class="hidden-input {i === 0 ? 'first-input' : ''}"
-			autocomplete="off"
-			data-1p-ignore
-			required
-		/>
-		<div
-			id="grade-btn-{v}"
-			class={'px-4 py-2 border rounded-md transition-colors duration-200 ' +
-				(selectedOptionValue === v ? 'bg-[#26561b] text-white' : '')}
-		>
-			{v}{t}
-		</div>
-	</label>
-{/each}
+<div class="flex flex-row space-x-4">
+	{#each options as { t, v }, i}
+		<label class="flex flex-items-center cursor-pointer">
+			<input
+				type="radio"
+				{name}
+				bind:group={selectedOptionValue}
+				value={v}
+				class="hidden-input {i === 0 ? 'first-input' : ''}"
+				autocomplete="off"
+				data-1p-ignore
+				required
+			/>
+			<div
+				id="{name}-select-{v}"
+				class={'px-4 py-2 border rounded-md transition-colors duration-200 ' +
+					(selectedOptionValue === v ? 'bg-[#26561b] text-white' : '')}
+			>
+				{t}
+			</div>
+		</label>
+	{/each}
+</div>
 
 <style>
 	/* hacks to move the browser "required" tooltip */

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import RadioButtons from '../../lib/components/RadioButtons.svelte';
+	import { grades } from '$lib/components/RadioButtons';
+	import RadioButtons from '$lib/components/RadioButtons.svelte';
 	let requestedLoginType = '';
 	let inputValue = '';
 	let teacherName = '';
@@ -88,18 +89,7 @@
 		{#if requestedLoginType === 'Student'}
 			<div class="mb-4">
 				<span class="block mb-2 font-semibold">Select Grade:</span>
-				<div class="flex space-x-2 relative">
-					<RadioButtons
-						options={[
-							{ t: 'st', v: '1' },
-							{ t: 'nd', v: '2' },
-							{ t: 'rd', v: '3' },
-							{ t: 'th', v: '4' },
-							{ t: 'th', v: '5' }
-						]}
-						bind:selectedOptionValue={selectedGrade}
-					/>
-				</div>
+				<RadioButtons name={'grade'} options={grades} bind:selectedOptionValue={selectedGrade} />
 			</div>
 			<div class="mb-4">
 				<span class="block mb-2 font-semibold">Select Teacher:</span>

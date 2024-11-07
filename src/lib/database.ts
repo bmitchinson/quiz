@@ -1,6 +1,7 @@
 // src/lib/database.ts
 
 import { PrismaClient, type Quiz } from '@prisma/client';
+import { getReadableTitleOfQuiz } from './dataUtils';
 
 const logLevels =
 	process.env.NODE_ENV === 'production' ? ['warn', 'error'] : ['query', 'info', 'warn', 'error'];
@@ -132,29 +133,30 @@ export class Database {
 		}
 	}
 
-	/**
-	 * Creates a quiz
-	 * @param title title of the quiz
-	 * @param questionsData newline separated math questions, no '=', just the question
-	 */
-	async addQuiz(title: string, questionsData: string): Promise<void> {
+	async addQuiz(
+		metadata: {
+			year: number;
+			grade: number;
+			quarter: number;
+			sequenceLetter: string;
+		},
+		questionsData: string
+	): Promise<void> {
 		try {
-			await this.prisma.quiz.create({
+			const quiz = await this.prisma.quiz.create({
 				data: {
-					title,
+					title: 'temp',
 					accessCode: await this.generateUnique4DigitCode(),
 					questionsData: questionsData.replace(/\r?\n/g, '|'),
 					totalQuestions: questionsData.split('\n').length,
-					// todo:
-					year: 0,
-					grade: 0,
-					quarter: 0,
-					sequenceLetter: 'A'
-					// end
+					year: metadata.year,
+					grade: metadata.grade,
+					quarter: metadata.quarter,
+					sequenceLetter: metadata.sequenceLetter
 				}
 			});
 
-			console.log('Added Quiz:', title);
+			console.log('Added Quiz:', getReadableTitleOfQuiz(quiz));
 		} catch (error) {
 			console.error('Error adding quiz:', error);
 			throw error;
@@ -195,10 +197,7 @@ export class Database {
 		}
 	}
 
-	async checkIfScoreExistsForQuizAndStudent(
-		accessCode: string,
-		studentUsername: string
-	): Promise<void> {
+	async checkIfScoreExistsForQuizAndStudent(accessCode: string, studentUsername: string) {
 		try {
 			if (!accessCode || !studentUsername) {
 				throw new Error('Missing access code or student name on score db lookup');
@@ -208,6 +207,23 @@ export class Database {
 			});
 		} catch (error) {
 			console.error('Error looking up quiz:', error);
+			throw error;
+		}
+	}
+
+	async checkIfQuizExists(year: number, grade: number, quarter: number, sequenceLetter: string) {
+		try {
+			return await this.prisma.quiz.findFirst({
+				where: {
+					year,
+					grade,
+					quarter,
+					sequenceLetter,
+					archived: false
+				}
+			});
+		} catch (error) {
+			console.error('Error checking if quiz exists:', error);
 			throw error;
 		}
 	}
@@ -232,7 +248,7 @@ export class Database {
 	/**
 	 * @returns Array of quizzes.
 	 */
-	async getAllQuizzes(): Promise<Quiz[]> {
+	async getAllQuizzes() {
 		try {
 			const quizzes = await this.prisma.quiz.findMany({
 				where: { archived: false },

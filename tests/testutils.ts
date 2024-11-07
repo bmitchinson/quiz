@@ -21,7 +21,7 @@ export const loginAsTeacher = async (page) => {
 export const loginAsStudentSecondgrader4 = async (page) => {
 	await page.goto('/login');
 	await page.locator(`button:has-text("Student")`).click();
-	await page.locator(`div[id="grade-btn-2"]`).click();
+	await page.locator(`div[id="grade-select-2"]`).click();
 	await page.selectOption('select', 'mitchinson');
 	await page.locator(`#studentName`).fill('secondgrader4');
 	await page.locator(`button:has-text("Submit")`).click();

@@ -1,14 +1,52 @@
 <script lang="ts">
-	import { getButtonStyles } from '../cssUtils';
+	import { getButtonStyles } from '$lib/cssUtils';
+	import { grades } from '$lib/components/RadioButtons';
+	import RadioButtons from '$lib/components/RadioButtons.svelte';
+	import Spinner from '$lib/components/Spinner.svelte';
+	import { loadingSpinnerDelay } from '$lib/components/constants';
 
 	let questionData = '';
 	let questionDataErrMsg = '';
+	let quizAlreadyExistsErrMsg = '';
 
 	let currentStep = 1;
-	let title = '';
 	let grade = '';
 	let quarter = '';
-	let testId = '';
+	let sequenceLetter = '';
+	let continueLoadingSpinner = false;
+
+	$: {
+		grade;
+		quarter;
+		sequenceLetter;
+		quizAlreadyExistsErrMsg = '';
+	}
+
+	function continueToQuestionsOnClick() {
+		continueLoadingSpinner = true;
+		fetch('/api/quiz/checkIfExists', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				grade: parseInt(grade),
+				quarter: parseInt(quarter),
+				sequenceLetter
+			})
+		}).then((res) =>
+			res.json().then(({ quizExists }) => {
+				setTimeout(() => {
+					if (quizExists) {
+						quizAlreadyExistsErrMsg =
+							'Quiz already exists for the selected grade, quarter, and test.';
+						continueLoadingSpinner = false;
+					} else {
+						currentStep = 2;
+						continueLoadingSpinner = false;
+					}
+				}, loadingSpinnerDelay);
+			})
+		);
+	}
 
 	function validateInput(event: InputEvent) {
 		const target = event.target as HTMLTextAreaElement;
@@ -87,59 +125,67 @@
 			<!-- Grade Selection -->
 			<div>
 				<label class="block text-gray-700 font-medium mb-2">Select Grade:</label>
-				<div class="flex space-x-4">
-					{#each ['1st', '2nd', '3rd', '4th', '5th'] as g}
-						<label>
-							<input type="radio" name="grade" value={g} bind:group={grade} />
-							{g}
-						</label>
-					{/each}
-				</div>
+				<RadioButtons name="grade" options={grades} bind:selectedOptionValue={grade} />
 			</div>
 			<!-- Quarter Selection -->
 			<div>
 				<label class="block text-gray-700 font-medium mb-2">Select Quarter:</label>
-				<div class="flex space-x-4">
-					{#each [1, 2, 3, 4] as q}
-						<label>
-							<input type="radio" name="quarter" value={q} bind:group={quarter} />
-							{q}
-						</label>
-					{/each}
-				</div>
+				<RadioButtons
+					name="quarter"
+					options={[
+						{ t: '1st', v: '1' },
+						{ t: '2nd', v: '2' },
+						{ t: '3rd', v: '3' },
+						{ t: '4th', v: '4' }
+					]}
+					bind:selectedOptionValue={quarter}
+				/>
 			</div>
 			<!-- Test Selection -->
 			<div>
 				<label class="block text-gray-700 font-medium mb-2">Select Test:</label>
-				<div class="flex space-x-4">
-					{#each ['A', 'B', 'C', 'D'] as t}
-						<label>
-							<input type="radio" name="test" value={t} bind:group={testId} />
-							{t}
-						</label>
-					{/each}
-				</div>
+				<p class="block text-gray-700 mb-2">(A is 1st test of quarter, B is 2nd, etc)</p>
+				<RadioButtons
+					name="sequenceLetter"
+					options={[
+						{ t: 'A', v: 'A' },
+						{ t: 'B', v: 'B' },
+						{ t: 'C', v: 'C' },
+						{ t: 'D', v: 'D' }
+					]}
+					bind:selectedOptionValue={sequenceLetter}
+				/>
 			</div>
 			<!-- Add Questions Button -->
 			<div class="flex justify-center">
 				<button
 					type="button"
-					class={getButtonStyles(!(grade && quarter && testId))}
-					on:click={() => (currentStep = 2)}
-					disabled={!(grade && quarter && testId)}
+					class={getButtonStyles(!(grade && quarter && sequenceLetter)) +
+						'w-1/3 mt-4 flex flex-row justify-center'}
+					on:click={continueToQuestionsOnClick}
+					disabled={!(grade && quarter && sequenceLetter)}
 				>
-					Add Questions
+					{#if continueLoadingSpinner}
+						<Spinner />
+					{:else}
+						Continue
+					{/if}
 				</button>
 			</div>
+			{#if quizAlreadyExistsErrMsg}
+				<div class="text-red-500">
+					{quizAlreadyExistsErrMsg}
+				</div>
+			{/if}
 		{:else if currentStep === 2}
 			<!-- NOTE: Questions View -->
 			<!-- Hidden inputs to pass grade, quarter, and test to the backend -->
 			<input type="hidden" name="grade" value={grade} />
 			<input type="hidden" name="quarter" value={quarter} />
-			<input type="hidden" name="test" value={testId} />
+			<input type="hidden" name="sequenceLetter" value={sequenceLetter} />
 			<!-- Display Selected Options -->
 			<label for="questionData" class="block text-gray-700 font-medium mb-2">
-				Enter questions for quiz: Grade {grade}, Quarter {quarter}, Test {testId}
+				Enter questions for quiz: Grade {grade}, Quarter {quarter}, Test {sequenceLetter}
 			</label>
 			<!-- Error Message -->
 			<p class:text-red-500={questionDataErrMsg}>

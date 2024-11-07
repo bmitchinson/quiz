@@ -19,8 +19,12 @@ export const actions: Actions = {
 	addQuiz: async ({ request, cookies }) =>
 		validateRole(request, cookies, 'Admin', async () => {
 			const formData = await request.formData();
+			const grade = parseInt(formData.get('grade'));
+			const quarter = parseInt(formData.get('quarter'));
+			const sequenceLetter = formData.get('sequenceLetter');
+			const year = 2425;
+
 			let questionData = formData.get('questionData');
-			const title = formData.get('title');
 
 			// Step 1: Remove all characters except numbers, operators (+, -, x, /), parentheses, and newlines
 			questionData = questionData.replace(/[^\d+\-/x()\n]/g, '');
@@ -36,11 +40,11 @@ export const actions: Actions = {
 			questionData = questionData.replace(/([+\-x/])\s*([+\-x/])/g, '$1');
 
 			try {
-				await db.addQuiz(title, questionData);
+				await db.addQuiz({ grade, year, quarter, sequenceLetter }, questionData);
 				return { success: true, message: 'Quiz added successfully' };
 			} catch (err) {
 				console.error('Error adding quiz:', err);
-				return { success: false, message: 'Failed to add quiz' };
+				return { success: false, message: err.uiText ? err.uiText : 'Failed to add quiz' };
 			}
 		}),
 

@@ -46,4 +46,8 @@ test.describe('Student', () => {
 		await page.goto('/student/takeQuiz');
 		await expect(page).toHaveURL('/login');
 	});
+
+	// TODO: sign in as student
 });
+
+// TODO: sign in as teacher
