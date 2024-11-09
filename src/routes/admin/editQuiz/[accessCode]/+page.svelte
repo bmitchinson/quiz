@@ -16,6 +16,6 @@
 	{#if data?.quiz}
 		<p>Editing Quiz: {getReadableTitleOfQuiz(data.quiz)}</p>
 	{:else}
-		<p>Quiz with access code {data.accessCode} does not exist.</p>
+		<p>Quiz with access code {data.accessCode} does not exist for editing.</p>
 	{/if}
 </div>

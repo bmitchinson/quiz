@@ -2,7 +2,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import { getReadableTitleOfQuiz } from '$lib/dataUtils';
 	import type { Quiz } from '@prisma/client';
-	import CreateQuiz from './CreateQuiz.svelte';
+	import QuizForm from '$lib/components/QuizForm.svelte';
 	import RadioButtons from '$lib/components/RadioButtons.svelte';
 	import { gradesWithAll } from '$lib/components/RadioButtons';
 
@@ -10,7 +10,6 @@
 
 	let message = '';
 	let success = false;
-	let searchQuery = '';
 	let currentPage = 1;
 	const itemsPerPage = 5;
 
@@ -64,7 +63,12 @@
 	<title>Admin: Manage Quizzes</title>
 </svelte:head>
 
-<CreateQuiz />
+<div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
+	<form method="post" action="?/addQuiz" class="space-y-4">
+		<QuizForm editMode={false} />
+	</form>
+</div>
+
 <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-xl">
 	<h1 class="text-2xl font-bold mb-4 text-center">Existing Quizzes</h1>
 	{#if message}
@@ -112,7 +116,13 @@
 					<td class="py-2 px-4 border-b m-2">
 						<div class="flex justify-center">{quiz.associatedScores}</div>
 					</td>
-					<td class="flex justify-center m-2">
+					<td class="flex justify-center items-center m-2 space-x-2">
+						<a
+							href={`/admin/editQuiz/${quiz.accessCode}`}
+							class="bg-green-200 hover:bg-green-300 text-black font-semibold py-1 px-2 rounded-md transition duration-200"
+						>
+							Edit
+						</a>
 						<button
 							on:click={() => deleteQuiz(quiz)}
 							class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-md transition duration-200"

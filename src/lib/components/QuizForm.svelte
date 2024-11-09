@@ -5,6 +5,8 @@
 	import Spinner from '$lib/components/Spinner.svelte';
 	import { loadingSpinnerDelay } from '$lib/components/constants';
 
+	export let editMode = false;
+
 	let questionData = '';
 	let questionDataErrMsg = '';
 	let quizAlreadyExistsErrMsg = '';
@@ -117,114 +119,114 @@
 	}
 </script>
 
-<div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
-	<form method="post" action="?/addQuiz" class="space-y-4">
-		{#if currentStep === 1}
-			<!-- NOTE: Grade, Quarter, Test Selection View -->
-			<h1 class="text-2xl font-bold mb-6 text-center">Create Quiz</h1>
-			<!-- Grade Selection -->
-			<div>
-				<label class="block text-gray-700 font-medium mb-2">Select Grade:</label>
-				<RadioButtons name="grade" options={grades} bind:selectedOptionValue={grade} />
-			</div>
-			<!-- Quarter Selection -->
-			<div>
-				<label class="block text-gray-700 font-medium mb-2">Select Quarter:</label>
-				<RadioButtons
-					name="quarter"
-					options={[
-						{ t: '1st', v: '1' },
-						{ t: '2nd', v: '2' },
-						{ t: '3rd', v: '3' },
-						{ t: '4th', v: '4' }
-					]}
-					bind:selectedOptionValue={quarter}
-				/>
-			</div>
-			<!-- Test Selection -->
-			<div>
-				<label class="block text-gray-700 font-medium mb-2">Select Test:</label>
-				<p class="block text-gray-700 mb-2">(A is 1st test of quarter, B is 2nd, etc)</p>
-				<RadioButtons
-					name="sequenceLetter"
-					options={[
-						{ t: 'A', v: 'A' },
-						{ t: 'B', v: 'B' },
-						{ t: 'C', v: 'C' },
-						{ t: 'D', v: 'D' }
-					]}
-					bind:selectedOptionValue={sequenceLetter}
-				/>
-			</div>
-			<!-- Add Questions Button -->
-			<div class="flex justify-center">
-				<button
-					type="button"
-					class={getButtonStyles(!(grade && quarter && sequenceLetter)) +
-						'w-1/3 mt-4 flex flex-row justify-center'}
-					on:click={continueToQuestionsOnClick}
-					disabled={!(grade && quarter && sequenceLetter)}
-				>
-					{#if continueLoadingSpinner}
-						<Spinner />
-					{:else}
-						Continue
-					{/if}
-				</button>
-			</div>
-			{#if quizAlreadyExistsErrMsg}
-				<div id="quiz-exists-err" class="text-red-500">
-					{quizAlreadyExistsErrMsg}
-				</div>
+{#if currentStep === 1 && !editMode}
+	<!-- NOTE: Grade, Quarter, Test Selection View -->
+	<h1 class="text-2xl font-bold mb-6 text-center">Create Quiz</h1>
+	<!-- Grade Selection -->
+	<div>
+		<label class="block text-gray-700 font-medium mb-2">Select Grade:</label>
+		<RadioButtons name="grade" options={grades} bind:selectedOptionValue={grade} />
+	</div>
+	<!-- Quarter Selection -->
+	<div>
+		<label class="block text-gray-700 font-medium mb-2">Select Quarter:</label>
+		<RadioButtons
+			name="quarter"
+			options={[
+				{ t: '1st', v: '1' },
+				{ t: '2nd', v: '2' },
+				{ t: '3rd', v: '3' },
+				{ t: '4th', v: '4' }
+			]}
+			bind:selectedOptionValue={quarter}
+		/>
+	</div>
+	<!-- Test Selection -->
+	<div>
+		<label class="block text-gray-700 font-medium mb-2">Select Test:</label>
+		<p class="block text-gray-700 mb-2">(A is 1st test of quarter, B is 2nd, etc)</p>
+		<RadioButtons
+			name="sequenceLetter"
+			options={[
+				{ t: 'A', v: 'A' },
+				{ t: 'B', v: 'B' },
+				{ t: 'C', v: 'C' },
+				{ t: 'D', v: 'D' }
+			]}
+			bind:selectedOptionValue={sequenceLetter}
+		/>
+	</div>
+	<!-- Add Questions Button -->
+	<div class="flex justify-center">
+		<button
+			type="button"
+			class={getButtonStyles(!(grade && quarter && sequenceLetter)) +
+				'w-1/3 mt-4 flex flex-row justify-center'}
+			on:click={continueToQuestionsOnClick}
+			disabled={!(grade && quarter && sequenceLetter)}
+		>
+			{#if continueLoadingSpinner}
+				<Spinner />
+			{:else}
+				Continue
 			{/if}
-		{:else if currentStep === 2}
-			<!-- NOTE: Questions View -->
-			<!-- Hidden inputs to pass grade, quarter, and test to the backend -->
-			<input type="hidden" name="grade" value={grade} />
-			<input type="hidden" name="quarter" value={quarter} />
-			<input type="hidden" name="sequenceLetter" value={sequenceLetter} />
-			<!-- Display Selected Options -->
-			<label for="questionData" class="block text-gray-700 font-medium mb-2">
-				Enter questions for quiz: Grade {grade}, Quarter {quarter}, Test {sequenceLetter}
-			</label>
-			<!-- Error Message -->
-			<p class:text-red-500={questionDataErrMsg}>
-				{questionDataErrMsg
-					? questionDataErrMsg
-					: 'One math question per line, no "=" or letters. Just numbers, operators (+ - / x), and parentheses.'}
-			</p>
-			<!-- Questions Textarea -->
-			<textarea
-				id="questionData"
-				name="questionData"
-				rows="10"
-				required
-				class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 {questionDataErrMsg
-					? 'border-red-500 focus:ring-red-500'
-					: 'focus:ring-[#26561b]'}"
-				placeholder="1+3
+		</button>
+	</div>
+	{#if quizAlreadyExistsErrMsg}
+		<div id="quiz-exists-err" class="text-red-500">
+			{quizAlreadyExistsErrMsg}
+		</div>
+	{/if}
+{:else if currentStep === 2 || editMode}
+	<!-- NOTE: Questions View -->
+	<!-- Hidden inputs to pass grade, quarter, and test to the backend -->
+	<input type="hidden" name="grade" value={grade} />
+	<input type="hidden" name="quarter" value={quarter} />
+	<input type="hidden" name="sequenceLetter" value={sequenceLetter} />
+	<!-- Display Selected Options -->
+	<label for="questionData" class="block text-gray-700 font-medium mb-2">
+		Enter questions for quiz: Grade {grade}, Quarter {quarter}, Test {sequenceLetter}
+	</label>
+	<!-- Error Message -->
+	<p class:text-red-500={questionDataErrMsg}>
+		{questionDataErrMsg
+			? questionDataErrMsg
+			: 'One math question per line, no "=" or letters. Just numbers, operators (+ - / x), and parentheses.'}
+	</p>
+	<!-- Questions Textarea -->
+	<textarea
+		id="questionData"
+		name="questionData"
+		rows="10"
+		required
+		class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 {questionDataErrMsg
+			? 'border-red-500 focus:ring-red-500'
+			: 'focus:ring-[#26561b]'}"
+		placeholder="1+3
 8/2
 3+2"
-				bind:value={questionData}
-				on:input={validateInput}
-			></textarea>
-			<!-- Navigation Buttons -->
-			<div class="flex justify-between">
-				<button
-					type="button"
-					class="font-semibold py-2 px-4 rounded-md transition duration-200 bg-gray-500 hover:bg-gray-600 text-white"
-					on:click={() => (currentStep = 1)}
-				>
-					Back
-				</button>
-				<button
-					type="submit"
-					class={getButtonStyles(!!questionDataErrMsg)}
-					disabled={!!questionDataErrMsg}
-				>
-					Create Quiz
-				</button>
-			</div>
-		{/if}
-	</form>
-</div>
+		bind:value={questionData}
+		on:input={validateInput}
+	></textarea>
+	<!-- Navigation Buttons -->
+	<div class="flex justify-between">
+		<button
+			type="button"
+			class="font-semibold py-2 px-4 rounded-md transition duration-200 bg-gray-500 hover:bg-gray-600 text-white"
+			on:click={() => (currentStep = 1)}
+		>
+			Back
+		</button>
+		<button
+			type="submit"
+			class={getButtonStyles(!!questionDataErrMsg)}
+			disabled={!!questionDataErrMsg}
+		>
+			{#if editMode}
+				Update Quiz
+			{:else}
+				Create Quiz
+			{/if}
+		</button>
+	</div>
+{/if}

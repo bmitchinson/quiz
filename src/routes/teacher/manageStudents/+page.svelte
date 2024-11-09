@@ -40,7 +40,7 @@
 
 			const result = await response.json();
 			if (result.status === 200) {
-				message = 'Student deleted successfully';
+				message = 'Student deleted successfully. Ensure that they logout.';
 				success = true;
 				await invalidateAll();
 			} else {
