@@ -5,13 +5,17 @@
 	import QuizForm from '$lib/components/QuizForm.svelte';
 	import RadioButtons from '$lib/components/RadioButtons.svelte';
 	import { gradesWithAll } from '$lib/components/RadioButtons';
+	import { page } from '$app/stores';
+	import Notification from '$lib/components/Notification.svelte';
 
 	export let data;
 
-	let message = '';
+	let quizDelMsg = '';
 	let success = false;
 	let currentPage = 1;
 	const itemsPerPage = 5;
+
+	let showToast = true;
 
 	let selectedGrade = '';
 
@@ -48,11 +52,11 @@
 
 			const result = await response.json();
 			if (result.status === 200) {
-				message = 'Quiz deleted successfully';
+				quizDelMsg = 'Quiz deleted successfully';
 				success = true;
 				await invalidateAll();
 			} else {
-				message = 'Failed to delete quiz';
+				quizDelMsg = 'Failed to delete quiz';
 				success = false;
 			}
 		}
@@ -65,18 +69,18 @@
 
 <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
 	<form method="post" action="?/addQuiz" class="space-y-4">
-		<QuizForm editMode={false} />
+		<!-- Display success message -->
+		{#if $page.form?.success && showToast}
+			<Notification notifName="quiz-create-success" message={'Quiz created successfully ✅'} />
+		{/if}
+		<QuizForm onContinueClick={() => (showToast = false)} editMode={false} />
 	</form>
 </div>
 
 <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-xl">
 	<h1 class="text-2xl font-bold mb-4 text-center">Existing Quizzes</h1>
-	{#if message}
-		<div
-			class={`mb-4 p-4 rounded ${success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
-		>
-			{message}
-		</div>
+	{#if quizDelMsg}
+		<Notification notifName="quiz-delete-status" errorMode={!success} message={quizDelMsg} />
 	{/if}
 	<div class="flex flex-col items-center mb-6">
 		<p class="block text-gray-700 font-medium mb-2">Grade Filter</p>
@@ -109,7 +113,7 @@
 						</div>
 					</td>
 					<td class="py-2 px-4 border-b m-2">
-						<div class="flex justify-center">
+						<div class="flex justify-center" id={`accessCode-${getReadableTitleOfQuiz(quiz)}`}>
 							{quiz.accessCode}
 						</div>
 					</td>
@@ -118,6 +122,7 @@
 					</td>
 					<td class="flex justify-center items-center m-2 space-x-2">
 						<a
+							id={`edit-${getReadableTitleOfQuiz(quiz)}`}
 							href={`/admin/editQuiz/${quiz.accessCode}`}
 							class="bg-green-200 hover:bg-green-300 text-black font-semibold py-1 px-2 rounded-md transition duration-200"
 						>

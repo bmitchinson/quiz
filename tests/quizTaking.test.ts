@@ -10,7 +10,7 @@ import {
 	createScoreForQuiz3ByStudentName,
 	getQuizByMetadata,
 	getScore,
-	initializeTestQuizzes,
+	resetQuizzesToTestData,
 	initializeTestStudents,
 	initializeTestTeachers,
 	loginAsStudentSecondgrader4 as loginAsStudentSecondGrader4
@@ -20,7 +20,7 @@ test.beforeAll(async () => {
 	await clearAllDbEntries();
 	await initializeTestTeachers();
 	await initializeTestStudents();
-	await initializeTestQuizzes();
+	await resetQuizzesToTestData();
 });
 
 test.beforeEach(async () => {

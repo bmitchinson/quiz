@@ -74,7 +74,8 @@ export async function initializeTestStudents(): Promise<void> {
 	]);
 }
 
-export async function initializeTestQuizzes(): Promise<void> {
+export async function resetQuizzesToTestData(): Promise<void> {
+	await db.prisma.quiz.deleteMany({});
 	await db.addQuiz({ year: 2425, grade: 1, quarter: 1, sequenceLetter: 'A' }, '1+2\n3+4\n5+6');
 	await db.addQuiz({ year: 2425, grade: 2, quarter: 1, sequenceLetter: 'A' }, '1+2\n3+4\n5+6');
 	await db.addQuiz(

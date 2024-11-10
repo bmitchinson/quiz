@@ -245,6 +245,19 @@ export class Database {
 		}
 	}
 
+	async updateQuizQuestions(accessCode: number, questionsData: string): Promise<void> {
+		try {
+			await this.prisma.quiz.update({
+				where: { accessCode },
+				data: { questionsData }
+			});
+			console.log('Updated quiz questions of quiz with access code:', accessCode);
+		} catch (error) {
+			console.error('Error updated questions on quiz:', error);
+			throw error;
+		}
+	}
+
 	/**
 	 * @returns Array of quizzes.
 	 */

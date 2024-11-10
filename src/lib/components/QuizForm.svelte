@@ -4,17 +4,21 @@
 	import RadioButtons from '$lib/components/RadioButtons.svelte';
 	import Spinner from '$lib/components/Spinner.svelte';
 	import { loadingSpinnerDelay } from '$lib/components/constants';
+	import { goto } from '$app/navigation';
 
 	export let editMode = false;
+	export let onContinueClick = () => {};
 
-	let questionData = '';
+	export let questionData = '';
+	export let grade = '';
+	export let quarter = '';
+	export let sequenceLetter = '';
+	export let accessCode = '';
+
 	let questionDataErrMsg = '';
 	let quizAlreadyExistsErrMsg = '';
 
 	let currentStep = 1;
-	let grade = '';
-	let quarter = '';
-	let sequenceLetter = '';
 	let continueLoadingSpinner = false;
 
 	$: {
@@ -25,6 +29,7 @@
 	}
 
 	function continueToQuestionsOnClick() {
+		onContinueClick();
 		continueLoadingSpinner = true;
 		fetch('/api/quiz/checkIfExists', {
 			method: 'POST',
@@ -121,7 +126,7 @@
 
 {#if currentStep === 1 && !editMode}
 	<!-- NOTE: Grade, Quarter, Test Selection View -->
-	<h1 class="text-2xl font-bold mb-6 text-center">Create Quiz</h1>
+	<h1 class="text-2xl font-bold mb-6 text-center">Create New Quiz</h1>
 	<!-- Grade Selection -->
 	<div>
 		<label class="block text-gray-700 font-medium mb-2">Select Grade:</label>
@@ -183,15 +188,16 @@
 	<input type="hidden" name="grade" value={grade} />
 	<input type="hidden" name="quarter" value={quarter} />
 	<input type="hidden" name="sequenceLetter" value={sequenceLetter} />
+	<input type="hidden" name="accessCode" value={accessCode} />
 	<!-- Display Selected Options -->
-	<label for="questionData" class="block text-gray-700 font-medium mb-2">
-		Enter questions for quiz: Grade {grade}, Quarter {quarter}, Test {sequenceLetter}
+	<label for="questionData" class="text-center block text-gray-700 font-medium mb-2">
+		{editMode ? 'Edit' : 'Create'} questions for quiz: Grade {grade}, Quarter {quarter}, Test {sequenceLetter}
 	</label>
+	<hr class="self-center w-full border-t border-gray-300" />
 	<!-- Error Message -->
-	<p class:text-red-500={questionDataErrMsg}>
-		{questionDataErrMsg
-			? questionDataErrMsg
-			: 'One math question per line, no "=" or letters. Just numbers, operators (+ - / x), and parentheses.'}
+	<p class="">
+		One math question per line, no "=" or letters. Just numbers, operators (+ - / x), and
+		parentheses.
 	</p>
 	<!-- Questions Textarea -->
 	<textarea
@@ -199,23 +205,40 @@
 		name="questionData"
 		rows="10"
 		required
-		class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 {questionDataErrMsg
+		class="leading-7 text-xl w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 {questionDataErrMsg
 			? 'border-red-500 focus:ring-red-500'
 			: 'focus:ring-[#26561b]'}"
-		placeholder="1+3
-8/2
-3+2"
+		placeholder="Example: 1+3
+Example: 8/2
+Example: 3+2"
 		bind:value={questionData}
 		on:input={validateInput}
 	></textarea>
-	<!-- Navigation Buttons -->
+	<p class=" text-center" class:text-red-500={questionDataErrMsg}>
+		{questionDataErrMsg
+			? questionDataErrMsg
+			: questionData
+				? 'Currently entered questions are valid ✅'
+				: 'Please enter your math questions'}
+		<!-- Navigation Buttons -->
+	</p>
 	<div class="flex justify-between">
 		<button
 			type="button"
 			class="font-semibold py-2 px-4 rounded-md transition duration-200 bg-gray-500 hover:bg-gray-600 text-white"
-			on:click={() => (currentStep = 1)}
+			on:click={() => {
+				if (editMode) {
+					goto('/admin/manageQuizzes');
+				} else {
+					currentStep = 1;
+				}
+			}}
 		>
-			Back
+			{#if editMode}
+				Cancel
+			{:else}
+				Back
+			{/if}
 		</button>
 		<button
 			type="submit"
@@ -223,7 +246,7 @@
 			disabled={!!questionDataErrMsg}
 		>
 			{#if editMode}
-				Update Quiz
+				Update Quiz Questions
 			{:else}
 				Create Quiz
 			{/if}
