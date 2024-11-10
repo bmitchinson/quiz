@@ -53,9 +53,6 @@
 	</main>
 
 	<footer class="w-full sticky top-full text-center bg-white text-gray-700 p-3">
-		<p>
-			For feature requests, access requests, or bug reports, please contact mitchinson.dev@gmail.com
-		</p>
 		<p>Made w 💚 in Des Moines 🌽</p>
 	</footer>
 </div>
