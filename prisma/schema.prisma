@@ -14,6 +14,8 @@ model Teacher {
   students Student[] @relation("TeacherStudents")
   // end-of-year: add year "2324" attr to teacher, update teacher login to query
   //     that year
+
+  createdAt      DateTime  @default(now())
 }
 
 model Student {
@@ -61,4 +63,6 @@ model Score {
 
   student        Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
   quiz           Quiz      @relation(fields: [quizCode], references: [accessCode], onDelete: Cascade)
+  
+  createdAt      DateTime  @default(now())
 }
