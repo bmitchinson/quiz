@@ -53,25 +53,24 @@ export async function initializeTestTeachers(): Promise<void> {
 }
 
 export async function initializeTestStudents(): Promise<void> {
-	await db.addStudents([
-		{ studentName: 'firstgrader1', teacherName: 'mr_firstgrade' },
-		{ studentName: 'firstgrader2', teacherName: 'mr_firstgrade' },
-		{ studentName: 'firstgrader3', teacherName: 'mr_firstgrade' },
-		{ studentName: 'firstgrader4', teacherName: 'mr_firstgrade' },
-		{ studentName: 'firstgrader5', teacherName: 'mr_firstgrade' },
-		{ studentName: 'secondgrader1', teacherName: 'mitchinson' },
-		{ studentName: 'secondgrader2', teacherName: 'mitchinson' },
-		{ studentName: 'secondgrader3', teacherName: 'mitchinson' },
-		{ studentName: 'secondgrader4', teacherName: 'mitchinson' },
-		{ studentName: 'thirdgrader1', teacherName: 'mrs_thirdgrade' },
-		{ studentName: 'thirdgrader2', teacherName: 'mrs_thirdgrade' },
-		{ studentName: 'fourthgrader1', teacherName: 'mr_fourthgrade' },
-		{ studentName: 'fourthgrader2', teacherName: 'mr_fourthgrade' },
-		{ studentName: 'fourthgrader3', teacherName: 'mrs_fourthgrade' },
-		{ studentName: 'fourthgrader4', teacherName: 'mrs_fourthgrade' },
-		{ studentName: 'fifthgrader1', teacherName: 'mrs_fifthgrade' },
-		{ studentName: 'fifthgrader2', teacherName: 'mrs_fifthgrade' }
-	]);
+	await db.addStudents(
+		['firstgrader1', 'firstgrader2', 'firstgrader3', 'firstgrader4', 'firstgrader5'],
+		'mr_firstgrade'
+	);
+
+	await db.addStudents(
+		['secondgrader1', 'secondgrader2', 'secondgrader3', 'secondgrader4'],
+		'mitchinson'
+	);
+
+	await db.addStudents(['thirdgrader1', 'thirdgrader2'], 'mrs_thirdgrade');
+
+	await db.addStudents(
+		['fourthgrader1', 'fourthgrader2', 'fourthgrader3', 'fourthgrader4'],
+		'mr_fourthgrade'
+	);
+
+	await db.addStudents(['fifthgrader1', 'fifthgrader2'], 'mrs_fifthgrade');
 }
 
 export async function resetQuizzesToTestData(): Promise<void> {

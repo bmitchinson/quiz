@@ -21,28 +21,20 @@ export const actions: Actions = {
 	addStudents: async ({ request, cookies }) =>
 		validateRole(request, cookies, 'Teacher', async () => {
 			const formData = await request.formData();
-			const lastNamesRawString = formData.get('lastNames');
+			const lastNamesRawString = formData.get('lastNames')?.toString();
 			const teacherName = await getSignedCookieValue('loginName', cookies);
 
-			const uniqueLastNames = Array.from(
-				new Set(
-					lastNamesRawString
-						.replace(/[^A-Za-z\n]/g, '')
-						.split('\n')
-						.map((studentName) => studentName.trim())
-						.filter((studentName) => studentName.length > 0)
-						.map((studentName) => ({
-							studentName,
-							teacherName
-						}))
-				)
-			);
+			const uniqueLastNames = lastNamesRawString
+				.replace(/[^A-Za-z\n]/g, '')
+				.split('\n')
+				.map((studentName) => studentName.trim())
+				.filter((studentName) => studentName.length > 0);
 
 			try {
-				await db.addStudents(uniqueLastNames);
+				await db.addStudents(uniqueLastNames, teacherName);
 				return { success: true, message: 'Students added successfully' };
 			} catch (err) {
-				return { success: false, message: 'Failed to add students' };
+				return { success: false, message: 'Failed to add students to database' };
 			}
 		}),
 

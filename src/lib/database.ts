@@ -72,29 +72,21 @@ export class Database {
 		}
 	}
 
-	async addStudents(students: { studentName: string; teacherName: string }[]): Promise<void> {
+	async addStudents(studentNames: string[], teacherName: string): Promise<void> {
 		try {
 			await this.prisma.$transaction(async (prisma) => {
-				for (const { studentName: name, teacherName } of students) {
-					const lowerName = name.toLowerCase();
-					const teacher = await prisma.teacher.findUnique({
-						where: { name: teacherName }
-					});
-					if (!teacher) {
-						throw new Error(`Teacher with name ${teacherName} not found`);
-					}
-					await prisma.student.create({
-						data: {
-							name: lowerName,
-							teacherId: teacher.id
-						}
-					});
-				}
+				const teacher = await prisma.teacher.findUnique({
+					where: { name: teacherName }
+				});
+				const dataToInsert = studentNames.map((studentName) => ({
+					name: studentName.toLowerCase(),
+					teacherId: teacher.id
+				}));
+				await prisma.student.createMany({
+					data: dataToInsert,
+					skipDuplicates: true
+				});
 			});
-			console.log(
-				'Added Students:',
-				students.map((s) => s.studentName)
-			);
 		} catch (error) {
 			console.error('Error adding students:', error);
 			throw error;
