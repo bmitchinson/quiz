@@ -11,4 +11,4 @@ await clearAllDbEntries();
 await initializeTestTeachers();
 await initializeTestStudents();
 await resetQuizzesToTestData();
-await resetScoresToTestData();
+// await resetScoresToTestData();

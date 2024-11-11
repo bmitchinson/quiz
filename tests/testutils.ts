@@ -112,7 +112,7 @@ export async function resetQuizzesToTestData(): Promise<void> {
 				quizzesToMake.push({
 					title: 'temp',
 					accessCode: '0' + x + y + z,
-					questionsData: '1+2|3+4|5+6',
+					questionsData: '1+2|3+4|5+6|1+2|3+4|5+6|1+2|3+4|5+6|0+0',
 					totalQuestions: 3,
 					year: 2425,
 					grade,
@@ -186,5 +186,21 @@ export async function createScoreForQuiz3ByStudentName(studentName: string) {
 
 export async function resetScoresToTestData() {
 	await db.prisma.score.deleteMany({});
-	// await db.prisma.score.createMany({});
+
+	const grade1QuizIds = await db.prisma.quiz
+		.findMany({ where: { grade: 1 } })
+		.then(async (quizzes) => quizzes.map((quiz) => quiz.accessCode));
+	const grade2QuizIds = await db.prisma.quiz
+		.findMany({ where: { grade: 2 } })
+		.then(async (quizzes) => quizzes.map((quiz) => quiz.accessCode));
+
+	await db.prisma.score.createMany({
+		data: studentGroup1.map((studentName) => {
+			return {
+				correctAnswers: 7,
+				quiz: { connect: { accessCode: '0000' } },
+				student: { connect: { name: studentName } }
+			};
+		})
+	});
 }
