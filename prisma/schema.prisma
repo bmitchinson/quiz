@@ -26,6 +26,8 @@ model Student {
   teacher     Teacher  @relation("TeacherStudents", fields: [teacherId], references: [id], onDelete: Cascade)
   
   scores      Score[]
+
+  @@unique([name, teacherId])
 }
 
 model Quiz {
