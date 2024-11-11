@@ -129,6 +129,7 @@
 							Edit
 						</a>
 						<button
+							id={`delete-${getReadableTitleOfQuiz(quiz)}`}
 							on:click={() => deleteQuiz(quiz)}
 							class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-md transition duration-200"
 						>

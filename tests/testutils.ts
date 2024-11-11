@@ -105,14 +105,38 @@ export async function initializeTestStudents(): Promise<void> {
 
 export async function resetQuizzesToTestData(): Promise<void> {
 	await db.prisma.quiz.deleteMany({});
-	await db.addQuiz({ year: 2425, grade: 1, quarter: 1, sequenceLetter: 'A' }, '1+2\n3+4\n5+6');
-	await db.addQuiz({ year: 2425, grade: 2, quarter: 1, sequenceLetter: 'A' }, '1+2\n3+4\n5+6');
+	const quizzesToMake = [];
+	[1, 2].forEach((grade, x) => {
+		[1, 2, 3, 4].forEach((quarter, y) => {
+			['A', 'B', 'C', 'D'].forEach((sequenceLetter, z) => {
+				quizzesToMake.push({
+					title: 'temp',
+					accessCode: '0' + x + y + z,
+					questionsData: '1+2|3+4|5+6',
+					totalQuestions: 3,
+					year: 2425,
+					grade,
+					quarter,
+					sequenceLetter
+				});
+			});
+		});
+	});
+	await db.prisma.quiz.createMany({ data: quizzesToMake });
+
 	await db.addQuiz(
 		{ year: 2425, grade: 3, quarter: 1, sequenceLetter: 'A' },
 		`1+3
 4/4
 9-0
 5*5`
+	);
+
+	await db.addQuiz(
+		{ year: 2425, grade: 3, quarter: 1, sequenceLetter: 'B' },
+		`1+2
+3+4
+5+6`
 	);
 }
 
@@ -158,4 +182,9 @@ export async function createScoreForQuiz3ByStudentName(studentName: string) {
 			correctAnswers: 2
 		}
 	});
+}
+
+export async function resetScoresToTestData() {
+	await db.prisma.score.deleteMany({});
+	// await db.prisma.score.createMany({});
 }
