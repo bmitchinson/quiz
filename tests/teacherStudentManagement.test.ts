@@ -11,7 +11,7 @@ test.beforeEach(async () => {
 	await clearAllDbEntries();
 });
 
-test('Students can be deleted', async ({ page }) => {
+test('Students can be deleted and searched', async ({ page }) => {
 	page.on('dialog', (dialog) => dialog.accept());
 
 	await initializeTestTeachers();
@@ -19,6 +19,7 @@ test('Students can be deleted', async ({ page }) => {
 
 	await loginAsTeacher(page);
 	await page.locator('a:has-text("Manage Students")').click();
+	await page.locator(`input[id="name-search"]`).fill('secondgrader');
 
 	await expect(page.locator(`td:has-text("secondgrader1")`)).toBeVisible();
 	await expect(page.locator(`td:has-text("secondgrader2")`)).toBeVisible();

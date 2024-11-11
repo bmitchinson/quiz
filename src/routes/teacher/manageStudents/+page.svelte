@@ -94,6 +94,7 @@ bdylan"
 		</div>
 	{/if}
 	<input
+		id="name-search"
 		type="text"
 		placeholder="Search by last name"
 		bind:value={searchQuery}

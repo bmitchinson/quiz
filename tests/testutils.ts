@@ -1,6 +1,16 @@
 import { Database } from '$lib/database';
 import type { Score } from '@prisma/client';
 import { getReadableTitleOfQuiz } from '$lib/dataUtils';
+import {
+	studentGroup1,
+	studentGroup2,
+	studentGroup3,
+	studentGroup4,
+	studentGroup5,
+	studentGroup6,
+	studentGroup7,
+	studentGroup8
+} from './datasets';
 
 const db = new Database();
 
@@ -44,8 +54,14 @@ export const amountOfStudentsForTeacher = async (teacherName: string): Promise<n
 };
 
 export async function initializeTestTeachers(): Promise<void> {
-	await db.addTeacher('mr_firstgrade', 1);
+	await db.addTeacher('marcos', 1);
+	await db.addTeacher('burke', 1);
+	await db.addTeacher('doherty', 1);
+	await db.addTeacher('schillo', 1);
+	await db.addTeacher('boyle', 2);
+	await db.addTeacher('eklund', 2);
 	await db.addTeacher('mitchinson', 2);
+	await db.addTeacher('rosales-medina', 2);
 	await db.addTeacher('mrs_thirdgrade', 3);
 	await db.addTeacher('mr_fourthgrade', 4);
 	await db.addTeacher('mrs_fourthgrade', 4);
@@ -54,14 +70,28 @@ export async function initializeTestTeachers(): Promise<void> {
 
 export async function initializeTestStudents(): Promise<void> {
 	await db.addStudents(
-		['firstgrader1', 'firstgrader2', 'firstgrader3', 'firstgrader4', 'firstgrader5'],
-		'mr_firstgrade'
+		[
+			'firstgrader1',
+			'firstgrader2',
+			'firstgrader3',
+			'firstgrader4',
+			'firstgrader5',
+			...studentGroup1
+		],
+		'marcos'
 	);
 
+	await db.addStudents(studentGroup2, 'burke');
+	await db.addStudents(studentGroup3, 'doherty');
+	await db.addStudents(studentGroup4, 'schillo');
+
+	await db.addStudents(studentGroup5, 'boyle');
+	await db.addStudents(studentGroup6, 'eklund');
 	await db.addStudents(
-		['secondgrader1', 'secondgrader2', 'secondgrader3', 'secondgrader4'],
+		['secondgrader1', 'secondgrader2', 'secondgrader3', 'secondgrader4', ...studentGroup7],
 		'mitchinson'
 	);
+	await db.addStudents(studentGroup8, 'rosales-medina');
 
 	await db.addStudents(['thirdgrader1', 'thirdgrader2'], 'mrs_thirdgrade');
 
