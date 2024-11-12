@@ -3,8 +3,9 @@
 import { PrismaClient, type Quiz } from '@prisma/client';
 import { getReadableTitleOfQuiz } from './dataUtils';
 
-const logLevels =
-	process.env.NODE_ENV === 'production' ? ['warn', 'error'] : ['query', 'info', 'warn', 'error'];
+const logLevels = /production|test/.test(process.env.NODE_ENV)
+	? ['warn', 'error']
+	: ['query', 'info', 'warn', 'error'];
 
 export const prisma = new PrismaClient({
 	log: logLevels
@@ -53,8 +54,6 @@ export class Database {
 					grade
 				}
 			});
-
-			console.log('Added teacher:', name);
 		} catch (error) {
 			console.error('Error adding teacher:', error);
 			throw error;
@@ -72,9 +71,9 @@ export class Database {
 		}
 	}
 
-	async addStudents(studentNames: string[], teacherName: string): Promise<void> {
+	async addStudents(studentNames: string[], teacherName: string) {
 		try {
-			await this.prisma.$transaction(async (prisma) => {
+			return await this.prisma.$transaction(async (prisma) => {
 				const teacher = await prisma.teacher.findUnique({
 					where: { name: teacherName }
 				});
@@ -82,7 +81,8 @@ export class Database {
 					name: studentName.toLowerCase(),
 					teacherId: teacher.id
 				}));
-				await prisma.student.createMany({
+				return await prisma.student.createManyAndReturn({
+					select: { id: true },
 					data: dataToInsert,
 					skipDuplicates: true
 				});
@@ -147,8 +147,6 @@ export class Database {
 					sequenceLetter: metadata.sequenceLetter
 				}
 			});
-
-			console.log('Added Quiz:', getReadableTitleOfQuiz(quiz));
 		} catch (error) {
 			console.error('Error adding quiz:', error);
 			throw error;

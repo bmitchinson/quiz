@@ -2,20 +2,22 @@ import test, { expect } from '@playwright/test';
 import {
 	loginAsTeacher,
 	clearAllDbEntries,
-	initializeTestStudents,
+	resetStudentsAndScores,
 	initializeTestTeachers,
-	amountOfStudentsForTeacher
+	amountOfStudentsForTeacher,
+	resetQuizzesToTestData,
+	addFourSecondGraderStudents
 } from './testutils';
 
 test.beforeEach(async () => {
 	await clearAllDbEntries();
+	await initializeTestTeachers();
 });
 
 test('Students can be deleted and searched', async ({ page }) => {
 	page.on('dialog', (dialog) => dialog.accept());
 
-	await initializeTestTeachers();
-	await initializeTestStudents();
+	await addFourSecondGraderStudents();
 
 	await loginAsTeacher(page);
 	await page.locator('a:has-text("Manage Students")').click();
@@ -32,8 +34,6 @@ test('Students can be deleted and searched', async ({ page }) => {
 });
 
 test('Students can be added', async ({ page }) => {
-	await initializeTestTeachers();
-
 	await loginAsTeacher(page);
 	await page.locator('a:has-text("Manage Students")').click();
 

@@ -1,4 +1,4 @@
-export const studentGroup1 = [
+export const studentGroup1Marcos = [
 	'ajohnson',
 	'bsmith',
 	'cmiller',
@@ -25,7 +25,7 @@ export const studentGroup1 = [
 	'zmitchell',
 	'arivera'
 ];
-export const studentGroup2 = [
+export const studentGroup2Burke = [
 	'bsanders',
 	'cprice',
 	'dwood',
@@ -52,7 +52,7 @@ export const studentGroup2 = [
 	'ywhite',
 	'zyoung'
 ];
-export const studentGroup3 = [
+export const studentGroup3Doherty = [
 	'abaker',
 	'bclark',
 	'cdiaz',
@@ -79,7 +79,7 @@ export const studentGroup3 = [
 	'aallen',
 	'bbailey'
 ];
-export const studentGroup4 = [
+export const studentGroup4Schillo = [
 	'cbutler',
 	'dcarter',
 	'edixon',
@@ -106,7 +106,7 @@ export const studentGroup4 = [
 	'zzane',
 	'abradley'
 ];
-export const studentGroup5 = [
+export const studentGroup5Boyle = [
 	'bcole',
 	'cdiaz',
 	'eevans',
@@ -133,7 +133,7 @@ export const studentGroup5 = [
 	'abarnes',
 	'bblake'
 ];
-export const studentGroup6 = [
+export const studentGroup6Eklund = [
 	'ccampbell',
 	'ddaniels',
 	'eeaston',
@@ -160,7 +160,7 @@ export const studentGroup6 = [
 	'zzane',
 	'aabbott'
 ];
-export const studentGroup7 = [
+export const studentGroup7Mitchinson = [
 	'bbarrett',
 	'ccarter',
 	'dduncan',
@@ -187,7 +187,7 @@ export const studentGroup7 = [
 	'yyuen',
 	'zzun'
 ];
-export const studentGroup8 = [
+export const studentGroup8RosalesMedina = [
 	'aallen',
 	'bbaker',
 	'ccampbell',

@@ -1,8 +1,3 @@
-// taking a quiz
-// assert score 4 out of 4
-// - ensure quiz has all operation types
-// try to take quiz again, be denied
-
 import test, { expect } from '@playwright/test';
 import {
 	clearAllDbEntries,
@@ -11,7 +6,7 @@ import {
 	getQuizByMetadata,
 	getScore,
 	resetQuizzesToTestData,
-	initializeTestStudents,
+	resetStudentsAndScores,
 	initializeTestTeachers,
 	loginAsStudentSecondgrader4 as loginAsStudentSecondGrader4
 } from './testutils';
@@ -19,12 +14,8 @@ import {
 test.beforeAll(async () => {
 	await clearAllDbEntries();
 	await initializeTestTeachers();
-	await initializeTestStudents();
 	await resetQuizzesToTestData();
-});
-
-test.beforeEach(async () => {
-	await clearDbScores();
+	await resetStudentsAndScores();
 });
 
 test('Taking a quiz', async ({ page }) => {

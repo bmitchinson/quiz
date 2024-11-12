@@ -1,7 +1,7 @@
 import {
 	clearAllDbEntries,
 	resetQuizzesToTestData,
-	initializeTestStudents,
+	resetStudentsAndScores,
 	initializeTestTeachers,
 	resetScoresToTestData,
 	printQuizCodes
@@ -9,6 +9,5 @@ import {
 
 await clearAllDbEntries();
 await initializeTestTeachers();
-await initializeTestStudents();
 await resetQuizzesToTestData();
-// await resetScoresToTestData();
+await resetStudentsAndScores();

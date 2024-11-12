@@ -2,14 +2,14 @@ import { Database } from '$lib/database';
 import type { Score } from '@prisma/client';
 import { getReadableTitleOfQuiz } from '$lib/dataUtils';
 import {
-	studentGroup1,
-	studentGroup2,
-	studentGroup3,
-	studentGroup4,
-	studentGroup5,
-	studentGroup6,
-	studentGroup7,
-	studentGroup8
+	studentGroup1Marcos,
+	studentGroup2Burke,
+	studentGroup3Doherty,
+	studentGroup4Schillo,
+	studentGroup5Boyle,
+	studentGroup6Eklund,
+	studentGroup7Mitchinson,
+	studentGroup8RosalesMedina
 } from './datasets';
 
 const db = new Database();
@@ -68,30 +68,63 @@ export async function initializeTestTeachers(): Promise<void> {
 	await db.addTeacher('mrs_fifthgrade', 5);
 }
 
-export async function initializeTestStudents(): Promise<void> {
+export async function addFourSecondGraderStudents() {
 	await db.addStudents(
-		[
-			'firstgrader1',
-			'firstgrader2',
-			'firstgrader3',
-			'firstgrader4',
-			'firstgrader5',
-			...studentGroup1
-		],
-		'marcos'
-	);
-
-	await db.addStudents(studentGroup2, 'burke');
-	await db.addStudents(studentGroup3, 'doherty');
-	await db.addStudents(studentGroup4, 'schillo');
-
-	await db.addStudents(studentGroup5, 'boyle');
-	await db.addStudents(studentGroup6, 'eklund');
-	await db.addStudents(
-		['secondgrader1', 'secondgrader2', 'secondgrader3', 'secondgrader4', ...studentGroup7],
+		['secondgrader1', 'secondgrader2', 'secondgrader3', 'secondgrader4'],
 		'mitchinson'
 	);
-	await db.addStudents(studentGroup8, 'rosales-medina');
+}
+
+export async function resetStudentsAndScores(): Promise<void> {
+	await db.prisma.score.deleteMany({});
+	await db.prisma.student.deleteMany({});
+
+	const group1StudentIds = await db
+		.addStudents(
+			[
+				'firstgrader1',
+				'firstgrader2',
+				'firstgrader3',
+				'firstgrader4',
+				'firstgrader5',
+				...studentGroup1Marcos
+			],
+			'marcos'
+		)
+		.then((students) => students.map((student) => student.id));
+
+	const group2StudentIds = await db
+		.addStudents(studentGroup2Burke, 'burke')
+		.then((students) => students.map((student) => student.id));
+
+	const group3StudentIds = await db
+		.addStudents(studentGroup3Doherty, 'doherty')
+		.then((students) => students.map((student) => student.id));
+	const group4StudentIds = await db
+		.addStudents(studentGroup4Schillo, 'schillo')
+		.then((students) => students.map((student) => student.id));
+
+	const group5StudentIds = await db
+		.addStudents(studentGroup5Boyle, 'boyle')
+		.then((students) => students.map((student) => student.id));
+	const group6StudentIds = await db
+		.addStudents(studentGroup6Eklund, 'eklund')
+		.then((students) => students.map((student) => student.id));
+	const group7StudentIds = await db
+		.addStudents(
+			[
+				'secondgrader1',
+				'secondgrader2',
+				'secondgrader3',
+				'secondgrader4',
+				...studentGroup7Mitchinson
+			],
+			'mitchinson'
+		)
+		.then((students) => students.map((student) => student.id));
+	const group8StudentIds = await db
+		.addStudents(studentGroup8RosalesMedina, 'rosales-medina')
+		.then((students) => students.map((student) => student.id));
 
 	await db.addStudents(['thirdgrader1', 'thirdgrader2'], 'mrs_thirdgrade');
 
@@ -101,7 +134,136 @@ export async function initializeTestStudents(): Promise<void> {
 	);
 
 	await db.addStudents(['fifthgrader1', 'fifthgrader2'], 'mrs_fifthgrade');
+
+	const grade1QuizCodes = await db.prisma.quiz
+		.findMany({ where: { grade: 1 } })
+		.then(async (quizzes) => quizzes.map((quiz) => quiz.accessCode));
+
+	const grade2QuizCodes = await db.prisma.quiz
+		.findMany({ where: { grade: 2 } })
+		.then(async (quizzes) => quizzes.map((quiz) => quiz.accessCode));
+
+	const scoresToCreate = [];
+
+	// NOTE: first grade score data //////////////////////////////////////////
+	group1StudentIds.forEach((id) =>
+		grade1QuizAccessCodes.forEach((accessCode) =>
+			scoresToCreate.push({
+				correctAnswers: fiftyPercentChance() ? 7 : 6,
+				quizCode: accessCode,
+				studentId: id
+			})
+		)
+	);
+
+	group2StudentIds.forEach((id) =>
+		grade1QuizAccessCodes.forEach((accessCode) =>
+			scoresToCreate.push({
+				correctAnswers: fiftyPercentChance() ? 8 : 7,
+				quizCode: accessCode,
+				studentId: id
+			})
+		)
+	);
+	group3StudentIds.forEach((id) =>
+		grade1QuizAccessCodes.forEach((accessCode) =>
+			scoresToCreate.push({
+				correctAnswers: fiftyPercentChance() ? 9 : 8,
+				quizCode: accessCode,
+				studentId: id
+			})
+		)
+	);
+	group4StudentIds.forEach((id) =>
+		grade1QuizAccessCodes.forEach((accessCode) =>
+			scoresToCreate.push({
+				correctAnswers: fiftyPercentChance() ? 10 : 9,
+				quizCode: accessCode,
+				studentId: id
+			})
+		)
+	);
+
+	// NOTE: second grade score data //////////////////////////////////////////
+	group5StudentIds.forEach((id) =>
+		grade2QuizAccessCodes.forEach((accessCode) =>
+			scoresToCreate.push({
+				correctAnswers: 7,
+				quizCode: accessCode,
+				studentId: id
+			})
+		)
+	);
+	group6StudentIds.forEach((id) =>
+		grade2QuizAccessCodes.forEach((accessCode) =>
+			scoresToCreate.push({
+				correctAnswers: 8,
+				quizCode: accessCode,
+				studentId: id
+			})
+		)
+	);
+	group7StudentIds.forEach((id) =>
+		grade2QuizAccessCodes.forEach((accessCode) =>
+			scoresToCreate.push({
+				correctAnswers: 9,
+				quizCode: accessCode,
+				studentId: id
+			})
+		)
+	);
+	group8StudentIds.forEach((id) =>
+		grade2QuizAccessCodes.forEach((accessCode) =>
+			scoresToCreate.push({
+				correctAnswers: 10,
+				quizCode: accessCode,
+				studentId: id
+			})
+		)
+	);
+	//////////////////////////////////////////////////////////////////
+	await db.prisma.score.createMany({
+		data: scoresToCreate
+	});
 }
+
+const grade1QuizAccessCodes = [
+	'0000',
+	'0001',
+	'0002',
+	'0003',
+	'0010',
+	'0011',
+	'0012',
+	'0013',
+	'0020',
+	'0021',
+	'0022',
+	'0023',
+	'0030',
+	'0031',
+	'0032',
+	'0033'
+];
+
+const grade2QuizAccessCodes = [
+	'0100',
+	'0101',
+	'0102',
+	'0103',
+	'0110',
+	'0111',
+	'0112',
+	'0113',
+	'0120',
+	'0121',
+	'0122',
+	'0123',
+	'0130',
+	'0131',
+	'0132',
+	'0133'
+];
 
 export async function resetQuizzesToTestData(): Promise<void> {
 	await db.prisma.quiz.deleteMany({});
@@ -184,23 +346,6 @@ export async function createScoreForQuiz3ByStudentName(studentName: string) {
 	});
 }
 
-export async function resetScoresToTestData() {
-	await db.prisma.score.deleteMany({});
-
-	const grade1QuizIds = await db.prisma.quiz
-		.findMany({ where: { grade: 1 } })
-		.then(async (quizzes) => quizzes.map((quiz) => quiz.accessCode));
-	const grade2QuizIds = await db.prisma.quiz
-		.findMany({ where: { grade: 2 } })
-		.then(async (quizzes) => quizzes.map((quiz) => quiz.accessCode));
-
-	await db.prisma.score.createMany({
-		data: studentGroup1.map((studentName) => {
-			return {
-				correctAnswers: 7,
-				quiz: { connect: { accessCode: '0000' } },
-				student: { connect: { name: studentName } }
-			};
-		})
-	});
+export function fiftyPercentChance(): boolean {
+	return Math.random() < 0.5;
 }
