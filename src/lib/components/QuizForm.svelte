@@ -129,12 +129,12 @@
 	<h1 class="text-2xl font-bold mb-6 text-center">Create New Quiz</h1>
 	<!-- Grade Selection -->
 	<div>
-		<label class="block text-gray-700 font-medium mb-2">Select Grade:</label>
+		<p class="block text-gray-700 font-medium mb-2">Select Grade:</p>
 		<RadioButtons name="grade" options={grades} bind:selectedOptionValue={grade} />
 	</div>
 	<!-- Quarter Selection -->
 	<div>
-		<label class="block text-gray-700 font-medium mb-2">Select Quarter:</label>
+		<p class="block text-gray-700 font-medium mb-2">Select Quarter:</p>
 		<RadioButtons
 			name="quarter"
 			options={[
@@ -148,7 +148,7 @@
 	</div>
 	<!-- Test Selection -->
 	<div>
-		<label class="block text-gray-700 font-medium mb-2">Select Test:</label>
+		<p class="block text-gray-700 font-medium mb-2">Select Test:</p>
 		<p class="block text-gray-700 mb-2">(A is 1st test of quarter, B is 2nd, etc)</p>
 		<RadioButtons
 			name="sequenceLetter"
