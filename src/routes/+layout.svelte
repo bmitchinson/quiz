@@ -48,11 +48,7 @@
 		{/if}
 	</header>
 
-	<main class="flex-grow gap-8 flex items-center justify-center flex-wrap w-full my-8">
+	<main class="flex-grow gap-8 flex items-center justify-center flex-wrap w-full p-8">
 		<slot />
 	</main>
-
-	<footer class="w-full sticky top-full text-center bg-white text-gray-700 p-3">
-		<p>Made w 💚 in Des Moines 🌽</p>
-	</footer>
 </div>

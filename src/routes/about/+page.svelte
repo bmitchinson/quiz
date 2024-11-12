@@ -21,8 +21,8 @@
 		<Break />
 
 		<p class="text-base">
-			I'm also available for further consulting work, keep me in mind if you'd like fast web
-			applications built in 2 week timelines.
+			I'm available for consulting work. Keep me in mind if you'd like fast web applications built
+			in 2 week timelines.
 		</p>
 
 		<Break />
