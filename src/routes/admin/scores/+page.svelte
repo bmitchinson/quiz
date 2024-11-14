@@ -1,6 +1,7 @@
 <script>
+	import Break from '$lib/components/Break.svelte';
 	import Card from '$lib/components/Card.svelte';
-	import { BarChart, Tooltip } from 'layerchart';
+	import { Axis, BarChart, Grid, Tooltip } from 'layerchart';
 
 	const sampleData = [
 		{ averageScore: 8.3, quizName: 'Q1-A', submittedScores: 18 },
@@ -29,7 +30,26 @@
 		x="quizName"
 		y="averageScore"
 		props={{ bars: { class: 'fill-[#26561b]' }, highlight: { area: false } }}
+		padding={{ bottom: 60, left: 20 }}
 	>
+		<svelte:fragment slot="axis">
+			<Grid x y classes={{ line: 'border-4 z-[1000]' }} />
+			<Axis
+				placement="bottom"
+				tickLabelProps={{
+					rotate: 315,
+					textAnchor: 'end',
+					class: 'fill-danger font-semibold text-lg'
+				}}
+			/>
+			<Axis
+				placement="left"
+				tickLabelProps={{
+					textAnchor: 'end',
+					class: 'fill-danger font-semibold text-lg'
+				}}
+			/>
+		</svelte:fragment>
 		<svelte:fragment slot="tooltip" let:x let:y let:z>
 			<Tooltip.Root let:data classes={{ container: 'bg-white p-4 outline rounded-lg' }}>
 				<Tooltip.Header classes={{ root: 'text-xl' }}>{x(data)}</Tooltip.Header>
