@@ -1,7 +1,17 @@
-<script>
-	import Break from '$lib/components/Break.svelte';
+<script lang="ts">
 	import Card from '$lib/components/Card.svelte';
-	import { Axis, BarChart, Grid, Tooltip } from 'layerchart';
+	import {
+		Chart,
+		BarController,
+		BarElement,
+		Legend,
+		CategoryScale,
+		LinearScale,
+		Tooltip
+	} from 'chart.js';
+	import { onMount } from 'svelte';
+
+	Chart.register(BarController, BarElement, Legend, CategoryScale, LinearScale, Tooltip);
 
 	const sampleData = [
 		{ averageScore: 8.3, quizName: 'Q1-A', submittedScores: 18 },
@@ -21,51 +31,41 @@
 		{ averageScore: 10, quizName: 'Q4-C', submittedScores: 23 },
 		{ averageScore: 10, quizName: 'Q4-D', submittedScores: 17 }
 	];
+
+	onMount(() => {
+		Tooltip.positioners.cursor = function (chartElements, coordinates) {
+			return coordinates;
+		};
+
+		new Chart(document.getElementById('chartContainer'), {
+			type: 'bar',
+			options: {
+				animation: true,
+				plugins: {
+					legend: {
+						display: false
+					},
+					tooltip: {
+						enabled: true,
+						position: 'cursor'
+					}
+				}
+			},
+			data: {
+				labels: sampleData.map((r) => r.quizName),
+				datasets: [
+					{
+						borderColor: '#26561b',
+						backgroundColor: '#26561b',
+						data: sampleData.map((r) => r.averageScore)
+					}
+				]
+			}
+		});
+	});
 </script>
 
 <Card additionalClasses={'h-[33rem] w-5/6'}>
-	<h1 class="text-3xl text-center font-bold mb-16">Grade 1: Scores</h1>
-	<BarChart
-		data={sampleData}
-		x="quizName"
-		y="averageScore"
-		props={{ bars: { class: 'fill-[#26561b]' }, highlight: { area: false } }}
-		padding={{ bottom: 60, left: 20 }}
-	>
-		<svelte:fragment slot="axis">
-			<Grid x y classes={{ line: 'border-4 z-[1000]' }} />
-			<Axis
-				placement="bottom"
-				tickLabelProps={{
-					rotate: 315,
-					textAnchor: 'end',
-					class: 'fill-danger font-semibold text-lg'
-				}}
-			/>
-			<Axis
-				placement="left"
-				tickLabelProps={{
-					textAnchor: 'end',
-					class: 'fill-danger font-semibold text-lg'
-				}}
-			/>
-		</svelte:fragment>
-		<svelte:fragment slot="tooltip" let:x let:y let:z>
-			<Tooltip.Root let:data classes={{ container: 'bg-white p-4 outline rounded-lg' }}>
-				<Tooltip.Header classes={{ root: 'text-xl' }}>{x(data)}</Tooltip.Header>
-				<Tooltip.List>
-					<Tooltip.Item
-						classes={{ root: 'text-lg' }}
-						label="Average Score:"
-						value={`${y(data)} out of 10`}
-					/>
-					<Tooltip.Item
-						classes={{ root: 'text-lg' }}
-						label="Submitted Scores:"
-						value={sampleData.find((ele) => ele.quizName === x(data))?.submittedScores}
-					/>
-				</Tooltip.List>
-			</Tooltip.Root>
-		</svelte:fragment>
-	</BarChart>
+	<h1 class="text-3xl text-center font-bold">Grade 1: Scores</h1>
+	<div class="w-full"><canvas id="chartContainer"></canvas></div>
 </Card>
