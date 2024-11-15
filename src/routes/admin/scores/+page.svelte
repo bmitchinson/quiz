@@ -10,10 +10,11 @@
 		Tooltip
 	} from 'chart.js';
 	import { onMount } from 'svelte';
+	import { externalTooltip, type ScoreDataPoint } from '$lib/scoreTooltip';
 
 	Chart.register(BarController, BarElement, Legend, CategoryScale, LinearScale, Tooltip);
 
-	const sampleData = [
+	const sampleData: ScoreDataPoint[] = [
 		{ averageScore: 8.3, quizName: 'Q1-A', submittedScores: 18 },
 		{ averageScore: 9.7, quizName: 'Q1-B', submittedScores: 20 },
 		{ averageScore: 10, quizName: 'Q1-C', submittedScores: 22 },
@@ -47,9 +48,14 @@
 						display: false
 					},
 					tooltip: {
-						enabled: true,
-						position: 'cursor'
+						enabled: false,
+						position: 'cursor',
+						external: externalTooltip
 					}
+				},
+				parsing: {
+					xAxisKey: 'quizName',
+					yAxisKey: 'averageScore'
 				}
 			},
 			data: {
@@ -58,9 +64,9 @@
 					{
 						borderColor: '#26561b',
 						backgroundColor: '#26561b',
-						data: sampleData.map((r) => r.averageScore),
+						data: sampleData,
 						borderRadius: 5,
-						barThickness: 30
+						maxBarThickness: 50
 					}
 				]
 			}
