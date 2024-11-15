@@ -40,6 +40,7 @@
 		new Chart(document.getElementById('chartContainer'), {
 			type: 'bar',
 			options: {
+				aspectRatio: 3,
 				animation: true,
 				plugins: {
 					legend: {
@@ -57,7 +58,9 @@
 					{
 						borderColor: '#26561b',
 						backgroundColor: '#26561b',
-						data: sampleData.map((r) => r.averageScore)
+						data: sampleData.map((r) => r.averageScore),
+						borderRadius: 5,
+						barThickness: 30
 					}
 				]
 			}
@@ -65,7 +68,7 @@
 	});
 </script>
 
-<Card additionalClasses={'h-[33rem] w-5/6'}>
-	<h1 class="text-3xl text-center font-bold">Grade 1: Scores</h1>
-	<div class="w-full"><canvas id="chartContainer"></canvas></div>
+<Card additionalClasses={'w-5/6'}>
+	<h1 class="text-3xl mb-8 text-center font-bold">Grade 1: Scores</h1>
+	<canvas id="chartContainer"></canvas>
 </Card>
