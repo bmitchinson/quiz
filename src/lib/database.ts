@@ -181,7 +181,7 @@ export class Database {
 					title: 'temp',
 					accessCode: await this.generateUnique4DigitCode(),
 					questionsData: questions,
-					totalQuestions: questions.split('|').length + 1,
+					totalQuestions: questions.split('|').length,
 					year: metadata.year,
 					grade: metadata.grade,
 					quarter: metadata.quarter,
