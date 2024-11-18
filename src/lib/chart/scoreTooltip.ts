@@ -1,7 +1,8 @@
 import type { Chart, TooltipModel } from 'chart.js';
 
-export interface ScoreDataPoint {
+export interface QuizScoreSummaryDataPoint {
 	averageScore: number;
+	totalQuestions: number;
 	submittedScores: number;
 	quizName: string;
 }
@@ -21,7 +22,7 @@ const getTooltipRowWithText = (text: String) => {
 export const externalTooltip = (context) => {
 	// Tooltip Element
 	const { chart, tooltip } = context as { chart: Chart; tooltip: TooltipModel<'Bar'> };
-	const datapoint = tooltip.dataPoints[0].raw as ScoreDataPoint;
+	const datapoint: QuizScoreSummaryDataPoint = tooltip.dataPoints ? tooltip.dataPoints[0].raw : {};
 
 	const tooltipEl = getOrCreateTooltip(chart);
 
@@ -64,7 +65,11 @@ export const externalTooltip = (context) => {
 			span.style.width = '10px';
 			span.style.display = 'inline-block';
 
-			tableBody.appendChild(getTooltipRowWithText(`Average Score: ${datapoint.averageScore}`));
+			tableBody.appendChild(
+				getTooltipRowWithText(
+					`Average Score: ${datapoint.averageScore} out of ${datapoint.totalQuestions}`
+				)
+			);
 			tableBody.appendChild(getTooltipRowWithText(`Submissions: ${datapoint.submittedScores}`));
 		});
 

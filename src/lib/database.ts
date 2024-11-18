@@ -110,6 +110,33 @@ export class Database {
 		}
 	}
 
+	// todo: year - make selector in UI
+	async getSummaryOfScores(grade: number, year = 2425) {
+		try {
+			return await prisma.score.groupBy({
+				by: ['quizCode'],
+				where: {
+					quiz: {
+						grade,
+						year
+					},
+					student: {
+						archived: false
+					}
+				},
+				_avg: {
+					correctAnswers: true
+				},
+				_count: {
+					id: true
+				}
+			});
+		} catch (error) {
+			console.error('Error getting a summary of scores:', error);
+			throw error;
+		}
+	}
+
 	async archiveStudent(name: string, teacherId: int): Promise<void> {
 		try {
 			// using updateMany instead of update because prisma doesn't know that
@@ -132,15 +159,16 @@ export class Database {
 			quarter: number;
 			sequenceLetter: string;
 		},
-		questionsData: string
+		providedQuestionsText: string
 	): Promise<void> {
 		try {
+			const questions = providedQuestionsText.replace(/\r?\n/g, '|');
 			const quiz = await this.prisma.quiz.create({
 				data: {
 					title: 'temp',
 					accessCode: await this.generateUnique4DigitCode(),
-					questionsData: questionsData.replace(/\r?\n/g, '|'),
-					totalQuestions: questionsData.split('\n').length,
+					questionsData: questions,
+					totalQuestions: questions.split('|').length + 1,
 					year: metadata.year,
 					grade: metadata.grade,
 					quarter: metadata.quarter,
@@ -187,13 +215,34 @@ export class Database {
 		}
 	}
 
+	async getQuizzesByAccessCodes(accessCodes: string[]): { [accessCode: string]: Quiz } {
+		try {
+			const quizzes = await prisma.quiz.findMany({
+				where: {
+					accessCode: {
+						in: accessCodes
+					},
+					archived: false
+				}
+			});
+
+			return quizzes.reduce((acc, quiz) => {
+				acc[quiz.accessCode] = quiz;
+				return acc;
+			}, {});
+		} catch (error) {
+			console.error('Error looking up quizzes for access codes:', error);
+			throw error;
+		}
+	}
+
 	async checkIfScoreExistsForQuizAndStudent(accessCode: string, studentUsername: string) {
 		try {
 			if (!accessCode || !studentUsername) {
 				throw new Error('Missing access code or student name on score db lookup');
 			}
 			return await this.prisma.score.findFirst({
-				where: { quizCode: accessCode, student: { name: studentUsername } }
+				where: { quizCode: accessCode, student: { name: studentUsername, archived: false } }
 			});
 		} catch (error) {
 			console.error('Error looking up quiz:', error);
@@ -238,7 +287,7 @@ export class Database {
 	async updateQuizQuestions(accessCode: number, questionsData: string): Promise<void> {
 		try {
 			await this.prisma.quiz.update({
-				where: { accessCode },
+				where: { accessCode, archived: false },
 				data: { questionsData }
 			});
 			console.log('Updated quiz questions of quiz with access code:', accessCode);
@@ -251,6 +300,7 @@ export class Database {
 	/**
 	 * @returns Array of quizzes.
 	 */
+	// todo: year, filter by the year that the app has in env
 	async getAllQuizzes() {
 		try {
 			const quizzes = await this.prisma.quiz.findMany({

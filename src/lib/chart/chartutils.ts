@@ -1,4 +1,4 @@
-import { externalTooltip, type ScoreDataPoint } from './scoreTooltip';
+import { externalTooltip, type QuizScoreSummaryDataPoint } from './scoreTooltip';
 
 import {
 	Chart,
@@ -7,17 +7,21 @@ import {
 	Legend,
 	CategoryScale,
 	LinearScale,
-	Tooltip
+	Tooltip,
+	type ChartOptions
 } from 'chart.js';
 
-export const initializeScoreDataPointChart = (id: string, scoreData: ScoreDataPoint[]) => {
+export const initializeScoreDataPointChart = (
+	id: string,
+	scoreData: QuizScoreSummaryDataPoint[]
+) => {
 	Chart.register(BarController, BarElement, Legend, CategoryScale, LinearScale, Tooltip);
 
 	Tooltip.positioners.cursor = function (chartElements, coordinates) {
 		return coordinates;
 	};
 
-	new Chart(document.getElementById(id), {
+	return new Chart(document.getElementById(id), {
 		type: 'bar',
 		options: chartOptions,
 		data: {
@@ -35,7 +39,7 @@ export const initializeScoreDataPointChart = (id: string, scoreData: ScoreDataPo
 	});
 };
 
-export const chartOptions = {
+const chartOptions: ChartOptions = {
 	aspectRatio: 3,
 	animation: true,
 	plugins: {
@@ -65,7 +69,8 @@ export const chartOptions = {
 				font: {
 					size: 20
 				}
-			}
+			},
+			beginAtZero: true
 		}
 	}
 };

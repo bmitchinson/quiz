@@ -72,7 +72,6 @@
 	}
 
 	function postCompletedScore() {
-		console.log('posting score');
 		const formData = new FormData();
 		formData.append('correctAnswers', results.filter((r) => r.correct).length);
 		formData.append('timeStarted', timeStarted);
@@ -82,9 +81,7 @@
 		fetch('?/postCompletedScore', {
 			method: 'POST',
 			body: formData
-		}).then(() => {
-			console.log('score posted ✅');
-		});
+		}).then(() => {});
 	}
 
 	// Function to handle answer submission

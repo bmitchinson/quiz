@@ -275,7 +275,7 @@ export async function resetQuizzesToTestData(): Promise<void> {
 					title: 'temp',
 					accessCode: '0' + x + y + z,
 					questionsData: '1+2|3+4|5+6|1+2|3+4|5+6|1+2|3+4|5+6|0+0',
-					totalQuestions: 3,
+					totalQuestions: 10,
 					year: 2425,
 					grade,
 					quarter,

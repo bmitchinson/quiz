@@ -1,19 +1,28 @@
 <script lang="ts">
-	import Card from '$lib/components/Card.svelte';
 	import { onMount } from 'svelte';
 	import { initializeScoreDataPointChart } from '$lib/chart/chartutils';
-	import type { ScoreDataPoint } from '../chart/scoreTooltip';
+	import type { QuizScoreSummaryDataPoint } from '../chart/scoreTooltip';
+	import type { Chart, ChartTypeRegistry } from 'chart.js';
 
-	export let scoreData: ScoreDataPoint[];
+	export let scoreData: QuizScoreSummaryDataPoint[];
 	export let title: string;
 	export let canvasId: string;
+	let chartReference: Chart<keyof ChartTypeRegistry, QuizScoreSummaryDataPoint[], string>;
 
 	onMount(() => {
-		initializeScoreDataPointChart(canvasId, scoreData);
+		chartReference = initializeScoreDataPointChart(canvasId, scoreData);
+		console.log('chartReference update', chartReference.update);
 	});
+
+	$: {
+		if (chartReference) {
+			chartReference.data.datasets[0].data = scoreData;
+			chartReference.update();
+		}
+	}
 </script>
 
-<Card additionalClasses={'w-5/6'}>
-	<h1 class="text-3xl text-center font-bold">{title}</h1>
+<div>
+	<h1 class="text-3xl text-center mb-4 font-bold">{title}</h1>
 	<canvas id={canvasId}></canvas>
-</Card>
+</div>

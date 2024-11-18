@@ -1,26 +1,62 @@
 <script lang="ts">
 	import ScoreChart from '$lib/components/ScoreChart.svelte';
-	import { type ScoreDataPoint } from '$lib/chart/scoreTooltip';
+	import { type QuizScoreSummaryDataPoint } from '$lib/chart/scoreTooltip';
+	import Card from '$lib/components/Card.svelte';
+	import RadioButtons from '$lib/components/RadioButtons.svelte';
+	import { grades } from '$lib/components/RadioButtons';
+	import { onMount } from 'svelte';
 
-	const sampleData: ScoreDataPoint[] = [
-		{ averageScore: 8.3, quizName: 'Q1-A', submittedScores: 18 },
-		{ averageScore: 9.7, quizName: 'Q1-B', submittedScores: 20 },
-		{ averageScore: 10, quizName: 'Q1-C', submittedScores: 22 },
-		{ averageScore: 10, quizName: 'Q1-D', submittedScores: 21 },
-		{ averageScore: 8.1, quizName: 'Q2-A', submittedScores: 19 },
-		{ averageScore: 9.4, quizName: 'Q2-B', submittedScores: 23 },
-		{ averageScore: 10, quizName: 'Q2-C', submittedScores: 17 },
-		{ averageScore: 10, quizName: 'Q2-D', submittedScores: 16 },
-		{ averageScore: 8.2, quizName: 'Q3-A', submittedScores: 15 },
-		{ averageScore: 9.8, quizName: 'Q3-B', submittedScores: 22 },
-		{ averageScore: 10, quizName: 'Q3-C', submittedScores: 21 },
-		{ averageScore: 10, quizName: 'Q3-D', submittedScores: 20 },
-		{ averageScore: 8.4, quizName: 'Q4-A', submittedScores: 18 },
-		{ averageScore: 9.1, quizName: 'Q4-B', submittedScores: 19 },
-		{ averageScore: 10, quizName: 'Q4-C', submittedScores: 23 },
-		{ averageScore: 10, quizName: 'Q4-D', submittedScores: 17 }
-	];
+	let sampleData: QuizScoreSummaryDataPoint[] = [];
+
+	let onGradeChange = (n: string) => {};
+
+	onMount(() => {
+		onGradeChange = (newSelectedGrade: string) => {
+			tableLoading = true;
+			fetch('/api/quiz/getSummary', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ grade: newSelectedGrade })
+			})
+				.then((res) => res.json())
+				.then((data) => {
+					sampleData = data.summary;
+					setTimeout(() => {
+						tableLoading = false;
+					}, 400);
+				})
+				.catch((err) => {
+					console.error(err);
+					setTimeout(() => {
+						tableLoading = false;
+					}, 400);
+				});
+		};
+	});
+
+	// todo: use these somehow
+	let tableLoading = false;
+	let noData = false;
+	//
+	let selectedGrade = '1';
+
+	$: onGradeChange(selectedGrade);
 </script>
 
-<ScoreChart canvasId="chartContainer" scoreData={sampleData} title={'Grade 1: Scores'} />
-<ScoreChart canvasId="chartContainer2" scoreData={sampleData} title={'Grade 1: Scores'} />
+<Card additionalClasses={'w-5/6'}>
+	<div class="flex flex-row items-center justify-center space-x-4">
+		<p class="block text-gray-700 font-medium">Select Grade:</p>
+		<RadioButtons name="grade" options={grades} bind:selectedOptionValue={selectedGrade} />
+	</div>
+	<ScoreChart
+		canvasId="chartContainer"
+		scoreData={sampleData}
+		title={`Score Overview: Grade ${selectedGrade} - Year 24-25`}
+	/>
+</Card>
+
+<Card additionalClasses={'w-5/6'}>
+	<h1 class="text-3xl text-center font-bold">Student Scores</h1>
+</Card>
