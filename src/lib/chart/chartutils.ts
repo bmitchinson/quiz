@@ -61,7 +61,8 @@ const chartOptions: ChartOptions = {
 			ticks: {
 				font: {
 					size: 20
-				}
+				},
+				autoSkip: false
 			}
 		},
 		y: {

@@ -113,7 +113,7 @@ export class Database {
 	// todo: year - make selector in UI
 	async getSummaryOfScores(grade: number, year = 2425) {
 		try {
-			return await prisma.score.groupBy({
+			const summary = await prisma.score.groupBy({
 				by: ['quizCode'],
 				where: {
 					quiz: {
@@ -131,6 +131,19 @@ export class Database {
 					id: true
 				}
 			});
+			return summary.reduce(
+				(acc, summary) => {
+					acc[summary.quizCode] = summary;
+					return acc;
+				},
+				{} as {
+					[quizCode: string]: {
+						_avg: { correctAnswers: number };
+						_count: { id: number };
+						quizCode: string;
+					};
+				}
+			);
 		} catch (error) {
 			console.error('Error getting a summary of scores:', error);
 			throw error;

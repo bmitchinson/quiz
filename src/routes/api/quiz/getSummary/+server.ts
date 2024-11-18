@@ -7,22 +7,53 @@ const db = new Database();
 
 // todo protect by teacher or admin (validate takes a list)
 
+const getReadableQuizNamesForGrade = (grade: number) => {
+	return [
+		`G${grade}-Q1-A`,
+		`G${grade}-Q1-B`,
+		`G${grade}-Q1-C`,
+		`G${grade}-Q1-D`,
+		`G${grade}-Q2-A`,
+		`G${grade}-Q2-B`,
+		`G${grade}-Q2-C`,
+		`G${grade}-Q2-D`,
+		`G${grade}-Q3-A`,
+		`G${grade}-Q3-B`,
+		`G${grade}-Q3-C`,
+		`G${grade}-Q3-D`,
+		`G${grade}-Q4-A`,
+		`G${grade}-Q4-B`,
+		`G${grade}-Q4-C`,
+		`G${grade}-Q4-D`
+	];
+};
+
 export const POST = async ({ request, cookies }) => {
 	const data = await request.json();
 	const grade = parseInt(data.grade);
 
-	const summary = await db.getSummaryOfScores(grade);
-	const quizCodes = summary.map((quizSummary) => quizSummary.quizCode);
-	const quizzesByAccessCode = await db.getQuizzesByAccessCodes(quizCodes);
+	const summaryMapByAccessCode = await db.getSummaryOfScores(grade);
+	const quizzesByAccessCode = await db.getQuizzesByAccessCodes(Object.keys(summaryMapByAccessCode));
+	const allQuizzes = Object.values(quizzesByAccessCode);
 
-	const result: QuizScoreSummaryDataPoint[] = summary.map((quizSummary) => ({
-		averageScore: Math.round(quizSummary._avg.correctAnswers * 100) / 100,
-		submittedScores: quizSummary._count.id,
-		quizName: getReadableTitleOfQuiz(quizzesByAccessCode[quizSummary.quizCode]),
-		totalQuestions: quizzesByAccessCode[quizSummary.quizCode].totalQuestions
-	}));
-
-	const sortedByQuizName = result.sort((a, b) => a.quizName.localeCompare(b.quizName));
+	const result: QuizScoreSummaryDataPoint[] = getReadableQuizNamesForGrade(grade).map(
+		(qReadableName) => {
+			const quiz = allQuizzes.find((q) => getReadableTitleOfQuiz(q) === qReadableName);
+			if (quiz) {
+				const quizSummary = summaryMapByAccessCode[quiz.accessCode];
+				return {
+					averageScore: Math.round(quizSummary._avg.correctAnswers * 100) / 100,
+					submittedScores: quizSummary._count.id,
+					quizName: qReadableName,
+					totalQuestions: quiz.totalQuestions
+				};
+			} else {
+				return {
+					quizName: qReadableName
+				};
+			}
+		}
+	);
 
 	return json({ success: true, summary: result });
 };
