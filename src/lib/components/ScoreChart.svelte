@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { initializeScoreDataPointChart } from '$lib/chart/chartutils';
-	import type { QuizScoreSummaryDataPoint } from '../chart/scoreTooltip';
+	import type { QuizScoreSummaryDataPoint } from '$lib/chart/scoreTooltip';
 	import type { Chart, ChartTypeRegistry } from 'chart.js';
 
 	export let scoreData: QuizScoreSummaryDataPoint[];
@@ -11,12 +11,16 @@
 
 	onMount(() => {
 		chartReference = initializeScoreDataPointChart(canvasId, scoreData);
-		console.log('chartReference update', chartReference.update);
 	});
 
 	$: {
 		if (chartReference) {
 			chartReference.data.datasets[0].data = scoreData;
+			// @ts-ignore
+			chartReference.options.scales.y.max = scoreData.reduce(
+				(max, item) => (item.totalQuestions > max ? item.totalQuestions : max),
+				0
+			);
 			chartReference.update();
 		}
 	}
