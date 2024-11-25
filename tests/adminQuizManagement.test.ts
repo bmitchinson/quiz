@@ -1,11 +1,5 @@
 import test, { expect } from '@playwright/test';
-import {
-	clearAllDbEntries,
-	getQuizByMetadata,
-	getQuizzes,
-	resetQuizzesToTestData,
-	loginAsAdmin
-} from './testutils';
+import { getQuizByMetadata, getQuizzes, resetQuizzesToTestData, loginAsAdmin } from './testutils';
 
 test.beforeAll(async () => {
 	await resetQuizzesToTestData();

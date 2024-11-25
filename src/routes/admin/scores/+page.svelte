@@ -45,7 +45,7 @@
 	$: onGradeChange(selectedGrade);
 </script>
 
-<Card additionalClasses={'w-5/6'}>
+<Card id={'scorechart-card'} additionalClasses={'w-5/6'}>
 	<div class="flex flex-row items-center justify-center space-x-4">
 		<p class="block text-gray-700 font-medium">Select Grade:</p>
 		<RadioButtons name="grade" options={grades} bind:selectedOptionValue={selectedGrade} />

@@ -11,6 +11,7 @@ import {
 	studentGroup7Mitchinson,
 	studentGroup8RosalesMedina
 } from './datasets';
+import type { Page } from '@playwright/test';
 
 const db = new Database();
 
@@ -85,25 +86,25 @@ export async function resetStudentsAndScores(): Promise<void> {
 		.then(async (quizzes) => quizzes.map((quiz) => quiz.accessCode));
 
 	const groupsToSeedScoresOf = [
-		{ s: studentGroup1, sG: () => (_50Chance() ? 7 : 6), q: g1QuizCodes },
-		{ s: studentGroup2, sG: () => (_50Chance() ? 8 : 7), q: g1QuizCodes },
-		{ s: studentGroup3, sG: () => (_50Chance() ? 9 : 8), q: g1QuizCodes },
-		{ s: studentGroup4, sG: () => (_50Chance() ? 10 : 9), q: g1QuizCodes },
-		{ s: studentGroup5, sG: () => 7, q: g2QuizCodes },
-		{ s: studentGroup6, sG: () => 8, q: g2QuizCodes },
-		{ s: studentGroup7, sG: () => 9, q: g2QuizCodes },
-		{ s: studentGroup8, sG: () => 10, q: g2QuizCodes }
+		{ s: studentGroup1, sG: (i) => 3.5 + i * 0.2, q: g1QuizCodes },
+		{ s: studentGroup2, sG: (i) => 4.5 + i * 0.2, q: g1QuizCodes },
+		{ s: studentGroup3, sG: (i) => 2.5 + i * 0.2, q: g1QuizCodes },
+		{ s: studentGroup4, sG: (i) => 5.5 + i * 0.2, q: g1QuizCodes },
+		{ s: studentGroup5, sG: (i) => 5.5 + i * 0.2, q: g2QuizCodes },
+		{ s: studentGroup6, sG: (i) => 6.5 + i * 0.2, q: g2QuizCodes },
+		{ s: studentGroup7, sG: (i) => 4.5 + i * 0.2, q: g2QuizCodes },
+		{ s: studentGroup8, sG: (i) => 5.5 + i * 0.2, q: g2QuizCodes }
 	];
 
 	const scoresToCreate = [];
 
 	groupsToSeedScoresOf.forEach((group) => {
 		group.s.forEach((studentId) => {
-			group.q.forEach((quizCode) => {
+			group.q.forEach((quizCode, qIndex) => {
 				scoresToCreate.push({
 					studentId,
 					quizCode,
-					correctAnswers: group.sG()
+					correctAnswers: group.sG(qIndex)
 				});
 			});
 		});
@@ -211,14 +212,14 @@ export async function getQuizzes() {
 
 // NOTE: Common UI Ops //////////////////////////////////////////
 
-export const loginAsAdmin = async (page) => {
+export const loginAsAdmin = async (page: Page) => {
 	await page.goto('/login');
 	await page.locator(`button:has-text("Admin")`).click();
 	await page.locator(`input`).fill('admin');
 	await page.locator(`button:has-text("Submit")`).click();
 };
 
-export const loginAsTeacher = async (page) => {
+export const loginAsTeacher = async (page: Page) => {
 	await page.goto('/login');
 	await page.locator(`button:has-text("Teacher")`).click();
 	await page.locator(`#teacherName`).fill('mitchinson');
@@ -226,7 +227,7 @@ export const loginAsTeacher = async (page) => {
 	await page.locator(`button:has-text("Submit")`).click();
 };
 
-export const loginAsStudentSecondgrader4 = async (page) => {
+export const loginAsStudentSecondgrader4 = async (page: Page) => {
 	await page.goto('/login');
 	await page.locator(`button:has-text("Student")`).click();
 	await page.locator(`div[id="grade-select-2"]`).click();
