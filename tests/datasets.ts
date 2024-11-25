@@ -1,4 +1,9 @@
 export const studentGroup1Marcos = [
+	'firstgrader1',
+	'firstgrader2',
+	'firstgrader3',
+	'firstgrader4',
+	'firstgrader5',
 	'ajohnson',
 	'bsmith',
 	'cmiller',
@@ -161,6 +166,10 @@ export const studentGroup6Eklund = [
 	'aabbott'
 ];
 export const studentGroup7Mitchinson = [
+	'secondgrader1',
+	'secondgrader2',
+	'secondgrader3',
+	'secondgrader4',
 	'bbarrett',
 	'ccarter',
 	'dduncan',

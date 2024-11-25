@@ -14,44 +14,7 @@ import {
 
 const db = new Database();
 
-export const loginAsAdmin = async (page) => {
-	await page.goto('/login');
-	await page.locator(`button:has-text("Admin")`).click();
-	await page.locator(`input`).fill('admin');
-	await page.locator(`button:has-text("Submit")`).click();
-};
-
-export const loginAsTeacher = async (page) => {
-	await page.goto('/login');
-	await page.locator(`button:has-text("Teacher")`).click();
-	await page.locator(`#teacherName`).fill('mitchinson');
-	await page.locator(`#teacherPassword`).fill('teacher');
-	await page.locator(`button:has-text("Submit")`).click();
-};
-
-export const loginAsStudentSecondgrader4 = async (page) => {
-	await page.goto('/login');
-	await page.locator(`button:has-text("Student")`).click();
-	await page.locator(`div[id="grade-select-2"]`).click();
-	await page.selectOption('select', 'mitchinson');
-	await page.locator(`#studentName`).fill('secondgrader4');
-	await page.locator(`button:has-text("Submit")`).click();
-};
-
-export const clearAllDbEntries = async () => {
-	await db.prisma.student.deleteMany({});
-	await db.prisma.teacher.deleteMany({});
-	await db.prisma.quiz.deleteMany({});
-	await clearDbScores();
-};
-
-export const clearDbScores = async () => {
-	await db.prisma.score.deleteMany({});
-};
-
-export const amountOfStudentsForTeacher = async (teacherName: string): Promise<number> => {
-	return (await db.prisma.student.findMany({ where: { teacher: { name: teacherName } } })).length;
-};
+// NOTE: Seed Data Functions //////////////////////////////////////////
 
 export async function initializeTestTeachers(): Promise<void> {
 	await db.addTeacher('marcos', 1);
@@ -68,61 +31,39 @@ export async function initializeTestTeachers(): Promise<void> {
 	await db.addTeacher('mrs_fifthgrade', 5);
 }
 
-export async function addFourSecondGraderStudents() {
-	await db.addStudents(
-		['secondgrader1', 'secondgrader2', 'secondgrader3', 'secondgrader4'],
-		'mitchinson'
-	);
-}
-
 export async function resetStudentsAndScores(): Promise<void> {
 	await db.prisma.score.deleteMany({});
 	await db.prisma.student.deleteMany({});
 
-	const group1StudentIds = await db
-		.addStudents(
-			[
-				'firstgrader1',
-				'firstgrader2',
-				'firstgrader3',
-				'firstgrader4',
-				'firstgrader5',
-				...studentGroup1Marcos
-			],
-			'marcos'
-		)
+	const studentGroup1 = await db
+		.addStudents(studentGroup1Marcos, 'marcos')
 		.then((students) => students.map((student) => student.id));
 
-	const group2StudentIds = await db
+	const studentGroup2 = await db
 		.addStudents(studentGroup2Burke, 'burke')
 		.then((students) => students.map((student) => student.id));
 
-	const group3StudentIds = await db
+	const studentGroup3 = await db
 		.addStudents(studentGroup3Doherty, 'doherty')
 		.then((students) => students.map((student) => student.id));
-	const group4StudentIds = await db
+
+	const studentGroup4 = await db
 		.addStudents(studentGroup4Schillo, 'schillo')
 		.then((students) => students.map((student) => student.id));
 
-	const group5StudentIds = await db
+	const studentGroup5 = await db
 		.addStudents(studentGroup5Boyle, 'boyle')
 		.then((students) => students.map((student) => student.id));
-	const group6StudentIds = await db
+
+	const studentGroup6 = await db
 		.addStudents(studentGroup6Eklund, 'eklund')
 		.then((students) => students.map((student) => student.id));
-	const group7StudentIds = await db
-		.addStudents(
-			[
-				'secondgrader1',
-				'secondgrader2',
-				'secondgrader3',
-				'secondgrader4',
-				...studentGroup7Mitchinson
-			],
-			'mitchinson'
-		)
+
+	const studentGroup7 = await db
+		.addStudents(studentGroup7Mitchinson, 'mitchinson')
 		.then((students) => students.map((student) => student.id));
-	const group8StudentIds = await db
+
+	const studentGroup8 = await db
 		.addStudents(studentGroup8RosalesMedina, 'rosales-medina')
 		.then((students) => students.map((student) => student.id));
 
@@ -143,127 +84,36 @@ export async function resetStudentsAndScores(): Promise<void> {
 		.findMany({ where: { grade: 2 } })
 		.then(async (quizzes) => quizzes.map((quiz) => quiz.accessCode));
 
+	const groupsToSeedScoresOf = [
+		{ s: studentGroup1, sG: () => (_50Chance() ? 7 : 6), q: g1QuizCodes },
+		{ s: studentGroup2, sG: () => (_50Chance() ? 8 : 7), q: g1QuizCodes },
+		{ s: studentGroup3, sG: () => (_50Chance() ? 9 : 8), q: g1QuizCodes },
+		{ s: studentGroup4, sG: () => (_50Chance() ? 10 : 9), q: g1QuizCodes },
+		{ s: studentGroup5, sG: () => 7, q: g2QuizCodes },
+		{ s: studentGroup6, sG: () => 8, q: g2QuizCodes },
+		{ s: studentGroup7, sG: () => 9, q: g2QuizCodes },
+		{ s: studentGroup8, sG: () => 10, q: g2QuizCodes }
+	];
+
 	const scoresToCreate = [];
 
-	// NOTE: first grade score data //////////////////////////////////////////
-	group1StudentIds.forEach((id) =>
-		grade1QuizAccessCodes.forEach((accessCode) =>
-			scoresToCreate.push({
-				correctAnswers: fiftyPercentChance() ? 7 : 6,
-				quizCode: accessCode,
-				studentId: id
-			})
-		)
-	);
+	groupsToSeedScoresOf.forEach((group) => {
+		group.s.forEach((studentId) => {
+			group.q.forEach((quizCode) => {
+				scoresToCreate.push({
+					studentId,
+					quizCode,
+					correctAnswers: group.sG()
+				});
+			});
+		});
+	});
 
-	group2StudentIds.forEach((id) =>
-		grade1QuizAccessCodes.forEach((accessCode) =>
-			scoresToCreate.push({
-				correctAnswers: fiftyPercentChance() ? 8 : 7,
-				quizCode: accessCode,
-				studentId: id
-			})
-		)
-	);
-	group3StudentIds.forEach((id) =>
-		grade1QuizAccessCodes.forEach((accessCode) =>
-			scoresToCreate.push({
-				correctAnswers: fiftyPercentChance() ? 9 : 8,
-				quizCode: accessCode,
-				studentId: id
-			})
-		)
-	);
-	group4StudentIds.forEach((id) =>
-		grade1QuizAccessCodes.forEach((accessCode) =>
-			scoresToCreate.push({
-				correctAnswers: fiftyPercentChance() ? 10 : 9,
-				quizCode: accessCode,
-				studentId: id
-			})
-		)
-	);
-
-	// NOTE: second grade score data //////////////////////////////////////////
-	group5StudentIds.forEach((id) =>
-		grade2QuizAccessCodes.forEach((accessCode) =>
-			scoresToCreate.push({
-				correctAnswers: 7,
-				quizCode: accessCode,
-				studentId: id
-			})
-		)
-	);
-	group6StudentIds.forEach((id) =>
-		grade2QuizAccessCodes.forEach((accessCode) =>
-			scoresToCreate.push({
-				correctAnswers: 8,
-				quizCode: accessCode,
-				studentId: id
-			})
-		)
-	);
-	group7StudentIds.forEach((id) =>
-		grade2QuizAccessCodes.forEach((accessCode) =>
-			scoresToCreate.push({
-				correctAnswers: 9,
-				quizCode: accessCode,
-				studentId: id
-			})
-		)
-	);
-	group8StudentIds.forEach((id) =>
-		grade2QuizAccessCodes.forEach((accessCode) =>
-			scoresToCreate.push({
-				correctAnswers: 10,
-				quizCode: accessCode,
-				studentId: id
-			})
-		)
-	);
 	//////////////////////////////////////////////////////////////////
 	await db.prisma.score.createMany({
 		data: scoresToCreate
 	});
 }
-
-const grade1QuizAccessCodes = [
-	'0000',
-	'0001',
-	'0002',
-	'0003',
-	'0010',
-	'0011',
-	'0012',
-	'0013',
-	'0020',
-	'0021',
-	'0022',
-	'0023',
-	'0030',
-	'0031',
-	'0032',
-	'0033'
-];
-
-const grade2QuizAccessCodes = [
-	'0100',
-	'0101',
-	'0102',
-	'0103',
-	'0110',
-	'0111',
-	'0112',
-	'0113',
-	'0120',
-	'0121',
-	'0122',
-	'0123',
-	'0130',
-	'0131',
-	'0132',
-	'0133'
-];
 
 export async function resetQuizzesToTestData(): Promise<void> {
 	await db.prisma.quiz.deleteMany({});
@@ -302,6 +152,38 @@ export async function resetQuizzesToTestData(): Promise<void> {
 	);
 }
 
+export const clearAllDbEntries = async () => {
+	await db.prisma.student.deleteMany({});
+	await db.prisma.teacher.deleteMany({});
+	await db.prisma.quiz.deleteMany({});
+	await clearDbScores();
+};
+
+export const clearDbScores = async () => {
+	await db.prisma.score.deleteMany({});
+};
+
+export async function createScoreForQuiz3ByStudentName(studentName: string) {
+	const quiz = await getQuizByMetadata({
+		year: 2425,
+		grade: 3,
+		quarter: 1,
+		sequenceLetter: 'A'
+	});
+	const student = await db.prisma.student.findFirst({ where: { name: studentName } });
+	await db.prisma.score.create({
+		data: {
+			quiz: {
+				connect: { accessCode: quiz?.accessCode }
+			},
+			student: { connect: { id: student.id } },
+			correctAnswers: 2
+		}
+	});
+}
+
+// NOTE: Database Gets //////////////////////////////////////////
+
 export async function getQuizByMetadata(opts: {
 	year: number;
 	grade: number;
@@ -327,25 +209,83 @@ export async function getQuizzes() {
 	return await db.prisma.quiz.findMany({});
 }
 
-export async function createScoreForQuiz3ByStudentName(studentName: string) {
-	const quiz = await getQuizByMetadata({
-		year: 2425,
-		grade: 3,
-		quarter: 1,
-		sequenceLetter: 'A'
-	});
-	const student = await db.prisma.student.findFirst({ where: { name: studentName } });
-	await db.prisma.score.create({
-		data: {
-			quiz: {
-				connect: { accessCode: quiz?.accessCode }
-			},
-			student: { connect: { id: student.id } },
-			correctAnswers: 2
-		}
-	});
+// NOTE: Common UI Ops //////////////////////////////////////////
+
+export const loginAsAdmin = async (page) => {
+	await page.goto('/login');
+	await page.locator(`button:has-text("Admin")`).click();
+	await page.locator(`input`).fill('admin');
+	await page.locator(`button:has-text("Submit")`).click();
+};
+
+export const loginAsTeacher = async (page) => {
+	await page.goto('/login');
+	await page.locator(`button:has-text("Teacher")`).click();
+	await page.locator(`#teacherName`).fill('mitchinson');
+	await page.locator(`#teacherPassword`).fill('teacher');
+	await page.locator(`button:has-text("Submit")`).click();
+};
+
+export const loginAsStudentSecondgrader4 = async (page) => {
+	await page.goto('/login');
+	await page.locator(`button:has-text("Student")`).click();
+	await page.locator(`div[id="grade-select-2"]`).click();
+	await page.selectOption('select', 'mitchinson');
+	await page.locator(`#studentName`).fill('secondgrader4');
+	await page.locator(`button:has-text("Submit")`).click();
+};
+
+export const amountOfStudentsForTeacher = async (teacherName: string): Promise<number> => {
+	return (await db.prisma.student.findMany({ where: { teacher: { name: teacherName } } })).length;
+};
+
+export async function addFourSecondGraderStudents() {
+	await db.addStudents(
+		['secondgrader1', 'secondgrader2', 'secondgrader3', 'secondgrader4'],
+		'mitchinson'
+	);
 }
 
-export function fiftyPercentChance(): boolean {
+// NOTE: Utils //////////////////////////////////////////
+
+const g1QuizCodes = [
+	'0000',
+	'0001',
+	'0002',
+	'0003',
+	'0010',
+	'0011',
+	'0012',
+	'0013',
+	'0020',
+	'0021',
+	'0022',
+	'0023',
+	'0030',
+	'0031',
+	'0032',
+	'0033'
+];
+
+const g2QuizCodes = [
+	'0100',
+	'0101',
+	'0102',
+	'0103',
+	'0110',
+	'0111',
+	'0112',
+	'0113',
+	'0120',
+	'0121',
+	'0122',
+	'0123',
+	'0130',
+	'0131',
+	'0132',
+	'0133'
+];
+
+export function _50Chance(): boolean {
 	return Math.random() < 0.5;
 }
