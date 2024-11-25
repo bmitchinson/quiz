@@ -60,7 +60,7 @@ const chartOptions: ChartOptions = {
 		x: {
 			ticks: {
 				font: {
-					size: 20
+					size: 18
 				},
 				autoSkip: false
 			}
@@ -68,7 +68,12 @@ const chartOptions: ChartOptions = {
 		y: {
 			ticks: {
 				font: {
-					size: 20
+					size: 17
+				},
+				min: 0,
+				max: 100,
+				callback: function (value) {
+					return ((value / this.max) * 100).toFixed(0) + '%'; // convert it to percentage
 				}
 			},
 			beginAtZero: true
