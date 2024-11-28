@@ -3,7 +3,7 @@
 	import { initializeScoreDataPointChart } from '$lib/chart/chartutils';
 	import type { QuizScoreSummaryDataPoint } from '$lib/chart/scoreTooltip';
 	import type { Chart, ChartTypeRegistry } from 'chart.js';
-	import LoadingSquare from './LoadingSquare.svelte';
+	import LoadingSquare from '../LoadingSquare.svelte';
 
 	export let scoreData: QuizScoreSummaryDataPoint[];
 	export let title: string;
