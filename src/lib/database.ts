@@ -155,6 +155,61 @@ export class Database {
 		}
 	}
 
+	async getScores(filters: {
+		grade: number;
+		teacherName: string;
+		quizCode: string;
+		studentName: string;
+		quizQuarter: number;
+		quizSequenceLetter: string;
+	}) {
+		try {
+			const scores = await prisma.score.findMany({
+				where: {
+					quiz: {
+						grade: filters.grade,
+						accessCode: filters.quizCode,
+						quarter: filters.quizQuarter,
+						sequenceLetter: filters.quizSequenceLetter
+					},
+					student: {
+						name: filters.studentName,
+						archived: false,
+						teacher: {
+							name: filters.teacherName
+						}
+					}
+				},
+				select: {
+					correctAnswers: true,
+					createdAt: true,
+					quiz: {
+						select: {
+							totalQuestions: true
+						}
+					},
+					student: {
+						select: {
+							name: true,
+							teacher: {
+								select: {
+									name: true
+								}
+							}
+						}
+					}
+				},
+				orderBy: {
+					createdAt: 'desc'
+				}
+			});
+			return scores;
+		} catch (error) {
+			console.error('Error fetching scores:', error);
+			throw error;
+		}
+	}
+
 	async archiveStudent(name: string, teacherId: int): Promise<void> {
 		try {
 			// using updateMany instead of update because prisma doesn't know that
