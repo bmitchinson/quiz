@@ -31,8 +31,10 @@ export const POST = async ({ request, cookies }) =>
 	validateRole(request, cookies, ['Admin', 'Teacher'], async () => {
 		const data = await request.json();
 		const grade = parseInt(data.grade);
+		const teacherName = data.teacherName;
+		console.log('tname', teacherName);
 
-		const summaryMapByAccessCode = await db.getSummaryOfScores(grade);
+		const summaryMapByAccessCode = await db.getSummaryOfScores(grade, teacherName);
 		const quizzesByAccessCode = await db.getQuizzesByAccessCodes(
 			Object.keys(summaryMapByAccessCode)
 		);

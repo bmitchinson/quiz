@@ -13,17 +13,17 @@
 
 	let sampleData: QuizScoreSummaryDataPoint[] = [];
 
-	let fetchQuizScoreSummary = (grade: string, teacher: string) => {};
+	let fetchQuizScoreSummary = (grade: string, teacherName: string) => {};
 
 	onMount(() => {
-		fetchQuizScoreSummary = (grade: string, teacher: string) => {
+		fetchQuizScoreSummary = (grade: string, teacherName: string) => {
 			tableLoading = true;
 			fetch('/api/quiz/getSummary', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ grade, teacher })
+				body: JSON.stringify({ grade, teacherName })
 			})
 				.then((res) => res.json())
 				.then((data) => {
@@ -46,8 +46,8 @@
 	});
 
 	let selectedGrade = '1';
-	let selectedTeacher = 'all';
-	$: fetchQuizScoreSummary(selectedGrade, selectedTeacher);
+	let selectedTeacherName = 'all';
+	$: fetchQuizScoreSummary(selectedGrade, selectedTeacherName);
 
 	let tableLoading = false;
 	let dataExists = true;
@@ -56,12 +56,12 @@
 <Card id={'scorechart-card'} additionalClasses={'w-5/6'}>
 	<div class="flex flex-row items-center justify-center space-x-4 flex-wrap">
 		<div class="flex flex-row items-center space-x-4">
-			<p class="block text-gray-700 font-medium">Grade:</p>
+			<p class="block font-semibold">Grade:</p>
 			<RadioButtons name="grade" options={grades} bind:selectedOptionValue={selectedGrade} />
 		</div>
 		<div class="flex flex-row items-center w-96 space-x-4">
 			<span class="block font-semibold">Teacher:</span>
-			<select bind:value={selectedTeacher} class="w-full px-3 py-2 border rounded-md" required>
+			<select bind:value={selectedTeacherName} class="w-full px-3 py-2 border rounded-md" required>
 				<option value="all" selected>All Teachers</option>
 				{#each teacherOptions as teacher}
 					<option value={teacher}>{teacher}</option>
