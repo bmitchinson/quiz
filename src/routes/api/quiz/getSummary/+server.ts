@@ -36,10 +36,12 @@ export const POST = async ({ request, cookies }) => {
 	const quizzesByAccessCode = await db.getQuizzesByAccessCodes(Object.keys(summaryMapByAccessCode));
 	const allQuizzes = Object.values(quizzesByAccessCode);
 
+	let dataExists = false;
 	const result: QuizScoreSummaryDataPoint[] = getReadableQuizNamesForGrade(grade).map(
 		(qReadableName) => {
 			const quiz = allQuizzes.find((q) => getReadableTitleOfQuiz(q) === qReadableName);
 			if (quiz) {
+				dataExists = true;
 				const quizSummary = summaryMapByAccessCode[quiz.accessCode];
 				return {
 					averageScore: Math.round(quizSummary._avg.correctAnswers * 100) / 100,
@@ -55,5 +57,5 @@ export const POST = async ({ request, cookies }) => {
 		}
 	);
 
-	return json({ success: true, summary: result });
+	return json({ success: true, summary: result, dataExists });
 };

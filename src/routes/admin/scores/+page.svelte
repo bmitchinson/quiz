@@ -23,12 +23,16 @@
 				.then((res) => res.json())
 				.then((data) => {
 					sampleData = data.summary;
+					dataExists = data.dataExists;
+					console.log(data);
 					setTimeout(() => {
 						tableLoading = false;
 					}, 400);
 				})
 				.catch((err) => {
 					console.error(err);
+					sampleData = [];
+					dataExists = false;
 					setTimeout(() => {
 						tableLoading = false;
 					}, 400);
@@ -36,13 +40,11 @@
 		};
 	});
 
-	// todo: use these somehow
-	let tableLoading = false;
-	let noData = false;
-	//
 	let selectedGrade = '1';
-
 	$: onGradeChange(selectedGrade);
+
+	let tableLoading = false;
+	let dataExists = true;
 </script>
 
 <Card id={'scorechart-card'} additionalClasses={'w-5/6'}>
@@ -54,6 +56,8 @@
 		canvasId="chartContainer"
 		scoreData={sampleData}
 		title={`Score Overview: Grade ${selectedGrade} - Year 24-25`}
+		loading={tableLoading}
+		noData={!dataExists}
 	/>
 </Card>
 
