@@ -7,7 +7,7 @@ import { parseEnteredQuestionsIntoEvalAble } from '$lib/dataUtils';
 const db = new Database();
 
 export const load: PageServerLoad = async ({ request, cookies }) =>
-	validateRole(request, cookies, 'Admin', async () => {
+	validateRole(request, cookies, ['Admin'], async () => {
 		try {
 			const quizzes = await db.getAllQuizzes();
 			return { quizzes };
@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ request, cookies }) =>
 
 export const actions: Actions = {
 	addQuiz: async ({ request, cookies }) =>
-		validateRole(request, cookies, 'Admin', async () => {
+		validateRole(request, cookies, ['Admin'], async () => {
 			const formData = await request.formData();
 			const grade = parseInt(formData.get('grade'));
 			const quarter = parseInt(formData.get('quarter'));
@@ -37,7 +37,7 @@ export const actions: Actions = {
 		}),
 
 	deleteQuiz: async ({ request, cookies }) =>
-		validateRole(request, cookies, 'Admin', async () => {
+		validateRole(request, cookies, ['Admin'], async () => {
 			const formData = await request.formData();
 			const quizId = formData.get('quizId');
 

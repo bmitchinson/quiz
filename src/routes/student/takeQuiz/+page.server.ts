@@ -6,7 +6,7 @@ const db = new Database();
 
 export const actions: Actions = {
 	getQuiz: async ({ request, cookies }) =>
-		validateRole(request, cookies, 'Student', async () => {
+		validateRole(request, cookies, ['Student'], async () => {
 			const data = await request.formData();
 			const accessCode = data.get('accessCode');
 
@@ -28,7 +28,7 @@ export const actions: Actions = {
 		}),
 
 	postCompletedScore: async ({ request, cookies }) =>
-		validateRole(request, cookies, 'Student', async () => {
+		validateRole(request, cookies, ['Student'], async () => {
 			const data = await request.formData();
 
 			const correctAnswers = parseInt(data.get('correctAnswers'));

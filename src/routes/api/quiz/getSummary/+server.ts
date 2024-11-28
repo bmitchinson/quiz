@@ -1,11 +1,10 @@
 import { json } from '@sveltejs/kit';
 import { Database } from '$lib/database';
 import type { QuizScoreSummaryDataPoint } from '$lib/chart/scoreTooltip';
-import { getReadableTitleOfQuiz } from '../../../../lib/dataUtils.js';
+import { getReadableTitleOfQuiz } from '$lib/dataUtils.js';
+import { validateRole } from '$lib/passwordUtils.js';
 
 const db = new Database();
-
-// todo protect by teacher or admin (validate takes a list)
 
 const getReadableQuizNamesForGrade = (grade: number) => {
 	return [
@@ -28,34 +27,37 @@ const getReadableQuizNamesForGrade = (grade: number) => {
 	];
 };
 
-export const POST = async ({ request, cookies }) => {
-	const data = await request.json();
-	const grade = parseInt(data.grade);
+export const POST = async ({ request, cookies }) =>
+	validateRole(request, cookies, ['Admin', 'Teacher'], async () => {
+		const data = await request.json();
+		const grade = parseInt(data.grade);
 
-	const summaryMapByAccessCode = await db.getSummaryOfScores(grade);
-	const quizzesByAccessCode = await db.getQuizzesByAccessCodes(Object.keys(summaryMapByAccessCode));
-	const allQuizzes = Object.values(quizzesByAccessCode);
+		const summaryMapByAccessCode = await db.getSummaryOfScores(grade);
+		const quizzesByAccessCode = await db.getQuizzesByAccessCodes(
+			Object.keys(summaryMapByAccessCode)
+		);
+		const allQuizzes = Object.values(quizzesByAccessCode);
 
-	let dataExists = false;
-	const result: QuizScoreSummaryDataPoint[] = getReadableQuizNamesForGrade(grade).map(
-		(qReadableName) => {
-			const quiz = allQuizzes.find((q) => getReadableTitleOfQuiz(q) === qReadableName);
-			if (quiz) {
-				dataExists = true;
-				const quizSummary = summaryMapByAccessCode[quiz.accessCode];
-				return {
-					averageScore: Math.round(quizSummary._avg.correctAnswers * 100) / 100,
-					submittedScores: quizSummary._count.id,
-					quizName: qReadableName,
-					totalQuestions: quiz.totalQuestions
-				};
-			} else {
-				return {
-					quizName: qReadableName
-				};
+		let dataExists = false;
+		const result: QuizScoreSummaryDataPoint[] = getReadableQuizNamesForGrade(grade).map(
+			(qReadableName) => {
+				const quiz = allQuizzes.find((q) => getReadableTitleOfQuiz(q) === qReadableName);
+				if (quiz) {
+					dataExists = true;
+					const quizSummary = summaryMapByAccessCode[quiz.accessCode];
+					return {
+						averageScore: Math.round(quizSummary._avg.correctAnswers * 100) / 100,
+						submittedScores: quizSummary._count.id,
+						quizName: qReadableName,
+						totalQuestions: quiz.totalQuestions
+					};
+				} else {
+					return {
+						quizName: qReadableName
+					};
+				}
 			}
-		}
-	);
+		);
 
-	return json({ success: true, summary: result, dataExists });
-};
+		return json({ success: true, summary: result, dataExists });
+	});

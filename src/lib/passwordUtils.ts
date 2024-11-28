@@ -23,11 +23,11 @@ export function teacherPasswordIsValid(password: string): boolean {
 export async function validateRole<T>(
 	request: Request,
 	cookies: Cookies,
-	requiredRole: string,
+	requiredRole: string[],
 	callback: (request: Request) => T
 ): Promise<T> {
 	const loginType = await getSignedCookieValue('loginType', cookies);
-	if (loginType !== requiredRole) {
+	if (!requiredRole.includes(loginType)) {
 		clearCookies(cookies);
 		console.error('Bad actor attempt on route: ' + request.url);
 		return { error: 'Unauthorized. Knock it off this is a free app for a school district :(' };

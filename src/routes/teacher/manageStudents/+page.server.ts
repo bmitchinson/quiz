@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ request, cookies }) => {
 
 export const actions: Actions = {
 	addStudents: async ({ request, cookies }) =>
-		validateRole(request, cookies, 'Teacher', async () => {
+		validateRole(request, cookies, ['Teacher'], async () => {
 			const formData = await request.formData();
 			const lastNamesRawString = formData.get('lastNames')?.toString();
 			const teacherName = await getSignedCookieValue('loginName', cookies);
@@ -39,7 +39,7 @@ export const actions: Actions = {
 		}),
 
 	deleteStudent: async ({ request, cookies }) =>
-		validateRole(request, cookies, 'Teacher', async () => {
+		validateRole(request, cookies, ['Teacher'], async () => {
 			const formData = await request.formData();
 			const name = formData.get('name');
 
