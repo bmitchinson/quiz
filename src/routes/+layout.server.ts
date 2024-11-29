@@ -11,6 +11,6 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
 
 	return {
 		loginType,
-		loginName: await getSignedCookieValue('loginName', cookies)
+		loginName: await getSignedCookieValue('loginName', cookies).then((s) => s.toString())
 	};
 };

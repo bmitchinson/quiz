@@ -60,7 +60,7 @@ export class Database {
 		}
 	}
 
-	async getTeacher(lastname: string): Promise<void> {
+	async getTeacher(lastname: string) {
 		try {
 			return await this.prisma.teacher.findFirst({
 				where: { name: lastname }
@@ -69,6 +69,12 @@ export class Database {
 			console.error('Error looking up teacher:', error);
 			throw error;
 		}
+	}
+
+	async getAllTeachers() {
+		return await prisma.teacher.findMany({
+			select: { name: true, grade: true }
+		});
 	}
 
 	async addStudents(studentNames: string[], teacherName: string) {

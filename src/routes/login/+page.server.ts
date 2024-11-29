@@ -1,9 +1,9 @@
 import type { PageServerLoad } from './$types';
-import { prisma } from '$lib/database';
+import { Database } from '$lib/database';
 
-export const load: PageServerLoad = async () => {
-	const teachers = await prisma.teacher.findMany({
-		select: { name: true, grade: true }
-	});
+const db = new Database();
+
+export const load: PageServerLoad = async ({ cookies }) => {
+	const teachers = await db.getAllTeachers();
 	return { teachers };
 };
