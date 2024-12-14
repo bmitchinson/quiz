@@ -3,6 +3,7 @@ import {
 	clearAllDbEntries,
 	initializeTestTeachers,
 	loginAsAdmin,
+	loginAsTeacher,
 	resetQuizzesToTestData,
 	resetStudentsAndScores
 } from './testutils';
@@ -14,7 +15,7 @@ test.beforeAll(async () => {
 	await resetStudentsAndScores();
 });
 
-test('Admin first table visual reg', async ({ page }) => {
+test('Admin table visual reg', async ({ page }) => {
 	await loginAsAdmin(page);
 	await page.locator('a:has-text("View Scores")').click();
 
@@ -31,4 +32,22 @@ test('Admin first table visual reg', async ({ page }) => {
 	await page.mouse.move(649, 374);
 	await page.waitForTimeout(200);
 	await expect(page).toHaveScreenshot('secondgrade_tooltip.png');
+});
+
+test('Teacher table shows **no** scores', async ({ page }) => {
+	await loginAsTeacher(page, 'mrs_thirdgrade');
+	await page.locator('a:has-text("View Class Scores")').click();
+
+	await page.waitForTimeout(1500);
+	await expect(page).toHaveScreenshot('mrs_thirdgrade_no_scores.png');
+});
+
+test('Teacher table shows scores', async ({ page }) => {
+	await loginAsTeacher(page, 'mitchinson');
+	await page.locator('a:has-text("View Class Scores")').click();
+
+	await page.waitForTimeout(1500);
+	await page.mouse.move(649, 374);
+	await page.waitForTimeout(200);
+	await expect(page).toHaveScreenshot('mitchinson_teacher_scores_tooltip.png');
 });
