@@ -9,7 +9,7 @@ Scores are recorded for teachers to view to save time grading weekly quizzes.
 
 note: the code quality here is all over the place! This is a deliberate exercise
 in trying to use AI CodeGen as much as possible, to learn about when the downsides
-kick in. My production team code does not look like this 👍
+kick in.
 
 ### Tools
 
