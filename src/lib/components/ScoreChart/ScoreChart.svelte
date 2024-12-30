@@ -1,17 +1,11 @@
 <script lang="ts">
 	import { type QuizScoreSummaryDataPoint } from '$lib/chart/scoreTooltip';
 	import Card from '$lib/components/Card.svelte';
-	import RadioButtons from '$lib/components/RadioButtons.svelte';
-	import { grades } from '$lib/components/RadioButtons';
 	import { onMount } from 'svelte';
 	import ScoreChartGraph from '$lib/components/ScoreChart/ScoreChartGraph.svelte';
 
-	export let teacherOptions: { name: string; grade: number }[] = [];
-	export let lockedToTeacher = {} as { name: string; grade: number };
-
-	$: teacherOptionsForGrade = teacherOptions
-		.filter((teacher) => teacher.grade === parseInt(selectedGrade))
-		.map((teacher) => teacher.name);
+	export let grade = '1';
+	export let teacherName = 'all';
 
 	let scoreData: QuizScoreSummaryDataPoint[] = [];
 
@@ -47,45 +41,20 @@
 		};
 	});
 
-	let selectedGrade = '1';
-	let selectedTeacherName = 'all';
-	$: fetchQuizScoreSummary(
-		lockedToTeacher?.grade?.toString() || selectedGrade,
-		lockedToTeacher.name || selectedTeacherName
-	);
+	$: fetchQuizScoreSummary(grade, teacherName);
 
 	let tableLoading = false;
 	let dataExists = true;
 </script>
 
 <Card id={'scorechart-card'} additionalClasses={'w-5/6'}>
-	<div class="flex flex-row items-center justify-center space-x-4 flex-wrap">
-		{#if !lockedToTeacher.name}
-			<div class="flex flex-row items-center space-x-4">
-				<p class="block font-semibold">Grade:</p>
-				<RadioButtons name="grade" options={grades} bind:selectedOptionValue={selectedGrade} />
-			</div>
-			<div class="flex flex-row items-center w-96 space-x-4">
-				<span class="block font-semibold">Teacher:</span>
-				<select
-					bind:value={selectedTeacherName}
-					class="w-full px-3 py-2 border rounded-md"
-					required
-				>
-					<option value="all" selected>All Teachers</option>
-					{#each teacherOptionsForGrade as teacher}
-						<option value={teacher}>{teacher}</option>
-					{/each}
-				</select>
-			</div>
-		{/if}
-	</div>
+	
 	<ScoreChartGraph
 		canvasId="chartContainer"
 		{scoreData}
-		title={lockedToTeacher.name
-			? `Score Overview: ${lockedToTeacher.name.charAt(0).toUpperCase() + lockedToTeacher.name.slice(1)}'s Class`
-			: `Score Overview: Grade ${selectedGrade} - Year 24-25`}
+		title={teacherName !== 'all'
+			? `Score Overview: ${teacherName.charAt(0).toUpperCase() + teacherName.slice(1)}'s Class`
+			: `Score Overview: Grade ${grade} - Year 24-25`}
 		loading={tableLoading}
 		noData={!dataExists}
 	/>
