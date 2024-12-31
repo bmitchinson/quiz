@@ -9,7 +9,9 @@
 <div
 	{id}
 	class={'custom-card flex space-4 bg-white rounded-lg p-8 shadow-lg ' +
-		additionalClasses + ' ' + rowOrCol}
+		additionalClasses +
+		' ' +
+		rowOrCol}
 >
 	<slot></slot>
 </div>

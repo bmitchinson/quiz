@@ -10,8 +10,7 @@
 	let selectedGrade = '1';
 </script>
 
-<!-- TODO: bind to effect ScoreChart -->
-<GradeTeacherDropdown bind:selectedGrade={selectedGrade} bind:selectedTeacherName={selectedTeacherName} teacherOptions={allTeachers} />
+<GradeTeacherDropdown bind:selectedGrade bind:selectedTeacherName teacherOptions={allTeachers} />
 
 <ScoreChart teacherName={selectedTeacherName} grade={selectedGrade} />
 

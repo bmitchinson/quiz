@@ -48,7 +48,6 @@
 </script>
 
 <Card id={'scorechart-card'} additionalClasses={'w-5/6'}>
-	
 	<ScoreChartGraph
 		canvasId="chartContainer"
 		{scoreData}
