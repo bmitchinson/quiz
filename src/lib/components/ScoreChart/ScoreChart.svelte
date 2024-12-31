@@ -3,6 +3,7 @@
 	import Card from '$lib/components/Card.svelte';
 	import { onMount } from 'svelte';
 	import ScoreChartGraph from '$lib/components/ScoreChart/ScoreChartGraph.svelte';
+	import { makePostRequest } from '../../apiUtils';
 
 	export let grade = '1';
 	export let teacherName = 'all';
@@ -14,30 +15,24 @@
 	onMount(() => {
 		fetchQuizScoreSummary = (grade: string, teacherName: string) => {
 			tableLoading = true;
-			fetch('/api/quiz/getSummary', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ grade, teacherName })
-			})
-				.then((res) => res.json())
-				.then((data) => {
+			makePostRequest(
+				'/api/quiz/getSummary',
+				{ grade, teacherName },
+				(data) => {
 					scoreData = data.summary;
 					dataExists = data.dataExists;
-					console.log(data);
 					setTimeout(() => {
 						tableLoading = false;
 					}, 400);
-				})
-				.catch((err) => {
-					console.error(err);
+				},
+				(_err) => {
 					scoreData = [];
 					dataExists = false;
 					setTimeout(() => {
 						tableLoading = false;
 					}, 400);
-				});
+				}
+			);
 		};
 	});
 
