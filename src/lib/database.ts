@@ -3,6 +3,13 @@
 import { PrismaClient, type Quiz } from '@prisma/client';
 import { getReadableTitleOfQuiz } from './dataUtils';
 
+export interface GetScoresScore {
+	correctAnswers: number;
+	createdAt: Date;
+	quiz: { totalQuestions: number };
+	student: { name: string; teacher: { name: string } };
+}
+
 const logLevels = /production|test/.test(process.env.NODE_ENV)
 	? ['warn', 'error']
 	: ['query', 'info', 'warn', 'error'];
@@ -168,21 +175,22 @@ export class Database {
 		studentName: string;
 		quizQuarter: number;
 		quizSequenceLetter: string;
-	}) {
+	}): GetScoresScore[] {
 		try {
 			const scores = await prisma.score.findMany({
+				take: 10, // TODO: Remove
 				where: {
 					quiz: {
-						grade: filters.grade,
-						accessCode: filters.quizCode,
-						quarter: filters.quizQuarter,
-						sequenceLetter: filters.quizSequenceLetter
+						grade: filters?.grade,
+						accessCode: filters?.quizCode,
+						quarter: filters?.quizQuarter,
+						sequenceLetter: filters?.quizSequenceLetter
 					},
 					student: {
-						name: filters.studentName,
+						name: filters?.studentName,
 						archived: false,
 						teacher: {
-							name: filters.teacherName
+							name: filters?.teacherName
 						}
 					}
 				},

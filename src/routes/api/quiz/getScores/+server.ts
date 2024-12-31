@@ -1,4 +1,6 @@
 import { Database } from '$lib/database';
+import { validateRole } from '$lib/passwordUtils.js';
+import { json } from '@sveltejs/kit';
 
 const db = new Database();
 
