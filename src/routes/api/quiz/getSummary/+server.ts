@@ -32,7 +32,6 @@ export const POST = async ({ request, cookies }) =>
 		const data = await request.json();
 		const grade = parseInt(data.grade);
 		const teacherName = data.teacherName;
-		console.log('tname', teacherName);
 
 		const summaryMapByAccessCode = await db.getSummaryOfScores(grade, teacherName);
 		const quizzesByAccessCode = await db.getQuizzesByAccessCodes(

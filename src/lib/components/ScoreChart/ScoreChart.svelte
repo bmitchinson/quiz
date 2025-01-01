@@ -3,7 +3,7 @@
 	import Card from '$lib/components/Card.svelte';
 	import { onMount } from 'svelte';
 	import ScoreChartGraph from '$lib/components/ScoreChart/ScoreChartGraph.svelte';
-	import { makePostRequest } from '../../apiUtils';
+	import { makePostRequest } from '$lib/apiUtils';
 
 	export let grade = '1';
 	export let teacherName = 'all';

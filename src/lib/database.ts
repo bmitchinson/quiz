@@ -7,7 +7,16 @@ export interface GetScoresScore {
 	correctAnswers: number;
 	createdAt: Date;
 	quiz: { totalQuestions: number };
-	student: { name: string; teacher: { name: string } };
+	student: { name: string; teacher: { name: string; grade: number } };
+}
+
+export interface GetScoresFilters {
+	grade: number;
+	teacherName: string;
+	quizCode: string;
+	studentName: string;
+	quizQuarter: number;
+	quizSequenceLetter: string;
 }
 
 const logLevels = /production|test/.test(process.env.NODE_ENV)
@@ -168,14 +177,7 @@ export class Database {
 		}
 	}
 
-	async getScores(filters: {
-		grade: number;
-		teacherName: string;
-		quizCode: string;
-		studentName: string;
-		quizQuarter: number;
-		quizSequenceLetter: string;
-	}): GetScoresScore[] {
+	async getScores(filters: GetScoresFilters): GetScoresScore[] {
 		try {
 			const scores = await prisma.score.findMany({
 				take: 10, // TODO: Remove
@@ -207,7 +209,8 @@ export class Database {
 							name: true,
 							teacher: {
 								select: {
-									name: true
+									name: true,
+									grade: true
 								}
 							}
 						}
