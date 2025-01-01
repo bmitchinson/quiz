@@ -5,6 +5,7 @@
 	import Card from '$lib/components/Card.svelte';
 	import type { GetScoresScore } from '$lib/database';
 	import { createDataTable } from './ScoreTable';
+	import LoadingSquare from './LoadingSquare.svelte';
 
 	let fetchScores = () => {};
 	let scoresLoading = false;
@@ -45,5 +46,12 @@
 
 <Card additionalClasses={'w-5/6'}>
 	<h1 class="text-3xl text-center font-bold">Student Scores</h1>
-	<table id="scores-table"></table>
+	{#if scoresLoading}
+		<div class="w-full flex flex-row justify-center">
+			<LoadingSquare />
+		</div>
+	{/if}
+	<div class={scoresLoading ? 'hidden' : ''}>
+		<table id="scores-table"></table>
+	</div>
 </Card>
