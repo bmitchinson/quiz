@@ -42,6 +42,7 @@
 		"@prisma/client": "^6.0.1",
 		"@sveltejs/adapter-vercel": "^5.4.3",
 		"chart.js": "^4.4.6",
+		"chartjs-plugin-datalabels": "^2.2.0",
 		"cookie-signature-subtle": "^1.0.0",
 		"date-fns": "^4.1.0",
 		"dotenv": "^16.4.5",

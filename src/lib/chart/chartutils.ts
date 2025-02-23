@@ -1,5 +1,6 @@
 import { getPercentageCorrect } from '../dataUtils';
 import { externalTooltip, type QuizScoreSummaryDataPoint } from './scoreTooltip';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import {
 	Chart,
@@ -17,6 +18,7 @@ export const initializeScoreDataPointChart = (
 	scoreData: QuizScoreSummaryDataPoint[]
 ) => {
 	Chart.register(BarController, BarElement, Legend, CategoryScale, LinearScale, Tooltip);
+	Chart.register(ChartDataLabels);
 
 	Tooltip.positioners.cursor = function (chartElements, coordinates) {
 		return coordinates;
@@ -51,6 +53,18 @@ const chartOptions: ChartOptions = {
 			enabled: false,
 			position: 'cursor',
 			external: externalTooltip
+		},
+		// Add datalabels plugin config to render the value on top of each bar
+		datalabels: {
+			anchor: 'end',
+			align: 'end',
+			color: '#000',
+			font: {
+				size: 14,
+				weight: 'bold'
+			},
+			formatter: (value: { averageScore: number; totalQuestions: number }) =>
+				getPercentageCorrect(value.averageScore, value.totalQuestions, 1)
 		}
 	},
 	parsing: {
