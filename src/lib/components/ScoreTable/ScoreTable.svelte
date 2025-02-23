@@ -15,18 +15,11 @@
 	let scoresErrorMsg = '';
 	let dataTable = null as DataTable;
 
-	let grade = '1';
-	let teacherName = 'all';
+	export let lockedToTeacher = false;
+	export let grade = '1';
+	export let teacherName = 'all';
 	let quizQuarter = '1';
 	let quizSequenceLetter = 'A';
-
-	$: {
-		grade;
-		teacherName;
-		quizQuarter;
-		quizSequenceLetter;
-		fetchScores();
-	}
 
 	onMount(() => {
 		fetchScores = () => {
@@ -67,6 +60,7 @@
 		bind:quizQuarter
 		bind:quizSequenceLetter
 		searchOnClick={fetchScores}
+		{lockedToTeacher}
 	/>
 	{#if scoresLoading}
 		<div class="w-full flex flex-row justify-center">

@@ -4,6 +4,7 @@
 
 	export let allTeachers: { grade: number; name: string }[] = [];
 
+	export let lockedToTeacher = false;
 	export let grade = '1';
 	export let teacherName = '';
 	export let quizQuarter = '1';
@@ -23,29 +24,31 @@
 </script>
 
 <div class="flex flex-row space-x-4 justify-center items-center">
-	<div class="flex flex-row items-center space-x-2">
-		<span class="block font-semibold">Grade:</span>
-		<select
-			bind:value={grade}
-			id="scoreTableGradeFilter"
-			class="w-full px-3 py-2 border rounded-md"
-			required
-		>
-			{#each grades as grade}
-				<option value={grade.v}>{grade.t}</option>
-			{/each}
-		</select>
-	</div>
+	{#if !lockedToTeacher}
+		<div class="flex flex-row items-center space-x-2">
+			<span class="block font-semibold">Grade:</span>
+			<select
+				bind:value={grade}
+				id="scoreTableGradeFilter"
+				class="w-full px-3 py-2 border rounded-md"
+				required
+			>
+				{#each grades as grade}
+					<option value={grade.v}>{grade.t}</option>
+				{/each}
+			</select>
+		</div>
 
-	<div class="flex flex-row items-center space-x-2">
-		<span class="block font-semibold">Teacher:</span>
-		<select bind:value={teacherName} class="w-full px-3 py-2 border rounded-md" required>
-			<option value="">All Teachers</option>
-			{#each teacherOptionsForGrade as teacher}
-				<option value={teacher}>{teacher}</option>
-			{/each}
-		</select>
-	</div>
+		<div class="flex flex-row items-center space-x-2">
+			<span class="block font-semibold">Teacher:</span>
+			<select bind:value={teacherName} class="w-full px-3 py-2 border rounded-md" required>
+				<option value="">All Teachers</option>
+				{#each teacherOptionsForGrade as teacher}
+					<option value={teacher}>{teacher}</option>
+				{/each}
+			</select>
+		</div>
+	{/if}
 
 	<div class="flex flex-row items-center space-x-2">
 		<span class="block font-semibold">Quiz Quarter:</span>

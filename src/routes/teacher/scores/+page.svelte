@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Card from '$lib/components/Card.svelte';
 	import ScoreChart from '$lib/components/ScoreChart/ScoreChart.svelte';
+	import ScoreTable from '../../../lib/components/ScoreTable/ScoreTable.svelte';
 
 	export let data;
 	const signedInTeacherName = data.loginName;
@@ -13,6 +14,4 @@
 	selectedGrade={signedInTeacherGrade}
 />
 
-<Card additionalClasses={'w-5/6'}>
-	<h1 class="text-3xl text-center font-bold">Student Scores</h1>
-</Card>
+<ScoreTable lockedToTeacher={true} grade={signedInTeacherGrade} teacherName={signedInTeacherName} />

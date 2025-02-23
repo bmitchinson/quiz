@@ -41,17 +41,17 @@ test('Admin Score table use controls for 2nd grade', async ({ page }) => {
 	);
 });
 
-// test('Teacher table shows **no** scores', async ({ page }) => {
-// 	await loginAsTeacher(page, 'mrs_thirdgrade');
-// 	await page.locator('a:has-text("View Class Scores")').click();
+test('Teacher table shows **no** scores', async ({ page }) => {
+	await loginAsTeacher(page, 'mrs_thirdgrade');
+	await page.locator('a:has-text("View Class Scores")').click();
 
-// 	await page.waitForTimeout(1500);
-// 	await expect(page.locator('div[id=scorechart-card]')).toHaveScreenshot();
-// 	await expect(page.locator('div[id=scoreTable]')).toHaveScreenshot(
-// 		'teacher-mrs-thirdgrade-empty-scoretable.png',
-// 		{ maxDiffPixelRatio: 0.03 }
-// 	);
-// });
+	await page.waitForTimeout(1500);
+	await expect(page.locator('div[id=scorechart-card]')).toHaveScreenshot();
+	await expect(page.locator('div[id=scoreTable]')).toHaveScreenshot(
+		'teacher-mrs-thirdgrade-empty-scoretable.png',
+		{ maxDiffPixelRatio: 0.03 }
+	);
+});
 
 // test('Teacher table shows scores', async ({ page }) => {
 // 	await loginAsTeacher(page, 'mitchinson');
