@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Card from '$lib/components/Card.svelte';
 	import ScoreChart from '$lib/components/ScoreChart/ScoreChart.svelte';
 	import ScoreTable from '../../../lib/components/ScoreTable/ScoreTable.svelte';
 
@@ -14,4 +13,4 @@
 	selectedGrade={signedInTeacherGrade}
 />
 
-<ScoreTable lockedToTeacher={true} grade={signedInTeacherGrade} teacherName={signedInTeacherName} />
+<ScoreTable {signedInTeacherName} grade={signedInTeacherGrade} />

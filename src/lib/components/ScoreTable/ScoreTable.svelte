@@ -15,9 +15,9 @@
 	let scoresErrorMsg = '';
 	let dataTable = null as DataTable;
 
-	export let lockedToTeacher = false;
 	export let grade = '1';
-	export let teacherName = 'all';
+	export let selectedTeacherName = 'all';
+	export let signedInTeacherName = '';
 	let quizQuarter = '1';
 	let quizSequenceLetter = 'A';
 
@@ -28,7 +28,7 @@
 				'/api/quiz/getScores',
 				{
 					grade: parseInt(grade),
-					teacherName,
+					teacherName: signedInTeacherName || selectedTeacherName,
 					quizQuarter: parseInt(quizQuarter),
 					quizSequenceLetter
 				},
@@ -74,12 +74,12 @@
 	<h1 class="text-3xl text-center mb-4 font-bold">Student Scores</h1>
 	<ScoreTableFilter
 		bind:grade
-		bind:teacherName
+		bind:teacherName={selectedTeacherName}
 		{allTeachers}
 		bind:quizQuarter
 		bind:quizSequenceLetter
 		searchOnClick={fetchScores}
-		{lockedToTeacher}
+		lockedToTeacher={!!signedInTeacherName}
 	/>
 	{#if scoresLoading}
 		<div class="w-full flex flex-row justify-center">
