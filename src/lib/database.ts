@@ -272,7 +272,7 @@ export class Database {
 		}
 	}
 
-	async addScore(
+	async updateOrCreateScore(
 		correctAnswers: number,
 		timeStarted: Date,
 		timeFinished: Date,
@@ -280,8 +280,19 @@ export class Database {
 		quizCode: string
 	): Promise<void> {
 		try {
-			await this.prisma.score.create({
-				data: {
+			await this.prisma.score.upsert({
+				where: {
+					quizCode_studentId: {
+						quizCode,
+						studentId
+					}
+				},
+				update: {
+					correctAnswers,
+					timeStarted,
+					timeFinished
+				},
+				create: {
 					quizCode,
 					studentId,
 					correctAnswers,

@@ -27,7 +27,7 @@ export const actions: Actions = {
 			}
 		}),
 
-	postCompletedScore: async ({ request, cookies }) =>
+	postQuestionAnswered: async ({ request, cookies }) =>
 		validateRole(request, cookies, ['Student'], async () => {
 			const data = await request.formData();
 
@@ -38,7 +38,7 @@ export const actions: Actions = {
 			const quizCode = data.get('quizCode');
 
 			return await db
-				.addScore(correctAnswers, timeStarted, timeFinished, studentId, quizCode)
+				.updateOrCreateScore(correctAnswers, timeStarted, timeFinished, studentId, quizCode)
 				.then(() => ({ success: true }))
 				.catch((e) => ({ success: false }));
 		})

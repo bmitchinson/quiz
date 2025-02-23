@@ -71,14 +71,14 @@
 		quizStarted = true;
 	}
 
-	function postCompletedScore() {
+	function postQuestionAnswered() {
 		const formData = new FormData();
 		formData.append('correctAnswers', results.filter((r) => r.correct).length);
 		formData.append('timeStarted', timeStarted);
 		formData.append('timeFinished', timeFinished);
 		formData.append('quizCode', accessCode);
 
-		fetch('?/postCompletedScore', {
+		fetch('?/postQuestionAnswered', {
 			method: 'POST',
 			body: formData
 		}).then(() => {});
@@ -95,10 +95,8 @@
 				isCorrect = false;
 				results.push({ question: questions[currentQuestionIndex], correct: false });
 			}
-		}
-		if (currentQuestionIndex === questions.length - 1) {
 			timeFinished = new Date();
-			postCompletedScore();
+			postQuestionAnswered();
 		}
 	}
 

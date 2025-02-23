@@ -69,10 +69,9 @@ test('Taking a quiz', async ({ page }) => {
 });
 
 test('Student cannot retake quiz', async ({ page }) => {
-	await createScoreForQuiz3ByStudentName('secondgrader4');
 	const quiz = await getQuizByMetadata({
 		year: 2425,
-		grade: 3,
+		grade: 2,
 		quarter: 1,
 		sequenceLetter: 'A'
 	});
