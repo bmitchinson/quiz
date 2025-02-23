@@ -15,7 +15,7 @@ test.beforeAll(async () => {
 	await resetStudentsAndScores();
 });
 
-test('Admin table visual reg', async ({ page }) => {
+test('Admin barchart visual reg', async ({ page }) => {
 	await loginAsAdmin(page);
 	await page.locator('a:has-text("View Scores")').click();
 
@@ -40,7 +40,7 @@ test('Admin table visual reg', async ({ page }) => {
 	);
 });
 
-test('Teacher table shows **no** scores', async ({ page }) => {
+test('Teacher barchart shows **no** scores', async ({ page }) => {
 	await loginAsTeacher(page, 'mrs_thirdgrade');
 	await page.locator('a:has-text("View Class Scores")').click();
 
@@ -50,7 +50,7 @@ test('Teacher table shows **no** scores', async ({ page }) => {
 	);
 });
 
-test('Teacher table shows scores', async ({ page }) => {
+test('Teacher barchart shows scores', async ({ page }) => {
 	await loginAsTeacher(page, 'mitchinson');
 	await page.locator('a:has-text("View Class Scores")').click();
 

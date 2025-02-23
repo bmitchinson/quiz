@@ -58,7 +58,7 @@
 	});
 </script>
 
-<Card additionalClasses={'w-5/6'}>
+<Card id="scoreTable" additionalClasses={'w-5/6'}>
 	<h1 class="text-3xl text-center mb-4 font-bold">Student Scores</h1>
 	<ScoreTableFilter
 		bind:grade

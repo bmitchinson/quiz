@@ -25,7 +25,12 @@
 <div class="flex flex-row space-x-4 justify-center items-center">
 	<div class="flex flex-row items-center space-x-2">
 		<span class="block font-semibold">Grade:</span>
-		<select bind:value={grade} class="w-full px-3 py-2 border rounded-md" required>
+		<select
+			bind:value={grade}
+			id="scoreTableGradeFilter"
+			class="w-full px-3 py-2 border rounded-md"
+			required
+		>
 			{#each grades as grade}
 				<option value={grade.v}>{grade.t}</option>
 			{/each}
@@ -64,5 +69,7 @@
 		</select>
 	</div>
 
-	<div class={getButtonStyles(false)} on:click={searchOnClick}>Fetch Data</div>
+	<div id="scoreTableFetchData" class={getButtonStyles(false)} on:click={searchOnClick}>
+		Fetch Data
+	</div>
 </div>
