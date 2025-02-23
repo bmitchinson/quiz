@@ -223,13 +223,21 @@ export const loginAsTeacher = async (page: Page, teacherName = 'mitchinson') => 
 	await page.locator(`button:has-text("Submit")`).click();
 };
 
-export const loginAsStudentSecondgrader4 = async (page: Page) => {
+const loginAsStudent = async (page: Page, studentName: string, grade: string, teacher: string) => {
 	await page.goto('/login');
 	await page.locator(`button:has-text("Student")`).click();
-	await page.locator(`div[id="grade-select-2"]`).click();
-	await page.selectOption('select', 'mitchinson');
-	await page.locator(`#studentName`).fill('secondgrader4');
+	await page.locator(`div[id="grade-select-${grade}"]`).click();
+	await page.selectOption('select', teacher);
+	await page.locator(`#studentName`).fill(studentName);
 	await page.locator(`button:has-text("Submit")`).click();
+};
+
+export const loginAsFirstAlphaFirstGrader = async (page: Page) => {
+	return await loginAsStudent(page, 'aallen', '1', 'doherty');
+};
+
+export const loginAsStudentSecondgrader4 = async (page: Page) => {
+	return await loginAsStudent(page, 'secondgrader4', '2', 'mitchinson');
 };
 
 export const amountOfStudentsForTeacher = async (teacherName: string): Promise<number> => {
