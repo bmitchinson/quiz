@@ -4,6 +4,7 @@ import { PrismaClient, type Quiz } from '@prisma/client';
 import { getReadableTitleOfQuiz } from './dataUtils';
 
 export interface GetScoresScore {
+	id: number;
 	correctAnswers: number;
 	createdAt: Date;
 	quiz: Quiz;
@@ -197,6 +198,7 @@ export class Database {
 					}
 				},
 				select: {
+					id: true,
 					correctAnswers: true,
 					createdAt: true,
 					quiz: true,
@@ -369,6 +371,21 @@ export class Database {
 			console.log('Archived quiz with id:', id);
 		} catch (error) {
 			console.error('Error deleting quiz:', error);
+			throw error;
+		}
+	}
+
+	async deleteScore(scoreId: number): Promise<void> {
+		try {
+			const deletedScore = await this.prisma.score.delete({
+				where: { id: scoreId },
+				select: { id: true, student: true, quizCode: true }
+			});
+			console.log(
+				`Deleted score for student ${deletedScore.student.name} on quiz ${deletedScore.quizCode}`
+			);
+		} catch (error) {
+			console.error(`Error deleting score ${scoreId}:`, error);
 			throw error;
 		}
 	}

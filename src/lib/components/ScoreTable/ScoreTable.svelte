@@ -4,7 +4,7 @@
 	import { makePostRequest } from '$lib/apiUtils';
 	import Card from '$lib/components/Card.svelte';
 	import type { GetScoresScore } from '$lib/database';
-	import { createDataTable } from './ScoreTable';
+	import { createDataTable, scoreIdToDeleteStore } from './ScoreTable';
 	import LoadingSquare from '../LoadingSquare.svelte';
 	import ScoreTableFilter from './ScoreTableFilter.svelte';
 
@@ -46,6 +46,25 @@
 				}
 			);
 		};
+
+		scoreIdToDeleteStore.subscribe((event) => {
+			const scoreId = event?.scoreIdToDelete;
+			if (!scoreId) return;
+			makePostRequest(
+				'/api/score/delete',
+				{
+					scoreId
+				},
+				(data: { success: boolean }) => {
+					if (data.success) {
+						fetchScores();
+					}
+				},
+				(err) => {
+					console.log(`ERROR DELETING SCORE: ${scoreId}`, err);
+				}
+			);
+		});
 
 		fetchScores();
 	});

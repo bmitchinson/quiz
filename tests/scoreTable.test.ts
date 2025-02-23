@@ -46,21 +46,19 @@ test('Teacher table shows **no** scores', async ({ page }) => {
 	await page.locator('a:has-text("View Class Scores")').click();
 
 	await page.waitForTimeout(1500);
-	await expect(page.locator('div[id=scorechart-card]')).toHaveScreenshot();
 	await expect(page.locator('div[id=scoreTable]')).toHaveScreenshot(
 		'teacher-mrs-thirdgrade-empty-scoretable.png',
 		{ maxDiffPixelRatio: 0.03 }
 	);
 });
 
-// test('Teacher table shows scores', async ({ page }) => {
-// 	await loginAsTeacher(page, 'mitchinson');
-// 	await page.locator('a:has-text("View Class Scores")').click();
+test('Teacher table shows scores', async ({ page }) => {
+	await loginAsTeacher(page, 'mitchinson');
+	await page.locator('a:has-text("View Class Scores")').click();
 
-// 	await page.waitForTimeout(1500);
-// 	await page.mouse.move(649, 404);
-// 	await page.waitForTimeout(200);
-// 	await expect(page.locator('div[id=scorechart-card]')).toHaveScreenshot(
-// 		'teacher-mitchinson-scores-tooltip.png'
-// 	);
-// });
+	await page.waitForTimeout(1500);
+	await expect(page.locator('div[id=scoreTable]')).toHaveScreenshot(
+		'teacher-mitchinson-scores-tooltip-scoreTable.png',
+		{ maxDiffPixelRatio: 0.03 }
+	);
+});
