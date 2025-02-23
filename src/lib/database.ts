@@ -6,7 +6,8 @@ import { getReadableTitleOfQuiz } from './dataUtils';
 export interface GetScoresScore {
 	correctAnswers: number;
 	createdAt: Date;
-	quiz: { totalQuestions: number };
+	quiz: Quiz;
+	quizTitle: string;
 	student: { name: string; teacher: { name: string; grade: number } };
 }
 
@@ -177,33 +178,28 @@ export class Database {
 		}
 	}
 
-	async getScores(filters: GetScoresFilters): GetScoresScore[] {
+	async getScores(filters: GetScoresFilters): Promise<GetScoresScore[]> {
 		try {
 			const scores = await prisma.score.findMany({
-				take: 10, // TODO: Remove
 				where: {
 					quiz: {
-						grade: filters?.grade,
-						accessCode: filters?.quizCode,
-						quarter: filters?.quizQuarter,
-						sequenceLetter: filters?.quizSequenceLetter
+						accessCode: filters?.quizCode || undefined,
+						quarter: filters?.quizQuarter || undefined,
+						sequenceLetter: filters?.quizSequenceLetter || undefined
 					},
 					student: {
-						name: filters?.studentName,
+						name: filters?.studentName || undefined,
 						archived: false,
 						teacher: {
-							name: filters?.teacherName
+							name: filters?.teacherName || undefined,
+							grade: filters?.grade
 						}
 					}
 				},
 				select: {
 					correctAnswers: true,
 					createdAt: true,
-					quiz: {
-						select: {
-							totalQuestions: true
-						}
-					},
+					quiz: true,
 					student: {
 						select: {
 							name: true,
@@ -220,7 +216,10 @@ export class Database {
 					createdAt: 'desc'
 				}
 			});
-			return scores;
+			return scores.map((score) => ({
+				...score,
+				quizTitle: getReadableTitleOfQuiz(score.quiz)
+			}));
 		} catch (error) {
 			console.error('Error fetching scores:', error);
 			throw error;

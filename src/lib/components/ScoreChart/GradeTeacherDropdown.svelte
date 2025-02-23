@@ -1,7 +1,6 @@
 <script lang="ts">
 	import RadioButtons from '$lib/components/RadioButtons.svelte';
 	import { grades } from '$lib/components/RadioButtons';
-	import Card from '$lib/components/Card.svelte';
 
 	export let teacherOptions: { name: string; grade: number }[] = [];
 	export let selectedGrade = '1';
@@ -17,7 +16,7 @@
 	}
 </script>
 
-<Card id={'scorechart-card'} colMode={false}>
+<div class="flex flex-row space-x-4 justify-center">
 	<div class="flex flex-row items-center space-x-4">
 		<p class="block font-semibold">Grade:</p>
 		<RadioButtons name="grade" options={grades} bind:selectedOptionValue={selectedGrade} />
@@ -31,4 +30,4 @@
 			{/each}
 		</select>
 	</div>
-</Card>
+</div>

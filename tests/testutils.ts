@@ -1,6 +1,6 @@
 import { Database } from '$lib/database';
-import type { Score } from '@prisma/client';
-import { getReadableTitleOfQuiz } from '$lib/dataUtils';
+import type { Quiz, Score } from '@prisma/client';
+import { getRandomDateForQuarterAndSequence, getReadableTitleOfQuiz } from '$lib/dataUtils';
 import {
 	studentGroup1Marcos,
 	studentGroup2Burke,
@@ -77,14 +77,6 @@ export async function resetStudentsAndScores(): Promise<void> {
 
 	await db.addStudents(['fifthgrader1', 'fifthgrader2'], 'mrs_fifthgrade');
 
-	const grade1QuizCodes = await db.prisma.quiz
-		.findMany({ where: { grade: 1 } })
-		.then(async (quizzes) => quizzes.map((quiz) => quiz.accessCode));
-
-	const grade2QuizCodes = await db.prisma.quiz
-		.findMany({ where: { grade: 2 } })
-		.then(async (quizzes) => quizzes.map((quiz) => quiz.accessCode));
-
 	const groupsToSeedScoresOf = [
 		{ s: studentGroup1, sG: (i) => 3.5 + i * 0.2, q: g1QuizCodes },
 		{ s: studentGroup2, sG: (i) => 4.5 + i * 0.2, q: g1QuizCodes },
@@ -104,7 +96,11 @@ export async function resetStudentsAndScores(): Promise<void> {
 				scoresToCreate.push({
 					studentId,
 					quizCode,
-					correctAnswers: group.sG(qIndex)
+					correctAnswers: group.sG(qIndex),
+					createdAt: getRandomDateForQuarterAndSequence(
+						parseInt(quizCode.charAt(2)), // quarter
+						parseInt(quizCode.charAt(3)) // sequence
+					)
 				});
 			});
 		});
@@ -118,7 +114,7 @@ export async function resetStudentsAndScores(): Promise<void> {
 
 export async function resetQuizzesToTestData(): Promise<void> {
 	await db.prisma.quiz.deleteMany({});
-	const quizzesToMake = [];
+	const quizzesToMake: Partial<Quiz>[] = [];
 	[1, 2].forEach((grade, x) => {
 		[1, 2, 3, 4].forEach((quarter, y) => {
 			['A', 'B', 'C', 'D'].forEach((sequenceLetter, z) => {

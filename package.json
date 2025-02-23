@@ -43,6 +43,7 @@
 		"@sveltejs/adapter-vercel": "^5.4.3",
 		"chart.js": "^4.4.6",
 		"cookie-signature-subtle": "^1.0.0",
+		"date-fns": "^4.1.0",
 		"dotenv": "^16.4.5",
 		"jwt-decode": "^4.0.0"
 	}

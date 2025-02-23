@@ -5,17 +5,26 @@
 	import Card from '$lib/components/Card.svelte';
 	import type { GetScoresScore } from '$lib/database';
 	import { createDataTable } from './ScoreTable';
-	import LoadingSquare from './LoadingSquare.svelte';
+	import LoadingSquare from '../LoadingSquare.svelte';
+	import ScoreTableFilter from './ScoreTableFilter.svelte';
+
+	export let allTeachers: { grade: number; name: string }[] = [];
 
 	let fetchScores = () => {};
 	let scoresLoading = false;
 	let scoresErrorMsg = '';
 	let dataTable = null as DataTable;
 
-	export let grade = '1';
+	let grade = '1';
+	let teacherName = 'all';
+	let quizQuarter = '1';
+	let quizSequenceLetter = 'A';
 
 	$: {
 		grade;
+		teacherName;
+		quizQuarter;
+		quizSequenceLetter;
 		fetchScores();
 	}
 
@@ -24,7 +33,12 @@
 			scoresLoading = true;
 			makePostRequest(
 				'/api/quiz/getScores',
-				{ grade: parseInt(grade) },
+				{
+					grade: parseInt(grade),
+					teacherName,
+					quizQuarter: parseInt(quizQuarter),
+					quizSequenceLetter
+				},
 				(data: { scores: GetScoresScore[]; dataExists: boolean }) => {
 					dataTable && dataTable.destroy();
 					dataTable = createDataTable('scores-table', data.scores);
@@ -45,13 +59,47 @@
 </script>
 
 <Card additionalClasses={'w-5/6'}>
-	<h1 class="text-3xl text-center font-bold">Student Scores</h1>
+	<h1 class="text-3xl text-center mb-4 font-bold">Student Scores</h1>
+	<ScoreTableFilter
+		bind:grade
+		bind:teacherName
+		{allTeachers}
+		bind:quizQuarter
+		bind:quizSequenceLetter
+		searchOnClick={fetchScores}
+	/>
 	{#if scoresLoading}
 		<div class="w-full flex flex-row justify-center">
 			<LoadingSquare />
 		</div>
 	{/if}
 	<div class={scoresLoading ? 'hidden' : ''}>
-		<table id="scores-table"></table>
+		<table class="w-full" id="scores-table" />
 	</div>
 </Card>
+
+<style>
+	:global(#scores-table td) {
+		/* text-align: center; */
+		border: 1px solid #e2e8f0;
+	}
+
+	:global(#scores-table th) {
+		text-align: left;
+		/* border: 1px solid #e2e8f0; */
+	}
+
+	:global(.datatable-pagination-list) {
+		gap: 1em;
+		display: flex;
+		width: 100%;
+	}
+
+	h1 {
+		margin: 0;
+	}
+
+	:global(.datatable-bottom) {
+		margin-top: 1em;
+	}
+</style>

@@ -4,6 +4,7 @@ import { json } from '@sveltejs/kit';
 
 const db = new Database();
 
+// +server.ts
 export const POST = async ({ request, cookies }) =>
 	validateRole(request, cookies, ['Admin', 'Teacher'], async () => {
 		const filters = (await request.json()) as GetScoresFilters;

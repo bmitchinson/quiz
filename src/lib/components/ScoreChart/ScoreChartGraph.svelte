@@ -6,7 +6,6 @@
 	import LoadingSquare from '../LoadingSquare.svelte';
 
 	export let scoreData: QuizScoreSummaryDataPoint[];
-	export let title: string;
 	export let canvasId: string;
 	export let loading = false;
 	export let noData = false;
@@ -30,7 +29,6 @@
 </script>
 
 <div class="relative">
-	<h1 class="text-3xl text-center mb-4 font-bold">{title}</h1>
 	<canvas class="w-full h-full" id={canvasId}></canvas>
 	{#if noData && !loading}
 		<div id="chartOverlay" class="absolute inset-0 flex items-center justify-center z-10 rounded">

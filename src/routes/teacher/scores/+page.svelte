@@ -7,7 +7,11 @@
 	const signedInTeacherGrade = data.grade || '0';
 </script>
 
-<ScoreChart teacherName={signedInTeacherName} grade={signedInTeacherGrade} />
+<ScoreChart
+	disableFilterControls={true}
+	selectedTeacherName={signedInTeacherName}
+	selectedGrade={signedInTeacherGrade}
+/>
 
 <Card additionalClasses={'w-5/6'}>
 	<h1 class="text-3xl text-center font-bold">Student Scores</h1>

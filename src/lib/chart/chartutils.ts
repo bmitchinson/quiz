@@ -1,3 +1,4 @@
+import { getPercentageCorrect } from '../dataUtils';
 import { externalTooltip, type QuizScoreSummaryDataPoint } from './scoreTooltip';
 
 import {
@@ -73,7 +74,7 @@ const chartOptions: ChartOptions = {
 				min: 0,
 				max: 100,
 				callback: function (value) {
-					return ((value / this.max) * 100).toFixed(0) + '%'; // convert it to percentage
+					return getPercentageCorrect(value, this.max);
 				}
 			},
 			beginAtZero: true

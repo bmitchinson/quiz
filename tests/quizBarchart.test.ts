@@ -21,17 +21,17 @@ test('Admin table visual reg', async ({ page }) => {
 
 	// 1st grade
 	await page.waitForTimeout(2500);
-	await expect(page).toHaveScreenshot('firstgrade.png');
+	await expect(page).toHaveScreenshot('admin-firstgrade-no-tooltip.png');
 	await page.mouse.move(649, 430);
 	await page.waitForTimeout(200);
-	await expect(page).toHaveScreenshot('firstgrade_tooltip.png');
+	await expect(page).toHaveScreenshot('admin-firstgrade-tooltip.png');
 
 	// 2nd grade
 	await page.locator('div[id="grade-select-2"]').click();
 	await page.waitForTimeout(1500);
 	await page.mouse.move(649, 404);
 	await page.waitForTimeout(200);
-	await expect(page).toHaveScreenshot('secondgrade_tooltip.png');
+	await expect(page).toHaveScreenshot('admin-secondgrade-tooltip.png');
 });
 
 test('Teacher table shows **no** scores', async ({ page }) => {
@@ -39,7 +39,7 @@ test('Teacher table shows **no** scores', async ({ page }) => {
 	await page.locator('a:has-text("View Class Scores")').click();
 
 	await page.waitForTimeout(1500);
-	await expect(page).toHaveScreenshot('mrs_thirdgrade_no_scores.png');
+	await expect(page).toHaveScreenshot('teacher-mrs-thirdgrade-empty.png');
 });
 
 test('Teacher table shows scores', async ({ page }) => {
@@ -49,5 +49,5 @@ test('Teacher table shows scores', async ({ page }) => {
 	await page.waitForTimeout(1500);
 	await page.mouse.move(649, 404);
 	await page.waitForTimeout(200);
-	await expect(page).toHaveScreenshot('mitchinson_teacher_scores_tooltip.png');
+	await expect(page).toHaveScreenshot('teacher-mitchinson-scores-tooltip.png');
 });
