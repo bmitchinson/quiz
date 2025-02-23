@@ -28,9 +28,9 @@
 				>Home</a
 			>
 			<a
-				href="/about"
+				href="/faq"
 				class="bg-[#26561b] hover:bg-[#316f23] text-white px-4 py-2 rounded-md transition duration-300"
-				>About</a
+				>FAQ</a
 			>
 		</div>
 

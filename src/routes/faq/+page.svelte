@@ -14,16 +14,26 @@
 		<Break />
 
 		<p class="text-base">
-			If it's broken in any way, let me know! If this site is making your job difficult, I'd like to
-			address that ASAP.
+			If it's broken in any way, please reach out to mitchinson.dev@gmail.com +
+			wmitchinson@d124.org. If this site is making your job difficult, I'd like to address that
+			ASAP.
 		</p>
 
 		<Break />
 
-		<p class="text-base">
-			I'm available for consulting work. Keep me in mind if you'd like fast web applications built
-			in 2 week timelines.
-		</p>
+		<div>
+			<h2 class="text-2xl font-bold">FAQ</h2>
+			<h4 class="text-lg mt-4 font-semibold">How do I login?</h4>
+			<p>
+				Navigate to the homepage and choose "Teacher". Enter in your lastname, and the "Universal
+				Teacher Password" provided to you by Will Mitchinson.
+			</p>
+			<h4 class="text-lg mt-4 font-semibold">How can a student retake a quiz?</h4>
+			<p>
+				Login as a teacher or admin and choose "View Scores". From there, you can delete the
+				student's score, and they'll be eligible to retake it.
+			</p>
+		</div>
 
 		<Break />
 

@@ -2,10 +2,12 @@ import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 import { getSignedCookieValue } from '$lib/signedCookie';
 
+const allowedAnonPages = ['/login', '/faq'];
+
 export const load: LayoutServerLoad = async ({ cookies, url }) => {
 	const loginType = await getSignedCookieValue('loginType', cookies);
 
-	if (!loginType && url.pathname !== '/login') {
+	if (!loginType && !allowedAnonPages.includes(url.pathname)) {
 		throw redirect(302, '/login');
 	}
 
