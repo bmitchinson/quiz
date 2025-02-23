@@ -22,7 +22,7 @@ test('Admin Score table first grade by default', async ({ page }) => {
 	// 1st grade
 	await page.waitForTimeout(2500);
 	await expect(page.locator('div[id=scoreTable]')).toHaveScreenshot(
-		'admin-firstgrade-scoreTable.png',
+		'admin-firstgrade-scoretable.png',
 		{ maxDiffPixelRatio: 0.03 }
 	);
 });
@@ -36,7 +36,7 @@ test('Admin Score table use controls for 2nd grade', async ({ page }) => {
 	await page.locator('#scoreTableFetchData').click();
 	await page.waitForTimeout(1500);
 	await expect(page.locator('div[id=scoreTable]')).toHaveScreenshot(
-		'admin-secondgrade-scoreTable.png',
+		'admin-secondgrade-scoretable.png',
 		{ maxDiffPixelRatio: 0.03 }
 	);
 });
@@ -46,8 +46,10 @@ test('Admin Score table use controls for 2nd grade', async ({ page }) => {
 // 	await page.locator('a:has-text("View Class Scores")').click();
 
 // 	await page.waitForTimeout(1500);
-// 	await expect(page.locator('div[id=scorechart-card]')).toHaveScreenshot(
-// 		'teacher-mrs-thirdgrade-empty.png'
+// 	await expect(page.locator('div[id=scorechart-card]')).toHaveScreenshot();
+// 	await expect(page.locator('div[id=scoreTable]')).toHaveScreenshot(
+// 		'teacher-mrs-thirdgrade-empty-scoretable.png',
+// 		{ maxDiffPixelRatio: 0.03 }
 // 	);
 // });
 
