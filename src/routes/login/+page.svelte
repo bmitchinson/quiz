@@ -169,7 +169,7 @@
 
 		<div>
 			{#if errorMsg}
-				<div class="mt-4 message error">
+				<div id="teacherLoginError" class="mt-4 message error">
 					{errorMsg}
 				</div>
 			{/if}

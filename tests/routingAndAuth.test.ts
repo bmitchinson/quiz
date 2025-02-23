@@ -50,4 +50,23 @@ test.describe('Student', () => {
 	// TODO: sign in as student
 });
 
-// TODO: sign in as teacher
+test.describe('Teacher', () => {
+	test('Teacher can login with all caps', async ({ page }) => {
+		await page.goto('/login');
+		await page.locator(`button:has-text("Teacher")`).click();
+		await page.locator('input[id="teacherName"]').fill('MITCHINSON');
+		await page.locator('input[id="teacherPassword"]').fill('teacher');
+		await page.locator(`button:has-text("Submit")`).click();
+		await expect(page).toHaveURL('/teacher');
+	});
+
+	test('Bad teacher password shows error', async ({ page }) => {
+		await page.goto('/login');
+		await page.locator(`button:has-text("Teacher")`).click();
+		await page.locator('input[id="teacherName"]').fill('mitchinson');
+		await page.locator('input[id="teacherPassword"]').fill('teacher---');
+		await page.locator(`button:has-text("Submit")`).click();
+		await expect(page).toHaveURL('/login');
+		await expect(page.locator(`div[id="teacherLoginError"]`)).toHaveText('Invalid teacher login');
+	});
+});

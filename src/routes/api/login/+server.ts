@@ -64,7 +64,7 @@ const checkTeacherLoginAndSetCookies = async (
 ): Promise<boolean> => {
 	clearCookies(cookies);
 	if (teacherPasswordIsValid(teacherPassword)) {
-		const teacher = await db.getTeacher(teacherName);
+		const teacher = await db.getTeacher(teacherName.toLowerCase());
 		if (teacher) {
 			await setSignedCookieValue('loginType', 'Teacher', cookies);
 			await setSignedCookieValue('loginName', teacherName, cookies);
