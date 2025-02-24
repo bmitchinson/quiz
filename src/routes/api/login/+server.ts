@@ -48,7 +48,7 @@ const checkStudentLoginAndSetCookies = async (
 	clearCookies(cookies);
 	if (studentId) {
 		await setSignedCookieValue('loginType', 'Student', cookies);
-		await setSignedCookieValue('loginName', studentName, cookies);
+		await setSignedCookieValue('loginName', studentName.toLowerCase(), cookies);
 		await setSignedCookieValue('studentId', studentId.toString(), cookies);
 		return true;
 	} else {
@@ -67,7 +67,7 @@ const checkTeacherLoginAndSetCookies = async (
 		const teacher = await db.getTeacher(teacherName.toLowerCase());
 		if (teacher) {
 			await setSignedCookieValue('loginType', 'Teacher', cookies);
-			await setSignedCookieValue('loginName', teacherName, cookies);
+			await setSignedCookieValue('loginName', teacherName.toLowerCase(), cookies);
 			await setSignedCookieValue('teacherId', teacher.id.toString(), cookies);
 			return true;
 		}
