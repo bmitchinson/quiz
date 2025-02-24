@@ -66,6 +66,7 @@ test('Taking a quiz', async ({ page }) => {
 
 	expect(score.correctAnswers).toBe(2);
 	expect(score.student.name).toBe('secondgrader4');
+	expect(score.answers).toStrictEqual(['4', '0', '9', '25']);
 });
 
 test('Student cannot retake quiz', async ({ page }) => {

@@ -1,6 +1,8 @@
 import { Database } from '$lib/database';
 import { getSignedCookieValue } from '$lib/signedCookie';
 import { validateRole } from '$lib/passwordUtils';
+import { addMinutes } from 'date-fns';
+import { quizHasTakenLongerThan5Minutes } from '../../../lib/dateUtils';
 
 const db = new Database();
 
@@ -13,11 +15,17 @@ export const actions: Actions = {
 			// Validate access code and retrieve questions
 			const quiz = await db.getQuiz(accessCode);
 			if (quiz) {
-				const check = await db.checkIfScoreExistsForQuizAndStudent(
+				const existingScore = await db.checkIfScoreExistsForQuizAndStudent(
 					accessCode,
 					await getSignedCookieValue('loginName', cookies)
 				);
-				if (check) {
+				if (
+					existingScore
+					// &&
+					// existingScore.correctAnswers !== existingScore.totalQuestions &&
+					// !quizHasTakenLongerThan5Minutes(existingScore.timeStarted, existingScore.timeFinished)
+				) {
+					const message = 'You have already taken this quiz';
 					return { success: false, message: "You've already taken this quiz :)" };
 				} else {
 					return { success: true, message: quiz.questionsData };
@@ -36,9 +44,21 @@ export const actions: Actions = {
 			const timeFinished = new Date(data.get('timeFinished'));
 			const studentId = parseInt(await getSignedCookieValue('studentId', cookies));
 			const quizCode = data.get('quizCode');
+			const answers = data.get('answers').replaceAll(' ', '').split(',');
+
+			if (quizHasTakenLongerThan5Minutes(timeStarted, timeFinished)) {
+				return { success: false, message: 'Time Expired' };
+			}
 
 			return await db
-				.updateOrCreateScore(correctAnswers, timeStarted, timeFinished, studentId, quizCode)
+				.updateOrCreateScore(
+					correctAnswers,
+					timeStarted,
+					timeFinished,
+					studentId,
+					quizCode,
+					answers
+				)
 				.then(() => ({ success: true }))
 				.catch((e) => ({ success: false }));
 		})

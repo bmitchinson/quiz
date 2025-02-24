@@ -77,6 +77,10 @@
 		formData.append('timeStarted', timeStarted);
 		formData.append('timeFinished', timeFinished);
 		formData.append('quizCode', accessCode);
+		formData.append(
+			'answers',
+			results.map((r) => r.answer)
+		);
 
 		fetch('?/postQuestionAnswered', {
 			method: 'POST',
@@ -88,13 +92,12 @@
 	function submitAnswer() {
 		if (!submissionDisabled) {
 			// Check if user's answer matches the correct answer
-			if (parseFloat(userAnswer) === correctAnswer) {
-				isCorrect = true;
-				results.push({ question: questions[currentQuestionIndex], correct: true });
-			} else {
-				isCorrect = false;
-				results.push({ question: questions[currentQuestionIndex], correct: false });
-			}
+			isCorrect = parseFloat(userAnswer) === correctAnswer;
+			results.push({
+				question: questions[currentQuestionIndex],
+				correct: isCorrect,
+				answer: parseFloat(userAnswer)
+			});
 			timeFinished = new Date();
 			postQuestionAnswered();
 		}

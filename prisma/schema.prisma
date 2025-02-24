@@ -65,6 +65,7 @@ model Score {
   quiz           Quiz      @relation(fields: [quizCode], references: [accessCode], onDelete: Cascade)
   
   createdAt      DateTime  @default(now())
+  answers        String[]
 
   @@unique([quizCode, studentId])
 }

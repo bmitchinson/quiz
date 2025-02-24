@@ -277,7 +277,8 @@ export class Database {
 		timeStarted: Date,
 		timeFinished: Date,
 		studentId: string,
-		quizCode: string
+		quizCode: string,
+		answers: string[]
 	): Promise<void> {
 		try {
 			await this.prisma.score.upsert({
@@ -290,14 +291,16 @@ export class Database {
 				update: {
 					correctAnswers,
 					timeStarted,
-					timeFinished
+					timeFinished,
+					answers
 				},
 				create: {
 					quizCode,
 					studentId,
 					correctAnswers,
 					timeStarted,
-					timeFinished
+					timeFinished,
+					answers
 				}
 			});
 		} catch (error) {
