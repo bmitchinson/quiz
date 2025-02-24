@@ -83,3 +83,7 @@ test('Student cannot retake quiz', async ({ page }) => {
 	await page.locator('button:has-text("Start Quiz")').click();
 	await expect(page.locator('p:has-text("You\'ve already taken this quiz :)")')).toBeVisible();
 });
+
+// todo: test that a student cannot take a quiz that has expired
+
+// todo: test that a quiz expires while a student takes it

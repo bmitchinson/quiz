@@ -1,4 +1,5 @@
 import { addMinutes } from 'date-fns';
+import { minutesToTakeQuiz } from './config';
 
-export const quizHasTakenLongerThan5Minutes = (timeStarted: Date, timeFinished: Date) =>
-	addMinutes(timeStarted, 5) < timeFinished;
+export const quizHasTakenLongerThanAllowed = (timeStarted: Date) =>
+	addMinutes(timeStarted, minutesToTakeQuiz) < new Date();

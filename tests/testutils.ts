@@ -100,7 +100,9 @@ export async function resetStudentsAndScores(): Promise<void> {
 					createdAt: getRandomDateForQuarterAndSequence(
 						parseInt(quizCode.charAt(2)), // quarter
 						parseInt(quizCode.charAt(3)) // sequence
-					)
+					),
+					// note: these could be made more accurate by using the quiz data against "correctAnswers", this is fine for now
+					answers: ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
 				});
 			});
 		});

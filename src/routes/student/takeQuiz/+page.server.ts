@@ -2,7 +2,8 @@ import { Database } from '$lib/database';
 import { getSignedCookieValue } from '$lib/signedCookie';
 import { validateRole } from '$lib/passwordUtils';
 import { addMinutes } from 'date-fns';
-import { quizHasTakenLongerThan5Minutes } from '../../../lib/dateUtils';
+import { quizHasTakenLongerThanAllowed } from '../../../lib/dateUtils';
+import { minutesToTakeQuiz } from '../../../lib/config';
 
 const db = new Database();
 
@@ -19,16 +20,23 @@ export const actions: Actions = {
 					accessCode,
 					await getSignedCookieValue('loginName', cookies)
 				);
-				if (
-					existingScore
-					// &&
-					// existingScore.correctAnswers !== existingScore.totalQuestions &&
-					// !quizHasTakenLongerThan5Minutes(existingScore.timeStarted, existingScore.timeFinished)
+				if (!existingScore) {
+					return { success: true, quiz: quiz };
+				} else if (
+					existingScore.answers.length !== quiz.totalQuestions &&
+					!quizHasTakenLongerThanAllowed(existingScore.timeStarted)
 				) {
-					const message = 'You have already taken this quiz';
-					return { success: false, message: "You've already taken this quiz :)" };
+					return { success: true, quiz: quiz, score: existingScore };
+				} else if (
+					existingScore.answers.length !== quiz.totalQuestions &&
+					quizHasTakenLongerThanAllowed(existingScore.timeStarted)
+				) {
+					return {
+						success: false,
+						message: `Quiz not finished, but time expired.`
+					};
 				} else {
-					return { success: true, message: quiz.questionsData };
+					return { success: false, message: "You've already taken this quiz :)" };
 				}
 			} else {
 				return { success: false, message: 'Invalid Access Code' };
@@ -46,8 +54,8 @@ export const actions: Actions = {
 			const quizCode = data.get('quizCode');
 			const answers = data.get('answers').replaceAll(' ', '').split(',');
 
-			if (quizHasTakenLongerThan5Minutes(timeStarted, timeFinished)) {
-				return { success: false, message: 'Time Expired' };
+			if (quizHasTakenLongerThanAllowed(timeStarted)) {
+				return { success: false, message: 'Quiz Finished: Time Expired' };
 			}
 
 			return await db

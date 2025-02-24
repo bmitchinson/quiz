@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { deserialize } from '$app/forms';
+	import type { Quiz, Score } from '@prisma/client';
+	import { redirect } from '@sveltejs/kit';
 
 	// State variables
 	let accessCode = '';
@@ -34,9 +36,27 @@
 
 			const result = deserialize(await response.text());
 			if (result.data.success === true) {
-				questionsData = result.data.message;
+				const quiz = result.data.quiz as Quiz;
+				questionsData = quiz.questionsData;
+				questions = questionsData.split('|');
+				quizStarted = true;
 				accessCodeErr = '';
 				timeStarted = new Date();
+
+				// if this is resuming an existing attempt
+				if (result.data.score) {
+					const score = result.data.score as Score;
+					currentQuestionIndex = score.answers.length;
+					results = score.answers.map((answer, i) => {
+						const wasCorrect = parseInt(answer) === evaluateExpression(questions[i]);
+						return {
+							question: questions[i],
+							correct: wasCorrect,
+							answer: parseInt(answer)
+						};
+					});
+					timeStarted = score.timeStarted;
+				}
 			} else {
 				accessCodeErr = result.data.message;
 				questionsData = '';
@@ -65,12 +85,6 @@
 		correctAnswer = evaluateExpression(questions[currentQuestionIndex]);
 	}
 
-	// Start the quiz if questionsData is available
-	$: if (questionsData && !quizStarted) {
-		questions = questionsData.split('|');
-		quizStarted = true;
-	}
-
 	function postQuestionAnswered() {
 		const formData = new FormData();
 		formData.append('correctAnswers', results.filter((r) => r.correct).length);
@@ -85,7 +99,17 @@
 		fetch('?/postQuestionAnswered', {
 			method: 'POST',
 			body: formData
-		}).then(() => {});
+		}).then(async (response) => {
+			const result = deserialize(await response.text());
+			if (!result.data.success) {
+				accessCodeErr = result.data.message;
+				questionsData = '';
+				let currentQuestionIndex = 0;
+				let questions = [];
+				let results = [];
+				quizStarted = false;
+			}
+		});
 	}
 
 	// Function to handle answer submission
