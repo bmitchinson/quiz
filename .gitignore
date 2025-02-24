@@ -20,7 +20,10 @@ Thumbs.db
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+#playwright
+test-results/
+
 # Prisma
-/prisma/migrations/
-!prisma/migrations/**/migration.sql
-!prisma/migrations/migration_lock.toml
+/prisma/*
+!/prisma/migrations/
+!/prisma/migrations/**
