@@ -3,7 +3,6 @@ import { getSignedCookieValue } from '$lib/signedCookie';
 import { validateRole } from '$lib/passwordUtils';
 import { addMinutes } from 'date-fns';
 import { quizHasTakenLongerThanAllowed } from '../../../lib/dateUtils';
-import { minutesToTakeQuiz } from '../../../lib/config';
 
 const db = new Database();
 
