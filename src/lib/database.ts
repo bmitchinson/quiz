@@ -236,7 +236,6 @@ export class Database {
 				where: { name, teacherId },
 				data: { archived: true }
 			});
-			console.log('Archived Student:', name);
 		} catch (error) {
 			console.error('Error deleting student:', error);
 			throw error;

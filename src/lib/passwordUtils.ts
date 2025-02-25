@@ -24,7 +24,7 @@ export async function validateRole<T>(
 	request: Request,
 	cookies: Cookies,
 	requiredRole: string[],
-	callback: (request: Request) => T
+	callback: (request: Request, loginName: string) => T
 ): Promise<T> {
 	const loginType = await getSignedCookieValue('loginType', cookies);
 	if (!requiredRole.includes(loginType)) {
@@ -32,7 +32,8 @@ export async function validateRole<T>(
 		console.error('Bad actor attempt on route: ' + request.url);
 		return { error: 'Unauthorized. Knock it off this is a free app for a school district :(' };
 	} else {
-		return callback(request);
+		const loginName = await getSignedCookieValue('loginName', cookies);
+		return callback(request, loginName);
 	}
 }
 
