@@ -58,7 +58,7 @@ test('Teacher table shows scores', async ({ page }) => {
 
 	await page.waitForTimeout(1500);
 	await expect(page.locator('div[id=scoreTable]')).toHaveScreenshot(
-		'teacher-mitchinson-scores-tooltip-scoreTable.png',
+		'teacher-mitchinson-scores-scoretable.png',
 		{ maxDiffPixelRatio: 0.03 }
 	);
 });
