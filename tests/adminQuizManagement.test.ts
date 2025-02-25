@@ -71,7 +71,8 @@ test('Quizzes can be edited', async ({ page }) => {
 		.locator(`div[id="notif-quiz-edit-success"]:has-text("Quiz questions updated successfully ✅")`)
 		.isVisible();
 
-	// await page.waitForTimeout(300)
-	// const quiz = await getQuizByMetadata(1, 1, 'A');
-	// expect(quiz.questionData).toBe('1+2|3+4|5+6|20*20');
+	await page.waitForTimeout(100);
+	const quiz = await getQuizByMetadata({ grade: 3, quarter: 1, sequenceLetter: 'B', year: 2425 });
+	expect(quiz.questionsData).toBe('1 + 2|3 + 4|5 + 6|20 x 20');
+	expect(quiz?.totalQuestions).toBe(4);
 });

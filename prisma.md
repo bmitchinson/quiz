@@ -2,3 +2,4 @@
 - `npx dotenv -e .env -- npx prisma migrate dev --name {migration_name}` create migration after schema.prisma change
 - `npx dotenv -e .env -- npx prisma migrate deploy` deploy migrations
 - `npx dotenv -e .env -- npx prisma studio` db viewer (that uses schema to view. if there's a schema issue that'll mess u up)
+- Search codebase for "log: " to see prisma logs and adjust for hiding query logs if needed

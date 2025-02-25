@@ -2,7 +2,9 @@ import { Database } from '$lib/database';
 import { getSignedCookieValue } from '$lib/signedCookie';
 import { validateRole } from '$lib/passwordUtils';
 import { addMinutes } from 'date-fns';
-import { quizHasTakenLongerThanAllowed } from '../../../lib/dateUtils';
+import { quizHasTakenLongerThanAllowed } from '$lib/dateUtils';
+import { logAPIError, logEvent } from '$lib/logging';
+import { getReadableTitleOfQuiz } from '$lib/dataUtils';
 
 const db = new Database();
 
@@ -43,7 +45,7 @@ export const actions: Actions = {
 		}),
 
 	postQuestionAnswered: async ({ request, cookies }) =>
-		validateRole(request, cookies, ['Student'], async () => {
+		validateRole(request, cookies, ['Student'], async (_r, loginName) => {
 			const data = await request.formData();
 
 			const correctAnswers = parseInt(data.get('correctAnswers'));
@@ -66,7 +68,17 @@ export const actions: Actions = {
 					quizCode,
 					answers
 				)
-				.then(() => ({ success: true }))
-				.catch((e) => ({ success: false }));
+				.then(({ quiz }) => {
+					if (answers.length === 1) {
+						logEvent(loginName, `Started Quiz ${quizCode} ${getReadableTitleOfQuiz(quiz)}`);
+					} else if (answers.length === quiz.totalQuestions) {
+						logEvent(loginName, `Finished Quiz ${quizCode} ${getReadableTitleOfQuiz(quiz)}`);
+					}
+					return { success: true };
+				})
+				.catch((err) => {
+					logAPIError(loginName, 'Unable to submit answer', err);
+					return { success: false };
+				});
 		})
 };

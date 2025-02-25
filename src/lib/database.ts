@@ -278,9 +278,9 @@ export class Database {
 		studentId: string,
 		quizCode: string,
 		answers: string[]
-	): Promise<void> {
+	): Promise<{ quiz: Quiz }> {
 		try {
-			await this.prisma.score.upsert({
+			return await this.prisma.score.upsert({
 				where: {
 					quizCode_studentId: {
 						quizCode,
@@ -300,7 +300,8 @@ export class Database {
 					timeStarted,
 					timeFinished,
 					answers
-				}
+				},
+				select: { quiz: true }
 			});
 		} catch (error) {
 			console.error('Error adding score:', error);
@@ -388,9 +389,6 @@ export class Database {
 				where: { id: scoreId },
 				select: { id: true, student: true, quizCode: true }
 			});
-			console.log(
-				`Deleted score for student ${deletedScore.student.name} on quiz ${deletedScore.quizCode}`
-			);
 		} catch (error) {
 			console.error(`Error deleting score ${scoreId}:`, error);
 			throw error;
@@ -401,9 +399,8 @@ export class Database {
 		try {
 			await this.prisma.quiz.update({
 				where: { accessCode, archived: false },
-				data: { questionsData }
+				data: { questionsData, totalQuestions: questionsData.split('|').length }
 			});
-			console.log('Updated quiz questions of quiz with access code:', accessCode);
 		} catch (error) {
 			console.error('Error updated questions on quiz:', error);
 			throw error;
