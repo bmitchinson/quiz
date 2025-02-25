@@ -72,7 +72,5 @@
 		</select>
 	</div>
 
-	<div id="scoreTableFetchData" class={getButtonStyles(false)} on:click={searchOnClick}>
-		Fetch Data
-	</div>
+	<div id="scoreTableFetchData" class={getButtonStyles(false)} on:click={searchOnClick}>Search</div>
 </div>
