@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ScoreChart from '$lib/components/ScoreChart/ScoreChart.svelte';
-	import ScoreTable from '../../../lib/components/ScoreTable/ScoreTable.svelte';
+	import ScoreTable from '$lib/components/ScoreTable/ScoreTable.svelte';
 
 	export let data;
 	const signedInTeacherName = data.loginName;

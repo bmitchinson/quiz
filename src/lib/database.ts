@@ -376,16 +376,10 @@ export class Database {
 	 * @param id The id of the quiz to archives.
 	 */
 	async archiveQuiz(id: number): Promise<void> {
-		try {
-			await this.prisma.quiz.update({
-				where: { id },
-				data: { archived: true }
-			});
-			console.log('Archived quiz with id:', id);
-		} catch (error) {
-			console.error('Error deleting quiz:', error);
-			throw error;
-		}
+		await this.prisma.quiz.update({
+			where: { id },
+			data: { archived: true }
+		});
 	}
 
 	async deleteScore(scoreId: number): Promise<void> {

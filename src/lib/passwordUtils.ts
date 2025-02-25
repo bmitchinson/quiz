@@ -29,7 +29,7 @@ export async function validateRole<T>(
 	const loginType = await getSignedCookieValue('loginType', cookies);
 	if (!requiredRole.includes(loginType)) {
 		clearCookies(cookies);
-		console.error('Bad actor attempt on route: ' + request.url);
+		console.error('Bad actor attempt on route: ' + request.url + ' Cookies: ' + cookies.getAll());
 		return { error: 'Unauthorized. Knock it off this is a free app for a school district :(' };
 	} else {
 		const loginName = await getSignedCookieValue('loginName', cookies);

@@ -2,6 +2,7 @@ import { json, type Cookies } from '@sveltejs/kit';
 import { adminPasswordIsValid, clearCookies, teacherPasswordIsValid } from '$lib/passwordUtils';
 import { Database } from '$lib/database';
 import { setSignedCookieValue } from '$lib/signedCookie';
+import { logEvent } from '$lib/logging.js';
 
 const db = new Database();
 
@@ -33,6 +34,7 @@ const checkAdminLoginAndSetCookies = async (password: String, cookies: Cookies):
 	if (adminPasswordIsValid(password)) {
 		await setSignedCookieValue('loginType', 'Admin', cookies);
 		await setSignedCookieValue('loginName', 'Admin', cookies);
+		logEvent('Admin', `Admin Logged In Successfully`);
 		return true;
 	} else {
 		return false;
@@ -50,9 +52,9 @@ const checkStudentLoginAndSetCookies = async (
 		await setSignedCookieValue('loginType', 'Student', cookies);
 		await setSignedCookieValue('loginName', studentName.toLowerCase(), cookies);
 		await setSignedCookieValue('studentId', studentId.toString(), cookies);
+		logEvent(studentName.toLowerCase(), `Student Logged In Successfully`);
 		return true;
 	} else {
-		console.log('student', studentName, 'does not belong to teacher', teacherName);
 		return false;
 	}
 };
@@ -69,9 +71,9 @@ const checkTeacherLoginAndSetCookies = async (
 			await setSignedCookieValue('loginType', 'Teacher', cookies);
 			await setSignedCookieValue('loginName', teacherName.toLowerCase(), cookies);
 			await setSignedCookieValue('teacherId', teacher.id.toString(), cookies);
+			logEvent(teacherName.toLowerCase(), `Teacher Logged In Successfully`);
 			return true;
 		}
 	}
-	console.log('teacher:', teacherName, 'used invalid teacher password:', teacherPassword);
 	return false;
 };
