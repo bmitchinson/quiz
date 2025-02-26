@@ -12,6 +12,12 @@
 	};
 
 	$: userText = data.loginType === 'Admin' ? 'Admin' : `${data.loginType}: ${data.loginName}`;
+
+	let bannerText = 'Quiz App';
+
+	if (typeof window !== 'undefined' && window.location.hostname !== 'quiz.mitchinson.dev') {
+		bannerText = 'Quiz App (Demo Environment)';
+	}
 </script>
 
 <div class="flex flex-col items-center h-screen justify-between">
@@ -20,7 +26,7 @@
 	>
 		<div class="absolute left-4 flex items-center space-x-4">
 			<a href="/" class="z-10">
-				<h1 class="text-3xl font-bold">Quiz App</h1>
+				<h1 class="text-3xl font-bold">{bannerText}</h1>
 			</a>
 			<a
 				href="/"
