@@ -45,6 +45,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@logtail/node": "^0.5.2",
 		"@prisma/client": "^6.0.1",
 		"@sveltejs/adapter-vercel": "^5.4.3",
 		"chart.js": "^4.4.6",

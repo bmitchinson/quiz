@@ -1,6 +1,8 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
+import { config } from 'dotenv';
+config({ path: '.env' });
 
-const config: PlaywrightTestConfig = {
+const playwrightConfig: PlaywrightTestConfig = {
 	webServer: {
 		command: 'npm run build && npm run preview',
 		port: 4173
@@ -9,4 +11,4 @@ const config: PlaywrightTestConfig = {
 	testMatch: /(.+\.)?(test|spec)\.[jt]s/
 };
 
-export default config;
+export default playwrightConfig;

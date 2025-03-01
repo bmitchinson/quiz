@@ -1,3 +1,11 @@
+export function getEnv(name: string): string {
+	const value = process.env[name];
+	if (value == undefined) {
+		throw new Error(`Missing environment variable ${name}`);
+	}
+	return value;
+}
+
 // feb 24th disabling because will didn't like that I accidentally left at 1 min
 export const timeLimitQuizTakingFeatureFlag = false;
 export const minutesToTakeQuiz = 1; // only has impact if above is true

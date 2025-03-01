@@ -1,6 +1,6 @@
 import type { Cookies } from '@sveltejs/kit';
 import signature from 'cookie-signature-subtle';
-import { getEnv } from './passwordUtils';
+import { getEnv } from './config';
 
 const cookieSecret = getEnv('COOKIE_SECRET');
 

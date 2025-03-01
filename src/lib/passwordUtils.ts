@@ -4,14 +4,7 @@ import { get } from 'svelte/store';
 import { clearCookies, getSignedCookieValue } from './signedCookie';
 import { env } from '$env/dynamic/private';
 import { logAPIError } from './logging';
-
-export function getEnv(name: string): string {
-	const value = env[name];
-	if (!value) {
-		throw new Error(`Missing environment variable ${name}`);
-	}
-	return value;
-}
+import { getEnv } from './config';
 
 export function adminPasswordIsValid(password: string): boolean {
 	return password === getEnv('ADMIN_PASSWORD');
