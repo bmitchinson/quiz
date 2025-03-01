@@ -26,6 +26,9 @@
 
 	$: {
 		showFocusWarning = focusLossDetectedCount > 0;
+	}
+
+	$: {
 		if (
 			disallowDistractionsFeatureFlag &&
 			focusLossDetectedCount > allowedDistractionsBeforeQuizEnds
