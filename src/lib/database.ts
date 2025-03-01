@@ -2,6 +2,7 @@
 
 import { PrismaClient, type Quiz } from '@prisma/client';
 import { getReadableTitleOfQuiz } from './dataUtils';
+import { tempDisablePrismaQuery } from './config';
 
 export interface GetScoresScore {
 	id: number;
@@ -23,7 +24,9 @@ export interface GetScoresFilters {
 
 const logLevels = /production|test/.test(process.env.NODE_ENV)
 	? ['warn', 'error']
-	: ['query', 'info', 'warn', 'error'];
+	: tempDisablePrismaQuery
+		? ['info', 'warn', 'error']
+		: ['query', 'info', 'warn', 'error'];
 
 export const prisma = new PrismaClient({
 	log: logLevels
@@ -238,6 +241,31 @@ export class Database {
 			});
 		} catch (error) {
 			console.error('Error deleting student:', error);
+			throw error;
+		}
+	}
+
+	async markQuizEndedEarly(accessCode: number, studentId: number): Promise<void> {
+		try {
+			await this.prisma.score.upsert({
+				where: {
+					quizCode_studentId: {
+						quizCode: accessCode,
+						studentId
+					}
+				},
+				update: { quizEndedEarly: true },
+				create: {
+					quizCode: accessCode,
+					studentId,
+					quizEndedEarly: true
+				}
+			});
+		} catch (error) {
+			console.error(
+				`Error marking quiz ended early for student ${studentId} / quizCode ${accessCode}:`,
+				error
+			);
 			throw error;
 		}
 	}

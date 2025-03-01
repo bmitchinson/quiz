@@ -5,6 +5,7 @@
 	import Spinner from '$lib/components/Spinner.svelte';
 	import { loadingSpinnerDelay } from '$lib/components/constants';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	export let editMode = false;
 	export let onContinueClick = () => {};

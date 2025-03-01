@@ -44,6 +44,17 @@ export const actions: Actions = {
 			}
 		}),
 
+	markQuizEndedEarly: async ({ request, cookies }) =>
+		validateRole(request, cookies, ['Student'], async (_r, loginName) => {
+			const data = await request.formData();
+			const studentId = parseInt(await getSignedCookieValue('studentId', cookies));
+			const quizCode = data.get('quizCode');
+			return await db.markQuizEndedEarly(quizCode, studentId).then(() => {
+				logEvent(loginName, `Ended Quiz ${quizCode} Early due to distractions`);
+				return { success: true };
+			});
+		}),
+
 	postQuestionAnswered: async ({ request, cookies }) =>
 		validateRole(request, cookies, ['Student'], async (_r, loginName) => {
 			const data = await request.formData();
