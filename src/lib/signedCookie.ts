@@ -31,3 +31,10 @@ export async function getSignedCookieValue(attr: String, cookies: Cookies): Prom
 		return '';
 	}
 }
+
+export function clearCookies(cookies: Cookies): void {
+	cookies.delete('loginType', { path: '/' });
+	cookies.delete('loginName', { path: '/' });
+	cookies.delete('studentId', { path: '/' });
+	cookies.delete('teacherId', { path: '/' });
+}

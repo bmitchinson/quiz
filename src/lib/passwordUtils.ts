@@ -1,8 +1,9 @@
 import { invalidateAll } from '$app/navigation';
 import { redirect, type Cookies } from '@sveltejs/kit';
 import { get } from 'svelte/store';
-import { getSignedCookieValue } from './signedCookie';
+import { clearCookies, getSignedCookieValue } from './signedCookie';
 import { env } from '$env/dynamic/private';
+import { logAPIError } from './logging';
 
 export function getEnv(name: string): string {
 	const value = env[name];
@@ -29,19 +30,9 @@ export async function validateRole<T>(
 	const loginType = await getSignedCookieValue('loginType', cookies);
 	if (!requiredRole.includes(loginType)) {
 		clearCookies(cookies);
-		console.error(
-			'Bad actor attempt on route: ' + request.url + ' Cookies: ' + JSON.stringify(cookies.getAll())
-		);
 		return { error: 'Unauthorized. Knock it off this is a free app for a school district :(' };
 	} else {
 		const loginName = await getSignedCookieValue('loginName', cookies);
 		return callback(request, loginName);
 	}
-}
-
-export function clearCookies(cookies: Cookies): void {
-	cookies.delete('loginType', { path: '/' });
-	cookies.delete('loginName', { path: '/' });
-	cookies.delete('studentId', { path: '/' });
-	cookies.delete('teacherId', { path: '/' });
 }
