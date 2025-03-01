@@ -13,11 +13,7 @@
 
 	$: userText = data.loginType === 'Admin' ? 'Admin' : `${data.loginType}: ${data.loginName}`;
 
-	let bannerText = 'Quiz App';
-
-	if (typeof window !== 'undefined' && window.location.hostname !== 'quiz.mitchinson.dev') {
-		bannerText = 'Quiz App (Demo Environment)';
-	}
+	let bannerText = data.bannerText;
 </script>
 
 <div class="flex flex-col items-center h-screen justify-between">

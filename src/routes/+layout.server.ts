@@ -13,6 +13,7 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
 
 	return {
 		loginType,
-		loginName: await getSignedCookieValue('loginName', cookies).then((s) => s.toString())
+		loginName: await getSignedCookieValue('loginName', cookies).then((s) => s.toString()),
+		bannerText: process.env.NODE_ENV !== 'production' ? 'Quiz App (Demo Environment)' : 'Quiz App'
 	};
 };
