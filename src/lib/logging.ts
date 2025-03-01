@@ -23,12 +23,15 @@ export const logger =
 
 export const logEvent = (username: string, msg: string) => {
 	logger.info(`USR_EVENT {${username}}: ${msg}`);
+	logger.flush();
 };
 
 export const logDBError = (username: string, msg: string, error: object) => {
 	logger.error(`DB_ERR {${username}}: ${msg} ${error}`);
+	logger.flush();
 };
 
 export const logAPIError = (username: string, msg: string, error: object) => {
 	logger.error(`API_ERR {${username}}: ${msg} ${error}`);
+	logger.flush();
 };
