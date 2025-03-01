@@ -6,6 +6,7 @@
 		"dev": "dotenv -e .env -- npx vite dev",
 		"build": "prisma generate && vite build",
 		"db:seed": "tsx utils/seedData.ts",
+		"db:seeddev": "dotenv -e .env.dev -- tsx utils/seedData.ts",
 		"db:apply": "prisma migrate deploy",
 		"db:applydev": "dotenv -e .env.dev -- prisma migrate deploy",
 		"db:applyprod": "dotenv -e .env.prod -- prisma migrate deploy",
