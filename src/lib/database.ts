@@ -3,7 +3,7 @@
 import { PrismaClient, type Quiz } from '@prisma/client';
 import { getReadableTitleOfQuiz } from './dataUtils';
 import { tempDisablePrismaQuery } from './config';
-import { logger } from './logging';
+import { logDBError } from './logging';
 
 export interface GetScoresScore {
 	id: number;
@@ -77,7 +77,7 @@ export class Database {
 				}
 			});
 		} catch (error) {
-			logger.error('database', 'Error adding teacher:', error);
+			logDBError('database', 'Error adding teacher:', error);
 			throw error;
 		}
 	}
@@ -88,7 +88,7 @@ export class Database {
 				where: { name: lastname }
 			});
 		} catch (error) {
-			logger.error('database', 'Error looking up teacher:', error);
+			logDBError('database', 'Error looking up teacher:', error);
 			throw error;
 		}
 	}
@@ -116,7 +116,7 @@ export class Database {
 				});
 			});
 		} catch (error) {
-			logger.error('database', 'Error adding students:', error);
+			logDBError('database', 'Error adding students:', error);
 			throw error;
 		}
 	}
@@ -133,7 +133,7 @@ export class Database {
 			});
 			return students;
 		} catch (error) {
-			logger.error('database', 'Error fetching students:', error);
+			logDBError('database', 'Error fetching students:', error);
 			throw error;
 		}
 	}
@@ -178,7 +178,7 @@ export class Database {
 				}
 			);
 		} catch (error) {
-			logger.error('database', 'Error getting a summary of scores:', error);
+			logDBError('database', 'Error getting a summary of scores:', error);
 			throw error;
 		}
 	}
@@ -227,7 +227,7 @@ export class Database {
 				quizTitle: getReadableTitleOfQuiz(score.quiz)
 			}));
 		} catch (error) {
-			logger.error('database', 'Error fetching scores:', error);
+			logDBError('database', 'Error fetching scores:', error);
 			throw error;
 		}
 	}
@@ -241,7 +241,7 @@ export class Database {
 				data: { archived: true }
 			});
 		} catch (error) {
-			logger.error('database', 'Error deleting student:', error);
+			logDBError('database', 'Error deleting student:', error);
 			throw error;
 		}
 	}
@@ -263,7 +263,7 @@ export class Database {
 				}
 			});
 		} catch (error) {
-			logger.error(
+			logDBError(
 				'database',
 				`Error marking quiz ended early for student ${studentId} / quizCode ${accessCode}:`,
 				error
@@ -296,7 +296,7 @@ export class Database {
 				}
 			});
 		} catch (error) {
-			logger.error('database', 'Error adding quiz:', error);
+			logDBError('database', 'Error adding quiz:', error);
 			throw error;
 		}
 	}
@@ -334,7 +334,7 @@ export class Database {
 				select: { quiz: true }
 			});
 		} catch (error) {
-			logger.error('database', 'Error adding score:', error);
+			logDBError('database', 'Error adding score:', error);
 			throw error;
 		}
 	}
@@ -345,7 +345,7 @@ export class Database {
 				where: { accessCode, archived: false }
 			});
 		} catch (error) {
-			logger.error('database', 'Error looking up quiz:', error);
+			logDBError('database', 'Error looking up quiz:', error);
 			throw error;
 		}
 	}
@@ -366,7 +366,7 @@ export class Database {
 				return acc;
 			}, {});
 		} catch (error) {
-			logger.error('database', 'Error looking up quizzes for access codes:', error);
+			logDBError('database', 'Error looking up quizzes for access codes:', error);
 			throw error;
 		}
 	}
@@ -380,7 +380,7 @@ export class Database {
 				where: { quizCode: accessCode, student: { name: studentUsername, archived: false } }
 			});
 		} catch (error) {
-			logger.error('database', 'Error looking up quiz:', error);
+			logDBError('database', 'Error looking up quiz:', error);
 			throw error;
 		}
 	}
@@ -397,7 +397,7 @@ export class Database {
 				}
 			});
 		} catch (error) {
-			logger.error('database', 'Error checking if quiz exists:', error);
+			logDBError('database', 'Error checking if quiz exists:', error);
 			throw error;
 		}
 	}
@@ -420,7 +420,7 @@ export class Database {
 				select: { id: true, student: true, quizCode: true }
 			});
 		} catch (error) {
-			logger.error('database', `Error deleting score ${scoreId}:`, error);
+			logDBError('database', `Error deleting score ${scoreId}:`, error);
 			throw error;
 		}
 	}
@@ -432,7 +432,7 @@ export class Database {
 				data: { questionsData, totalQuestions: questionsData.split('|').length }
 			});
 		} catch (error) {
-			logger.error('database', 'Error updated questions on quiz:', error);
+			logDBError('database', 'Error updated questions on quiz:', error);
 			throw error;
 		}
 	}
@@ -459,7 +459,7 @@ export class Database {
 				associatedScores: quiz._count.scores
 			}));
 		} catch (error) {
-			logger.error('database', 'Error fetching quizzes:', error);
+			logDBError('database', 'Error fetching quizzes:', error);
 			throw error;
 		}
 	}
@@ -483,7 +483,7 @@ export class Database {
 				return 0;
 			}
 		} catch (error) {
-			logger.error('database', 'Error checking if student has teacher:', error);
+			logDBError('database', 'Error checking if student has teacher:', error);
 			throw error;
 		}
 	}

@@ -14,7 +14,7 @@ class FakeLogtail {
 	flush() {}
 }
 
-export const logger =
+const logger =
 	sourceToken && ingestingHost
 		? new Logtail(sourceToken, {
 				endpoint: `https://${ingestingHost}`
@@ -33,5 +33,10 @@ export const logDBError = (username: string, msg: string, error: object) => {
 
 export const logAPIError = (username: string, msg: string, error: object) => {
 	logger.error(`API_ERR {${username}}: ${msg} ${error}`);
+	logger.flush();
+};
+
+export const logSvelteError = (error: object, event: object) => {
+	logger.error(`SVELTE_ERR {${error}} - {${event}}`);
 	logger.flush();
 };
