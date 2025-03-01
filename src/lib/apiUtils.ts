@@ -1,3 +1,4 @@
+// Used by frontend only
 export const makePostRequest = async (
 	url: string,
 	body: object,

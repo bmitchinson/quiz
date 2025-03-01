@@ -3,6 +3,7 @@
 import { PrismaClient, type Quiz } from '@prisma/client';
 import { getReadableTitleOfQuiz } from './dataUtils';
 import { tempDisablePrismaQuery } from './config';
+import { logger } from './logging';
 
 export interface GetScoresScore {
 	id: number;
@@ -76,7 +77,7 @@ export class Database {
 				}
 			});
 		} catch (error) {
-			console.error('Error adding teacher:', error);
+			logger.error('database', 'Error adding teacher:', error);
 			throw error;
 		}
 	}
@@ -87,7 +88,7 @@ export class Database {
 				where: { name: lastname }
 			});
 		} catch (error) {
-			console.error('Error looking up teacher:', error);
+			logger.error('database', 'Error looking up teacher:', error);
 			throw error;
 		}
 	}
@@ -115,7 +116,7 @@ export class Database {
 				});
 			});
 		} catch (error) {
-			console.error('Error adding students:', error);
+			logger.error('database', 'Error adding students:', error);
 			throw error;
 		}
 	}
@@ -132,7 +133,7 @@ export class Database {
 			});
 			return students;
 		} catch (error) {
-			console.error('Error fetching students:', error);
+			logger.error('database', 'Error fetching students:', error);
 			throw error;
 		}
 	}
@@ -177,7 +178,7 @@ export class Database {
 				}
 			);
 		} catch (error) {
-			console.error('Error getting a summary of scores:', error);
+			logger.error('database', 'Error getting a summary of scores:', error);
 			throw error;
 		}
 	}
@@ -226,7 +227,7 @@ export class Database {
 				quizTitle: getReadableTitleOfQuiz(score.quiz)
 			}));
 		} catch (error) {
-			console.error('Error fetching scores:', error);
+			logger.error('database', 'Error fetching scores:', error);
 			throw error;
 		}
 	}
@@ -240,7 +241,7 @@ export class Database {
 				data: { archived: true }
 			});
 		} catch (error) {
-			console.error('Error deleting student:', error);
+			logger.error('database', 'Error deleting student:', error);
 			throw error;
 		}
 	}
@@ -262,7 +263,8 @@ export class Database {
 				}
 			});
 		} catch (error) {
-			console.error(
+			logger.error(
+				'database',
 				`Error marking quiz ended early for student ${studentId} / quizCode ${accessCode}:`,
 				error
 			);
@@ -294,7 +296,7 @@ export class Database {
 				}
 			});
 		} catch (error) {
-			console.error('Error adding quiz:', error);
+			logger.error('database', 'Error adding quiz:', error);
 			throw error;
 		}
 	}
@@ -332,7 +334,7 @@ export class Database {
 				select: { quiz: true }
 			});
 		} catch (error) {
-			console.error('Error adding score:', error);
+			logger.error('database', 'Error adding score:', error);
 			throw error;
 		}
 	}
@@ -343,7 +345,7 @@ export class Database {
 				where: { accessCode, archived: false }
 			});
 		} catch (error) {
-			console.error('Error looking up quiz:', error);
+			logger.error('database', 'Error looking up quiz:', error);
 			throw error;
 		}
 	}
@@ -364,7 +366,7 @@ export class Database {
 				return acc;
 			}, {});
 		} catch (error) {
-			console.error('Error looking up quizzes for access codes:', error);
+			logger.error('database', 'Error looking up quizzes for access codes:', error);
 			throw error;
 		}
 	}
@@ -378,7 +380,7 @@ export class Database {
 				where: { quizCode: accessCode, student: { name: studentUsername, archived: false } }
 			});
 		} catch (error) {
-			console.error('Error looking up quiz:', error);
+			logger.error('database', 'Error looking up quiz:', error);
 			throw error;
 		}
 	}
@@ -395,7 +397,7 @@ export class Database {
 				}
 			});
 		} catch (error) {
-			console.error('Error checking if quiz exists:', error);
+			logger.error('database', 'Error checking if quiz exists:', error);
 			throw error;
 		}
 	}
@@ -418,7 +420,7 @@ export class Database {
 				select: { id: true, student: true, quizCode: true }
 			});
 		} catch (error) {
-			console.error(`Error deleting score ${scoreId}:`, error);
+			logger.error('database', `Error deleting score ${scoreId}:`, error);
 			throw error;
 		}
 	}
@@ -430,7 +432,7 @@ export class Database {
 				data: { questionsData, totalQuestions: questionsData.split('|').length }
 			});
 		} catch (error) {
-			console.error('Error updated questions on quiz:', error);
+			logger.error('database', 'Error updated questions on quiz:', error);
 			throw error;
 		}
 	}
@@ -457,7 +459,7 @@ export class Database {
 				associatedScores: quiz._count.scores
 			}));
 		} catch (error) {
-			console.error('Error fetching quizzes:', error);
+			logger.error('database', 'Error fetching quizzes:', error);
 			throw error;
 		}
 	}
@@ -481,7 +483,7 @@ export class Database {
 				return 0;
 			}
 		} catch (error) {
-			console.error('Error checking if student has teacher:', error);
+			logger.error('database', 'Error checking if student has teacher:', error);
 			throw error;
 		}
 	}
