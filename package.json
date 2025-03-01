@@ -6,7 +6,11 @@
 		"dev": "dotenv -e .env -- npx vite dev",
 		"build": "prisma generate && vite build",
 		"db:seed": "tsx utils/seedData.ts",
-		"db:view": "dotenv -e .env -- npx prisma studio",
+		"db:apply": "prisma migrate deploy",
+		"db:applydev": "dotenv -e .env.dev -- prisma migrate deploy",
+		"db:applyprod": "dotenv -e .env.prod -- prisma migrate deploy",
+		"db:gen": "prisma generate",
+		"db:view": "prisma studio",
 		"db:viewprod": "dotenv -e .env.prod -- npx prisma studio",
 		"db:delete": "bash -c 'read -p \"Press Enter to continue...\"; tsx utils/eraseAllData.ts'",
 		"preview": "vite preview",
@@ -16,8 +20,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check .",
-		"format": "prettier --write .",
-		"prisma:view": "dotenv -e .env -- prisma studio"
+		"format": "prettier --write ."
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.49.1",
