@@ -6,11 +6,15 @@
 	import { invalidateAll } from '$app/navigation';
 	import { gradesWithAll } from '$lib/components/RadioButtons';
 
+	export let selectedGrade = '';
+
 	export let allQuizzes: (Quiz & {
 		_count: {
 			scores: number;
 		};
 	})[];
+
+	export let disableFilterControls = false;
 
 	let quizDelMsg = '';
 	let success = false;
@@ -18,18 +22,18 @@
 	let currentPage = 1;
 	const itemsPerPage = 5;
 
-	let selectedGrade = '';
-
 	function goToPage(page: number) {
 		if (page >= 1 && page <= totalPages) {
 			currentPage = page;
 		}
 	}
 
-	$: filteredQuizzes = allQuizzes.filter(({ grade }) => {
-		if (!selectedGrade) return true;
-		else return grade === parseInt(selectedGrade);
-	});
+	$: filteredQuizzes = allQuizzes
+		.filter(({ grade }) => {
+			if (!selectedGrade) return true;
+			else return grade === parseInt(selectedGrade);
+		})
+		.sort((a, b) => getReadableTitleOfQuiz(a).localeCompare(getReadableTitleOfQuiz(b)));
 
 	$: paginatedQuizzes = filteredQuizzes.slice(
 		(currentPage - 1) * itemsPerPage,
@@ -70,27 +74,31 @@
 	{#if quizDelMsg}
 		<Notification notifName="quiz-delete-status" errorMode={!success} message={quizDelMsg} />
 	{/if}
-	<div class="flex flex-col items-center mb-6">
-		<p class="block text-gray-700 font-medium mb-2">Grade Filter</p>
-		<RadioButtons
-			name="grade-filter"
-			options={gradesWithAll}
-			bind:selectedOptionValue={selectedGrade}
-		/>
-	</div>
+	{#if !disableFilterControls}
+		<div class="flex flex-col items-center mb-6">
+			<p class="block text-gray-700 font-medium mb-2">Grade Filter</p>
+			<RadioButtons
+				name="grade-filter"
+				options={gradesWithAll}
+				bind:selectedOptionValue={selectedGrade}
+			/>
+		</div>
+	{/if}
 	<table class="min-w-full bg-white">
 		<thead>
 			<tr>
 				<th class="py-2 px-4 border-b">Quiz</th>
 				<th class="py-2 px-4 border-b">Access Code</th>
 				<th class="py-2 px-4 border-b">Submissions</th>
-				<th class="py-2 px-4 border-b">Actions</th>
+				{#if !disableFilterControls}
+					<th class="py-2 px-4 border-b">Actions</th>
+				{/if}
 			</tr>
 		</thead>
 		<tbody>
 			{#if paginatedQuizzes.length === 0}
 				<tr>
-					<td colspan="4" class="py-2 px-4 text-center">None</td>
+					<td colspan={disableFilterControls ? 3 : 4} class="py-2 px-4 text-center">None</td>
 				</tr>
 			{/if}
 			{#each paginatedQuizzes as quiz}
@@ -108,22 +116,24 @@
 					<td class="py-2 px-4 border-b m-2">
 						<div class="flex justify-center">{quiz._count.scores}</div>
 					</td>
-					<td class="flex justify-center items-center m-2 space-x-2">
-						<a
-							id={`edit-${getReadableTitleOfQuiz(quiz)}`}
-							href={`/admin/editQuiz/${quiz.accessCode}`}
-							class="bg-green-200 hover:bg-green-300 text-black font-semibold py-1 px-2 rounded-md transition duration-200"
-						>
-							Edit
-						</a>
-						<button
-							id={`delete-${getReadableTitleOfQuiz(quiz)}`}
-							on:click={() => deleteQuiz(quiz)}
-							class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-md transition duration-200"
-						>
-							Delete
-						</button>
-					</td>
+					{#if !disableFilterControls}
+						<td class="flex justify-center items-center m-2 space-x-2">
+							<a
+								id={`edit-${getReadableTitleOfQuiz(quiz)}`}
+								href={`/admin/editQuiz/${quiz.accessCode}`}
+								class="bg-green-200 hover:bg-green-300 text-black font-semibold py-1 px-2 rounded-md transition duration-200"
+							>
+								Edit
+							</a>
+							<button
+								id={`delete-${getReadableTitleOfQuiz(quiz)}`}
+								on:click={() => deleteQuiz(quiz)}
+								class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-md transition duration-200"
+							>
+								Delete
+							</button>
+						</td>
+					{/if}
 				</tr>
 			{/each}
 		</tbody>

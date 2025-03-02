@@ -66,11 +66,7 @@ test('Taking a quiz', async ({ page }) => {
 	expect(await page.locator('p:has-text("You got 2 out of 4 correct.")')).toBeVisible();
 
 	const score = await getScore(quizCode);
-
-	while (!score) {
-		await getScore(quizCode);
-	}
-
+	await page.waitForTimeout(400);
 	expect(score.correctAnswers).toBe(2);
 	expect(score.student.name).toBe('thirdgrader1');
 	expect(score.answers).toStrictEqual(['4', '0', '9', '25']);

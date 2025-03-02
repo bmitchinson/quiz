@@ -467,7 +467,6 @@ export class Database {
 		try {
 			return await this.prisma.quiz.findMany({
 				where: { archived: false },
-				orderBy: { createdAt: 'desc' },
 				include: {
 					_count: {
 						select: {

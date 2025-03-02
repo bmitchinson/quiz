@@ -5,6 +5,7 @@ import { addMinutes } from 'date-fns';
 import { quizHasTakenLongerThanAllowed } from '$lib/dateUtils';
 import { logAPIError, logEvent } from '$lib/logging';
 import { getReadableTitleOfQuiz } from '$lib/dataUtils';
+import type { PageServerLoad } from './$types';
 
 const db = new Database();
 
