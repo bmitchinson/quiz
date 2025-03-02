@@ -105,10 +105,20 @@ export class Database {
 				const teacher = await prisma.teacher.findUnique({
 					where: { name: teacherName }
 				});
+
+				await prisma.student.updateMany({
+					where: {
+						name: { in: studentNames.map((n) => n.toLowerCase()) },
+						teacherId: teacher.id
+					},
+					data: { archived: false }
+				});
+
 				const dataToInsert = studentNames.map((studentName) => ({
 					name: studentName.toLowerCase(),
 					teacherId: teacher.id
 				}));
+
 				return await prisma.student.createManyAndReturn({
 					select: { id: true },
 					data: dataToInsert,
@@ -123,7 +133,6 @@ export class Database {
 
 	async getStudent(studentName: string) {
 		try {
-			console.log('studentName', studentName);
 			return await this.prisma.student.findFirst({
 				select: { teacher: true },
 				where: { name: studentName, archived: false }
