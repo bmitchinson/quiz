@@ -2,9 +2,12 @@
 	import { deserialize } from '$app/forms';
 	import type { Quiz, Score } from '@prisma/client';
 	import { onMount } from 'svelte';
-	import Card from '../../../lib/components/Card.svelte';
+	import Card from '$lib/components/Card.svelte';
 	import { allowedDistractionsBeforeQuizEnds, disallowDistractionsFeatureFlag } from '$lib/config';
-	import { getButtonStyles } from '../../../lib/cssUtils';
+	import { getButtonStyles } from '$lib/cssUtils';
+
+	export let data;
+	const studentGrade = data.studentGrade;
 
 	// State variables
 	let accessCode = '';
@@ -39,7 +42,6 @@
 					quizEndedEarly = true;
 				});
 		}
-		console.log('focusLossDetectedCount', focusLossDetectedCount);
 	}
 
 	let submissionDisabled = true;
@@ -70,6 +72,11 @@
 			const result = deserialize(await response.text());
 			if (result.data.success === true) {
 				const quiz = result.data.quiz as Quiz;
+
+				if (quiz.grade != studentGrade) {
+					accessCodeErr = 'This quiz is not for your grade level.';
+					return;
+				}
 
 				questionsData = quiz.questionsData;
 				questions = questionsData.split('|');

@@ -162,21 +162,20 @@ export const clearDbScores = async () => {
 	await db.prisma.score.deleteMany({});
 };
 
-export async function createScoreForQuiz3ByStudentName(studentName: string) {
-	const quiz = await getQuizByMetadata({
-		year: 2425,
-		grade: 3,
-		quarter: 1,
-		sequenceLetter: 'A'
-	});
+export async function createScoreForQuiz(
+	quizAccessCode: string,
+	studentName: string,
+	answers: string[]
+) {
 	const student = await db.prisma.student.findFirst({ where: { name: studentName } });
 	await db.prisma.score.create({
 		data: {
+			answers,
 			quiz: {
-				connect: { accessCode: quiz?.accessCode }
+				connect: { accessCode: quizAccessCode }
 			},
 			student: { connect: { id: student.id } },
-			correctAnswers: 2
+			correctAnswers: 1
 		}
 	});
 }
@@ -238,8 +237,26 @@ export const loginAsFirstAlphaFirstGrader = async (page: Page) => {
 	return await loginAsStudent(page, 'aallen', '1', 'doherty');
 };
 
-export const loginAsStudentSecondgrader4 = async (page: Page) => {
-	return await loginAsStudent(page, 'secondgrader4', '2', 'mitchinson');
+export const thirdGradeQuizTakerName = 'thirdgrader1';
+
+export const loginAsTestThirdGradeQuizTaker = async (page: Page) =>
+	loginAsStudent(page, thirdGradeQuizTakerName, '3', 'mrs_thirdgrade');
+
+export const eraseThirdGradeTestTakerScores = async () =>
+	db.prisma.score.deleteMany({
+		where: {
+			student: {
+				name: thirdGradeQuizTakerName
+			}
+		}
+	});
+
+export const performXDistractions = async (page: Page, count: number) => {
+	for (let i = 0; i < count; i++) {
+		await page.evaluate(() => {
+			document.dispatchEvent(new Event('visibilitychange'));
+		});
+	}
 };
 
 export const amountOfStudentsForTeacher = async (teacherName: string): Promise<number> => {

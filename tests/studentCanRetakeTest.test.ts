@@ -5,7 +5,7 @@ import {
 	initializeTestTeachers,
 	loginAsAdmin,
 	loginAsFirstAlphaFirstGrader,
-	loginAsStudentSecondgrader4,
+	loginAsSecondGradeStudent,
 	resetQuizzesToTestData,
 	resetStudentsAndScores
 } from './testutils';

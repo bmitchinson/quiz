@@ -8,6 +8,16 @@ import { getReadableTitleOfQuiz } from '$lib/dataUtils';
 
 const db = new Database();
 
+export const load: PageServerLoad = async ({ request, cookies }) =>
+	validateRole(request, cookies, ['Student'], async () => {
+		try {
+			const student = await db.getStudent(await getSignedCookieValue('loginName', cookies));
+			return { studentGrade: student?.teacher.grade };
+		} catch (err) {
+			throw error(500, 'Failed to find student grade');
+		}
+	});
+
 export const actions: Actions = {
 	getQuiz: async ({ request, cookies }) =>
 		validateRole(request, cookies, ['Student'], async () => {
