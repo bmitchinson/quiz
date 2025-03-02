@@ -465,7 +465,7 @@ export class Database {
 	// todo: year, filter by the year that the app has in env
 	async getAllQuizzes() {
 		try {
-			const quizzes = await this.prisma.quiz.findMany({
+			return await this.prisma.quiz.findMany({
 				where: { archived: false },
 				orderBy: { createdAt: 'desc' },
 				include: {
@@ -476,10 +476,6 @@ export class Database {
 					}
 				}
 			});
-			return quizzes.map((quiz) => ({
-				...quiz,
-				associatedScores: quiz._count.scores
-			}));
 		} catch (error) {
 			logDBError('database', 'Error fetching quizzes', error);
 			throw error;
