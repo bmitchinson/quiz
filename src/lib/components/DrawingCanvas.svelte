@@ -127,6 +127,14 @@
 </div>
 
 <div class="controls">
+	<div class="slider-container">
+		<label for="lineWidth">Brush Size: {lineWidth}</label>
+		<input type="range" id="lineWidth" min="1" max="50" bind:value={lineWidth} />
+	</div>
+	<button class="tool-button" on:click={clearCanvas}>Clear Screen</button>
+</div>
+
+<div class="controls">
 	{#each colors as c}
 		<button
 			type="button"
@@ -137,12 +145,6 @@
 		></button>
 	{/each}
 	<button class="tool-button" on:click={erase}>Eraser</button>
-	<button class="tool-button" on:click={clearCanvas}>Clear Screen</button>
-
-	<div class="slider-container">
-		<label for="lineWidth">Brush Size: {lineWidth}</label>
-		<input type="range" id="lineWidth" min="1" max="50" bind:value={lineWidth} />
-	</div>
 </div>
 
 <style>

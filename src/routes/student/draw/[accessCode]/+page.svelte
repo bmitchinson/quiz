@@ -5,11 +5,14 @@
 	const { secondsToDraw } = data;
 	let canvas;
 
-	function saveImage() {
-		const link = document.createElement('a');
-		link.download = 'my_drawing.jpg';
-		link.href = canvas.toDataURL('image/jpeg', 0.15);
-		link.click();
+	function submitImage() {
+		const conf = window.confirm('Submit your drawing?');
+		if (conf) {
+			const link = document.createElement('a');
+			link.download = 'my_drawing.jpg';
+			link.href = canvas.toDataURL('image/jpeg', 0.15);
+			link.click();
+		}
 	}
 </script>
 
@@ -21,7 +24,7 @@
 	<h1>{secondsToDraw}</h1>
 	<DrawingCanvas bind:canvas />
 
-	<button class="tool-button" on:click={saveImage}>Save</button>
+	<button class="tool-button" on:click={submitImage}>Submit</button>
 </div>
 
 <style>
