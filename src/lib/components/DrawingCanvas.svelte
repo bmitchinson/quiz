@@ -1,4 +1,5 @@
 <script>
+	import { beforeNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
 
 	export let canvas;
@@ -12,6 +13,7 @@
 	let x = 0;
 	let y = 0;
 	let showCursorIndicator = false;
+	let canvasHasBeenDrawedOn = false;
 
 	const colors = [
 		'#FF0000', // Red
@@ -41,6 +43,7 @@
 	}
 
 	function startDrawing(event) {
+		canvasHasBeenDrawedOn = true;
 		isDrawing = true;
 		[x, y] = getPosition(event);
 	}
@@ -85,10 +88,29 @@
 	}
 
 	function clearCanvas() {
-		window.confirm('Erase Screen?') && ctx.clearRect(0, 0, canvas.width, canvas.height);
+		const conf = window.confirm('Erase Screen?');
+		if (conf) {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			canvasHasBeenDrawedOn = false;
+		}
 	}
 
+	beforeNavigate((nav) => {
+		if (canvasHasBeenDrawedOn) {
+			const confirmLeave = confirm('You have unsaved changes. Are you sure you want to leave?');
+			if (!confirmLeave) {
+				nav.cancel(); // Prevent SvelteKit from navigating away
+			}
+		}
+	});
+
 	onMount(() => {
+		window.addEventListener('beforeunload', (event) => {
+			if (canvasHasBeenDrawedOn) {
+				event.preventDefault(); // Some browsers require this
+			}
+		});
+
 		ctx = canvas.getContext('2d');
 		resizeCanvas();
 		window.addEventListener('resize', resizeCanvas);
