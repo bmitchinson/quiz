@@ -31,7 +31,6 @@
 					alert('Failed to submit drawing. Please try again.');
 				}
 			);
-			// await prisma.image.create({ data: { data: buffer } });
 		}
 	}
 </script>
