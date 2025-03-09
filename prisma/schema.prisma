@@ -15,19 +15,20 @@ model Teacher {
   // end-of-year: add year "2324" attr to teacher, update teacher login to query
   //     that year
 
-  createdAt      DateTime  @default(now())
+  createdAt DateTime @default(now())
 }
 
 model Student {
-  id          Int      @id @default(autoincrement())
-  name        String   
-  archived    Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  
-  teacherId   Int
-  teacher     Teacher  @relation("TeacherStudents", fields: [teacherId], references: [id], onDelete: Cascade)
-  
-  scores      Score[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  archived  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  teacherId Int
+  teacher   Teacher @relation("TeacherStudents", fields: [teacherId], references: [id], onDelete: Cascade)
+
+  scores  Score[]
+  Drawing Drawing[]
 
   @@unique([name, teacherId])
 }
@@ -41,16 +42,17 @@ model Quiz {
   createdAt      DateTime @default(now())
 
   // old
-  title          String   @db.VarChar(50)
+  title String @db.VarChar(50)
   // todo: remove title
 
   // new
   year           Int
   grade          Int
   quarter        Int
-  sequenceLetter String  @db.VarChar(1)
+  sequenceLetter String @db.VarChar(1)
 
-  scores         Score[]
+  scores  Score[]
+  Drawing Drawing[]
 }
 
 model Score {
@@ -61,12 +63,26 @@ model Score {
   studentId      Int
   quizCode       String    @db.VarChar(6)
 
-  student        Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  quiz           Quiz      @relation(fields: [quizCode], references: [accessCode], onDelete: Cascade)
-  
-  createdAt      DateTime  @default(now())
-  answers        String[]  @default([])
-  quizEndedEarly Boolean   @default(false)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  quiz    Quiz    @relation(fields: [quizCode], references: [accessCode], onDelete: Cascade)
+
+  createdAt      DateTime @default(now())
+  answers        String[] @default([])
+  quizEndedEarly Boolean  @default(false)
 
   @@unique([quizCode, studentId])
+}
+
+model Drawing {
+  id        Int    @id @default(autoincrement())
+  jpgBase64 String @db.VarChar(409600) // Limits to 400KB
+  // there are more efficient ways to store this with buffer or postgrs text but I don't care
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  accessCode String @db.VarChar(6)
+  quiz       Quiz   @relation(fields: [accessCode], references: [accessCode], onDelete: Cascade)
+
+  @@unique([accessCode, studentId])
 }
