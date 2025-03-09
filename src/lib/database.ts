@@ -120,7 +120,7 @@ export class Database {
 				}));
 
 				return await prisma.student.createManyAndReturn({
-					select: { id: true },
+					select: { id: true, name: true },
 					data: dataToInsert,
 					skipDuplicates: true
 				});

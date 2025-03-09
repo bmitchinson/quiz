@@ -12,6 +12,7 @@ import {
 	studentGroup8RosalesMedina
 } from './datasets';
 import type { Page } from '@playwright/test';
+import { addMinutes, addSeconds } from 'date-fns';
 
 const db = new Database();
 
@@ -36,37 +37,21 @@ export async function resetStudentsAndScores(): Promise<void> {
 	await db.prisma.score.deleteMany({});
 	await db.prisma.student.deleteMany({});
 
-	const studentGroup1 = await db
-		.addStudents(studentGroup1Marcos, 'marcos')
-		.then((students) => students.map((student) => student.id));
+	const studentGroup1 = await db.addStudents(studentGroup1Marcos, 'marcos');
 
-	const studentGroup2 = await db
-		.addStudents(studentGroup2Burke, 'burke')
-		.then((students) => students.map((student) => student.id));
+	const studentGroup2 = await db.addStudents(studentGroup2Burke, 'burke');
 
-	const studentGroup3 = await db
-		.addStudents(studentGroup3Doherty, 'doherty')
-		.then((students) => students.map((student) => student.id));
+	const studentGroup3 = await db.addStudents(studentGroup3Doherty, 'doherty');
 
-	const studentGroup4 = await db
-		.addStudents(studentGroup4Schillo, 'schillo')
-		.then((students) => students.map((student) => student.id));
+	const studentGroup4 = await db.addStudents(studentGroup4Schillo, 'schillo');
 
-	const studentGroup5 = await db
-		.addStudents(studentGroup5Boyle, 'boyle')
-		.then((students) => students.map((student) => student.id));
+	const studentGroup5 = await db.addStudents(studentGroup5Boyle, 'boyle');
 
-	const studentGroup6 = await db
-		.addStudents(studentGroup6Eklund, 'eklund')
-		.then((students) => students.map((student) => student.id));
+	const studentGroup6 = await db.addStudents(studentGroup6Eklund, 'eklund');
 
-	const studentGroup7 = await db
-		.addStudents(studentGroup7Mitchinson, 'mitchinson')
-		.then((students) => students.map((student) => student.id));
+	const studentGroup7 = await db.addStudents(studentGroup7Mitchinson, 'mitchinson');
 
-	const studentGroup8 = await db
-		.addStudents(studentGroup8RosalesMedina, 'rosales-medina')
-		.then((students) => students.map((student) => student.id));
+	const studentGroup8 = await db.addStudents(studentGroup8RosalesMedina, 'rosales-medina');
 
 	await db.addStudents(['thirdgrader1', 'thirdgrader2'], 'mrs_thirdgrade');
 
@@ -91,16 +76,22 @@ export async function resetStudentsAndScores(): Promise<void> {
 	const scoresToCreate = [];
 
 	groupsToSeedScoresOf.forEach((group) => {
-		group.s.forEach((studentId) => {
+		group.s.forEach((student) => {
 			group.q.forEach((quizCode, qIndex) => {
+				const createdAt = getRandomDateForQuarterAndSequence(
+					parseInt(quizCode.charAt(2)), // quarter
+					parseInt(quizCode.charAt(3)) // sequence
+				);
+
 				scoresToCreate.push({
-					studentId,
+					studentId: student.id,
 					quizCode,
 					correctAnswers: group.sG(qIndex),
-					createdAt: getRandomDateForQuarterAndSequence(
-						parseInt(quizCode.charAt(2)), // quarter
-						parseInt(quizCode.charAt(3)) // sequence
-					),
+					createdAt,
+					timeFinished:
+						student.name === 'secondgrader1'
+							? new Date()
+							: addSeconds(createdAt, Math.floor(Math.random() * 121) + 300),
 					// note: these could be made more accurate by using the quiz data against "correctAnswers", this is fine for now
 					answers: ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0']
 				});

@@ -37,6 +37,6 @@ export const logAPIError = (username: string, msg: string, error: object) => {
 };
 
 export const logSvelteError = (error: object, event: object) => {
-	logger.error(`SVELTE_ERR {${error}} - {${event}}`);
+	logger.error(`SVELTE_ERR {${error}} - {${JSON.stringify(event)}}`);
 	logger.flush();
 };

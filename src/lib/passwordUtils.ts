@@ -1,5 +1,5 @@
 import { invalidateAll } from '$app/navigation';
-import { redirect, type Cookies } from '@sveltejs/kit';
+import { type Cookies } from '@sveltejs/kit';
 import { get } from 'svelte/store';
 import { clearCookies, getSignedCookieValue } from './signedCookie';
 import { env } from '$env/dynamic/private';

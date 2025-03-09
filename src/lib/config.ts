@@ -14,3 +14,5 @@ export const disallowDistractionsFeatureFlag = true;
 export const allowedDistractionsBeforeQuizEnds = 4; // only has impact if above is true
 
 export const tempDisablePrismaQuery = false;
+
+export const timeToDrawAfterSubmittingQuiz = 300;
