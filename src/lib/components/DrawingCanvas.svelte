@@ -3,6 +3,8 @@
 	import { onMount } from 'svelte';
 
 	export let canvas;
+	export let drawingSubmitted = false;
+
 	let color = '#000000';
 	let lineWidth = 5;
 	let isErasing = false;
@@ -96,7 +98,7 @@
 	}
 
 	beforeNavigate((nav) => {
-		if (canvasHasBeenDrawedOn) {
+		if (canvasHasBeenDrawedOn && !drawingSubmitted) {
 			const confirmLeave = confirm('You have unsaved changes. Are you sure you want to leave?');
 			if (!confirmLeave) {
 				nav.cancel(); // Prevent SvelteKit from navigating away
@@ -106,7 +108,7 @@
 
 	onMount(() => {
 		window.addEventListener('beforeunload', (event) => {
-			if (canvasHasBeenDrawedOn) {
+			if (canvasHasBeenDrawedOn && !drawingSubmitted) {
 				event.preventDefault(); // Some browsers require this
 			}
 		});
@@ -150,7 +152,7 @@
 
 <div class="controls">
 	<div class="slider-container">
-		<label for="lineWidth">Brush Size: {lineWidth}</label>
+		<label class="w-32" for="lineWidth">Brush Size: {lineWidth}</label>
 		<input type="range" id="lineWidth" min="1" max="50" bind:value={lineWidth} />
 	</div>
 	<button class="tool-button" on:click={clearCanvas}>Clear Screen</button>

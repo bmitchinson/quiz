@@ -2,11 +2,13 @@
 	import { makePostRequest } from '$lib/apiUtils';
 	import Card from '$lib/components/Card.svelte';
 	import DrawingCanvas from '$lib/components/DrawingCanvas.svelte';
+	import { getButtonStyles } from '$lib/cssUtils';
 
 	export let data;
-	const { secondsToDraw, accessCode } = data;
+	const { secondsToDraw, accessCode, drawingAlreadyExists } = data;
+
+	let drawingSubmitted = !!drawingAlreadyExists;
 	let canvas;
-	let drawingSubmitted = false;
 
 	function submitImage() {
 		const conf = window.confirm('Submit your drawing?');
@@ -20,8 +22,6 @@
 				(data) => {
 					if (data.success) {
 						drawingSubmitted = true;
-						// TODO: canvasHasBeenDrawedOn is true, need to set to false
-						// TODO: Need to autoload drawingSubmitted on page load
 					} else {
 						alert('Failed to submit drawing. Please try again.');
 					}
@@ -41,13 +41,14 @@
 </svelte:head>
 
 {#if drawingSubmitted}
-	<Card>
+	<Card additionalClasses={'items-center'}>
 		<h1>Your drawing has been submitted! ✅</h1>
+		<button class={`${getButtonStyles()} w-24`}><a href="/">Home</a></button>
 	</Card>
 {:else}
 	<div class="container">
 		<h1>{secondsToDraw}</h1>
-		<DrawingCanvas bind:canvas />
+		<DrawingCanvas drawingSubmitted bind:canvas />
 
 		<button class="tool-button" on:click={submitImage}>Submit</button>
 	</div>

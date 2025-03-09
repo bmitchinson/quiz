@@ -146,6 +146,20 @@ export class Database {
 		}
 	}
 
+	async getDrawing(studentId: string, accessCode: string) {
+		try {
+			return await this.prisma.drawing.findFirst({
+				where: {
+					studentId: parseInt(studentId),
+					accessCode
+				}
+			});
+		} catch (error) {
+			logDBError('database', 'Error fetching drawing', error);
+			throw error;
+		}
+	}
+
 	async getStudent(studentName: string) {
 		try {
 			return await this.prisma.student.findFirst({

@@ -19,10 +19,12 @@ export const load: PageServerLoad = async ({ params, request, cookies }) => {
 			bail();
 		}
 
-		const score = await db.checkIfScoreExistsForQuizAndStudent(
-			accessCode,
-			await getSignedCookieValue('loginName', cookies)
-		);
+		const studentId = await getSignedCookieValue('studentId', cookies);
+		if (await db.getDrawing(studentId, accessCode)) {
+			return { drawingAlreadyExists: true, secondsToDraw: null, accessCode };
+		}
+
+		const score = await db.checkIfScoreExistsForQuizAndStudent(accessCode, loginName);
 		if (!score?.timeFinished) {
 			bail();
 		}
