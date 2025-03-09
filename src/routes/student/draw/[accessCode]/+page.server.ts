@@ -30,13 +30,14 @@ export const load: PageServerLoad = async ({ params, request, cookies }) => {
 		const drawingDueDate = addSeconds(score!.timeFinished, timeToDrawAfterSubmittingQuiz);
 		const now = new Date();
 		const diffSeconds = differenceInSeconds(drawingDueDate, now);
+		let secondsToDraw = null;
 
 		if (diffSeconds > 60) {
-			return { secondsToDraw: diffSeconds };
+			secondsToDraw = diffSeconds;
 		} else if (diffSeconds > 0) {
-			return { secondsToDraw: 60 };
-		} else {
-			return { secondsToDraw: null };
+			secondsToDraw = 60;
 		}
+
+		return { secondsToDraw, accessCode };
 	});
 };

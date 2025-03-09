@@ -131,6 +131,21 @@ export class Database {
 		}
 	}
 
+	async saveDrawing(studentId: string, accessCode: string, jpgBase64: string): Promise<void> {
+		try {
+			return await this.prisma.drawing.create({
+				data: {
+					studentId: parseInt(studentId),
+					accessCode,
+					jpgBase64
+				}
+			});
+		} catch (error) {
+			logDBError('database', 'Error saving drawing', error);
+			throw error;
+		}
+	}
+
 	async getStudent(studentName: string) {
 		try {
 			return await this.prisma.student.findFirst({
