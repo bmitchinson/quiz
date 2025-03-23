@@ -5,18 +5,20 @@
 	import { getButtonStyles } from '$lib/cssUtils';
 
 	export let data;
-	const { secondsToDraw, accessCode, drawingAlreadyExists } = data;
+	const { secondsToDraw, accessCode, drawingAlreadyExistsBase64 } = data;
 
-	let drawingSubmitted = !!drawingAlreadyExists;
+	let drawingSubmitted = !!drawingAlreadyExistsBase64;
+	let exportedImage = drawingSubmitted ? drawingAlreadyExistsBase64 : '';
 	let canvas;
 
 	function submitImage() {
 		const conf = window.confirm('Submit your drawing?');
 		if (conf) {
+			exportedImage = canvas.toDataURL('image/jpeg', 0.5);
 			makePostRequest(
 				'/api/drawing',
 				{
-					jpgBase64: canvas.toDataURL('image/jpeg', 0.15),
+					jpgBase64: exportedImage,
 					accessCode
 				},
 				(data) => {
@@ -42,12 +44,13 @@
 {#if drawingSubmitted}
 	<Card additionalClasses={'items-center'}>
 		<h1>Your drawing has been submitted! ✅</h1>
-		<button class={`${getButtonStyles()} w-24`}><a href="/">Home</a></button>
+		<img src={exportedImage} class="w-md" alt="drawing" />
+		<a class={`${getButtonStyles()}`} href="/">Home</a>
 	</Card>
 {:else}
 	<div class="container">
 		<h1>{secondsToDraw}</h1>
-		<DrawingCanvas drawingSubmitted bind:canvas />
+		<DrawingCanvas bind:canvas />
 
 		<button class="tool-button" on:click={submitImage}>Submit</button>
 	</div>

@@ -75,7 +75,7 @@ model Score {
 
 model Drawing {
   id        Int    @id @default(autoincrement())
-  jpgBase64 String @db.VarChar(409600) // Limits to 400KB
+  jpgBase64 String? @db.VarChar(409600) // Limits to 400KB
   // there are more efficient ways to store this with buffer or postgrs text but I don't care
 
   studentId Int
@@ -85,4 +85,6 @@ model Drawing {
   quiz       Quiz   @relation(fields: [accessCode], references: [accessCode], onDelete: Cascade)
 
   @@unique([accessCode, studentId])
+
+  timeStarted    DateTime?
 }

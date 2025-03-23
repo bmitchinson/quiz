@@ -3,7 +3,6 @@
 	import { onMount } from 'svelte';
 
 	export let canvas;
-	export let drawingSubmitted = false;
 
 	let color = '#000000';
 	let lineWidth = 5;
@@ -74,8 +73,8 @@
 		const { width, height } = canvas.getBoundingClientRect();
 		canvas.width = width;
 		canvas.height = height;
-		ctx.fillStyle = '#FFFFFF';
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		ctx.putImageData(imageData, 0, 0);
 	}
 
 	function updateCursor(event) {
@@ -98,7 +97,7 @@
 	}
 
 	beforeNavigate((nav) => {
-		if (canvasHasBeenDrawedOn && !drawingSubmitted) {
+		if (canvasHasBeenDrawedOn) {
 			const confirmLeave = confirm('You have unsaved changes. Are you sure you want to leave?');
 			if (!confirmLeave) {
 				nav.cancel(); // Prevent SvelteKit from navigating away
@@ -108,13 +107,15 @@
 
 	onMount(() => {
 		window.addEventListener('beforeunload', (event) => {
-			if (canvasHasBeenDrawedOn && !drawingSubmitted) {
+			if (canvasHasBeenDrawedOn) {
 				event.preventDefault(); // Some browsers require this
 			}
 		});
 
 		ctx = canvas.getContext('2d');
 		resizeCanvas();
+		ctx.fillStyle = '#FFFFFF';
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		window.addEventListener('resize', resizeCanvas);
 	});
 </script>
@@ -168,7 +169,13 @@
 			aria-label="Select color {c}"
 		></button>
 	{/each}
-	<button class="tool-button" on:click={erase}>Eraser</button>
+	<button
+		style={isErasing ? 'box-shadow: inset 0 0 0 6px black;' : ''}
+		class="tool-button"
+		on:click={erase}
+	>
+		Eraser
+	</button>
 </div>
 
 <style>

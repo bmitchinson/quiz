@@ -20,6 +20,7 @@
 	let results = [];
 	let isCorrect = null;
 	let correctAnswer = null;
+	let drawingExists = false;
 
 	let timeStarted = null;
 
@@ -72,6 +73,7 @@
 			const result = deserialize(await response.text());
 			if (result.data.success === true) {
 				const quiz = result.data.quiz as Quiz;
+				drawingExists = result.data.drawingExists as boolean;
 
 				if (quiz.grade != studentGrade) {
 					accessCodeErr = 'This quiz is not for your grade level.';
@@ -148,9 +150,9 @@
 			if (!result.data.success) {
 				accessCodeErr = result.data.message;
 				questionsData = '';
-				let currentQuestionIndex = 0;
-				let questions = [];
-				let results = [];
+				currentQuestionIndex = 0;
+				questions = [];
+				results = [];
 				quizStarted = false;
 			}
 		});
@@ -284,12 +286,17 @@
 	</div>
 {:else}
 	<!-- Show the score -->
-	<div class="bg-white rounded-lg p-8 shadow-md text-center max-w-xl mx-auto mt-10">
-		<h2 class="text-4xl mb-4">Quiz Complete!</h2>
+	<Card>
+		<h2 class="text-4xl">Quiz Complete!</h2>
 		<p class="text-2xl">
 			You got {results.filter((r) => r.correct).length} out of {questions.length} correct.
 		</p>
-	</div>
+		<a
+			data-sveltekit-preload-data={false}
+			href={`/student/draw/${accessCode}`}
+			class={`${getButtonStyles()} text-center`}>Make a Drawing 🎨</a
+		>
+	</Card>
 {/if}
 
 <style>

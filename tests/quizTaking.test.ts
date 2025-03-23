@@ -85,7 +85,8 @@ test('Student cannot retake quiz', async ({ page }) => {
 
 	await page.locator('input[name="accessCode"]').fill(quiz?.accessCode);
 	await page.locator('button:has-text("Start Quiz")').click();
-	await expect(page.locator('p:has-text("You\'ve already taken this quiz :)")')).toBeVisible();
+	await expect(page.locator('h2:has-text("Quiz Complete!")')).toBeVisible();
+	await expect(page.locator('p:has-text("You got 2 out of 4 correct.")')).toBeVisible();
 });
 
 test('Student can resume a quiz', async ({ page }) => {

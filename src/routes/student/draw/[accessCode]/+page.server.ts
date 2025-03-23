@@ -5,6 +5,7 @@ import type { PageServerLoad } from '../$types';
 import { addMinutes, addSeconds, differenceInSeconds } from 'date-fns';
 import { timeToDrawAfterSubmittingQuiz } from '$lib/config';
 import { getSignedCookieValue } from '$lib/signedCookie';
+import { logEvent } from '../../../../lib/logging';
 
 const db = new Database();
 
@@ -19,27 +20,25 @@ export const load: PageServerLoad = async ({ params, request, cookies }) => {
 			bail();
 		}
 
-		const studentId = await getSignedCookieValue('studentId', cookies);
-		if (await db.getDrawing(studentId, accessCode)) {
-			return { drawingAlreadyExists: true, secondsToDraw: null, accessCode };
-		}
-
 		const score = await db.checkIfScoreExistsForQuizAndStudent(accessCode, loginName);
 		if (!score?.timeFinished) {
 			bail();
 		}
 
-		const drawingDueDate = addSeconds(score!.timeFinished, timeToDrawAfterSubmittingQuiz);
-		const now = new Date();
-		const diffSeconds = differenceInSeconds(drawingDueDate, now);
-		let secondsToDraw = null;
-
-		if (diffSeconds > 60) {
-			secondsToDraw = diffSeconds;
-		} else if (diffSeconds > 0) {
-			secondsToDraw = 60;
+		const studentId = await getSignedCookieValue('studentId', cookies);
+		let drawing = await db.getDrawing(studentId, accessCode);
+		if (!drawing) {
+			drawing = await db.startDrawing(studentId, accessCode);
+			logEvent(loginName, `Started drawing image for quiz ${accessCode}`);
 		}
 
-		return { secondsToDraw, accessCode };
+		const drawingDueDate = addSeconds(drawing?.timeStarted, timeToDrawAfterSubmittingQuiz);
+		const diffSeconds = differenceInSeconds(drawingDueDate, new Date());
+
+		return {
+			drawingAlreadyExistsBase64: drawing?.jpgBase64,
+			secondsToDraw: diffSeconds,
+			accessCode
+		};
 	});
 };

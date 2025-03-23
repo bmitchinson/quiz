@@ -131,17 +131,36 @@ export class Database {
 		}
 	}
 
-	async saveDrawing(studentId: string, accessCode: string, jpgBase64: string): Promise<void> {
+	async startDrawing(studentId: string, accessCode: string): Promise<void> {
 		try {
 			return await this.prisma.drawing.create({
 				data: {
 					studentId: parseInt(studentId),
 					accessCode,
+					timeStarted: new Date()
+				}
+			});
+		} catch (error) {
+			logDBError('database', 'Error starting drawing', error);
+			throw error;
+		}
+	}
+
+	async saveDrawingImage(studentId: string, accessCode: string, jpgBase64: string): Promise<void> {
+		try {
+			return await this.prisma.drawing.update({
+				where: {
+					accessCode_studentId: {
+						accessCode,
+						studentId: parseInt(studentId)
+					}
+				},
+				data: {
 					jpgBase64
 				}
 			});
 		} catch (error) {
-			logDBError('database', 'Error saving drawing', error);
+			logDBError('database', 'Error saving drawing image data', error);
 			throw error;
 		}
 	}

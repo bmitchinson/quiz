@@ -32,23 +32,20 @@ export const actions: Actions = {
 					accessCode,
 					await getSignedCookieValue('loginName', cookies)
 				);
-				if (!existingScore) {
-					return { success: true, quiz: quiz };
-				} else if (
-					existingScore.answers.length !== quiz.totalQuestions &&
-					!quizHasTakenLongerThanAllowed(existingScore.timeStarted)
-				) {
-					return { success: true, quiz: quiz, score: existingScore };
-				} else if (
-					existingScore.answers.length !== quiz.totalQuestions &&
-					quizHasTakenLongerThanAllowed(existingScore.timeStarted)
-				) {
+				const studentId = await getSignedCookieValue('studentId', cookies);
+				const drawing = await db.getDrawing(studentId, accessCode);
+				if (quizHasTakenLongerThanAllowed(existingScore?.timeStarted)) {
 					return {
 						success: false,
 						message: `Quiz not finished, but time expired.`
 					};
 				} else {
-					return { success: false, message: "You've already taken this quiz :)" };
+					return {
+						success: true,
+						quiz: quiz,
+						score: existingScore,
+						drawingExists: !!drawing?.jpgBase64
+					};
 				}
 			} else {
 				return { success: false, message: 'Invalid Access Code' };

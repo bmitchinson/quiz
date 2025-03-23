@@ -29,7 +29,7 @@ test('Student can retake quiz by deleting', async ({ page }) => {
 	await page.locator(`h2:has-text("Enter Quiz Access Code")`);
 	await page.locator('input[name="accessCode"]').fill(quizCode);
 	await page.locator('button:has-text("Start Quiz")').click();
-	await expect(page.locator('p:has-text("You\'ve already taken this quiz :)")')).toBeVisible();
+	await expect(page.locator('h2:has-text("Quiz Complete!")')).toBeVisible();
 
 	await loginAsAdmin(page);
 	await page.locator('a:has-text("View Scores")').click();

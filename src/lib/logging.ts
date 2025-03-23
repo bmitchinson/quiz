@@ -37,6 +37,10 @@ export const logAPIError = (username: string, msg: string, error: object) => {
 };
 
 export const logSvelteError = (error: object, event: object) => {
-	logger.error(`SVELTE_ERR {${error}} - {${JSON.stringify(event)}}`);
+	let errorMsg = `SVELTE_ERR {${error}} - {${JSON.stringify(event)}}`;
+	if (error?.stack) {
+		errorMsg += ' - Stack: ' + JSON.stringify(error.stack);
+	}
+	logger.error(errorMsg);
 	logger.flush();
 };
