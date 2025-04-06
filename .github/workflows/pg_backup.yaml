@@ -16,6 +16,8 @@ jobs:
           postgresql_version: '16'
           path: 'backups/backup.sql'
           options: '-a --schema=public'
+          # restore with the following after a table delete w nr db:delete
+          # psql "postgres://your_username:your_password@localhost:5432/your_database?sslmode=disable" -f ~/Desktop/backup-three.sql
 
       - name: Azure Login
         uses: azure/login@v1

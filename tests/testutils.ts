@@ -146,6 +146,8 @@ export const clearAllDbEntries = async () => {
 	await db.prisma.student.deleteMany({});
 	await db.prisma.teacher.deleteMany({});
 	await db.prisma.quiz.deleteMany({});
+	await db.prisma.score.deleteMany({});
+	await db.prisma.drawing.deleteMany({});
 	await clearDbScores();
 };
 
