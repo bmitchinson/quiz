@@ -15,7 +15,7 @@ jobs:
           database_url: ${{ secrets.DATABASE_URL }}
           postgresql_version: '16'
           path: 'backups/backup.sql'
-          options: '-O'
+          options: '-a'
 
       - name: Azure Login
         uses: azure/login@v1
