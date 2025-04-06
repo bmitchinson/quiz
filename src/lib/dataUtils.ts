@@ -20,8 +20,10 @@ export const parseEnteredQuestionsIntoEvalAble = (enteredQuestions: string) => {
 	return evalAbleQuestions;
 };
 
-export const getPercentageCorrect = (correct: number, totalQuestions: number, precision = 0) =>
-	((correct / totalQuestions) * 100).toFixed(precision) + '%';
+export const getPercentageCorrect = (correct: number, totalQuestions: number, precision = 0) => {
+	const percentage = (correct / totalQuestions) * 100;
+	return isNaN(percentage) ? '--%' : `${percentage.toFixed(precision)}%`;
+};
 
 export const getRandomDateForQuarterAndSequence = (quarter: number, sequenceLetter: number) => {
 	const quarterMonthOffset = 9 / 4; // 9 months a school year
