@@ -20,7 +20,7 @@ export const parseEnteredQuestionsIntoEvalAble = (enteredQuestions: string) => {
 	return evalAbleQuestions;
 };
 
-export const getPercentageCorrect = (correct: number, totalQuestions: number, precision = 0) => {
+export const getPercentageAsString = (correct: number, totalQuestions: number, precision = 0) => {
 	const percentage = (correct / totalQuestions) * 100;
 	return isNaN(percentage) ? '--%' : `${percentage.toFixed(precision)}%`;
 };

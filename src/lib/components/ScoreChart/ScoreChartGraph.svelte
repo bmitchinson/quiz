@@ -18,12 +18,7 @@
 	$: {
 		if (chartReference) {
 			chartReference.data.datasets[0].data = scoreData;
-			// @ts-ignore
-			chartReference.options.scales.y.max = scoreData.reduce(
-				(max, item) => (item.totalQuestions > max ? item.totalQuestions : max),
-				0
-			);
-			chartReference.update();
+			chartReference.update('show');
 		}
 	}
 </script>

@@ -1,4 +1,4 @@
-import { getPercentageCorrect } from '../dataUtils';
+import { getPercentageAsString } from '../dataUtils';
 import { externalTooltip, type QuizScoreSummaryDataPoint } from './scoreTooltip';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -44,7 +44,28 @@ export const initializeScoreDataPointChart = (
 
 const chartOptions: ChartOptions = {
 	aspectRatio: 3,
-	animation: true,
+	// animation: {
+	// 	duration:
+	// }
+	transitions: {
+		show: {
+			animations: {
+				x: {
+					from: 10000,
+					duration: 1
+				},
+				y: {
+					from: 100000,
+					duration: 600
+				}
+			}
+		}
+	},
+	layout: {
+		padding: {
+			top: 30
+		}
+	},
 	plugins: {
 		legend: {
 			display: false
@@ -63,13 +84,13 @@ const chartOptions: ChartOptions = {
 				size: 14,
 				weight: 'bold'
 			},
-			formatter: (value: { averageScore: number; totalQuestions: number }) =>
-				getPercentageCorrect(value.averageScore, value.totalQuestions, 1)
+			formatter: (value: { averageCorrectQuestions: number; totalQuestions: number }) =>
+				getPercentageAsString(value.averageCorrectQuestions, value.totalQuestions, 1)
 		}
 	},
 	parsing: {
 		xAxisKey: 'quizName',
-		yAxisKey: 'averageScore'
+		yAxisKey: 'averageCorrectAsPercentage'
 	},
 	scales: {
 		x: {
@@ -81,17 +102,16 @@ const chartOptions: ChartOptions = {
 			}
 		},
 		y: {
+			beginAtZero: true,
+			min: 0,
+			max: 100,
 			ticks: {
+				stepSize: 10,
 				font: {
 					size: 17
 				},
-				min: 0,
-				max: 100,
-				callback: function (value) {
-					return getPercentageCorrect(value, this.max);
-				}
-			},
-			beginAtZero: true
+				callback: (valueOfTick: number) => `${valueOfTick}%`
+			}
 		}
 	}
 };

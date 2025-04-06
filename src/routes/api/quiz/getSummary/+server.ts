@@ -40,14 +40,18 @@ export const POST = async ({ request, cookies }) =>
 		const allQuizzes = Object.values(quizzesByAccessCode);
 
 		let dataExists = false;
-		const result: QuizScoreSummaryDataPoint[] = getReadableQuizNamesForGrade(grade).map(
+		const dataForBarchart: QuizScoreSummaryDataPoint[] = getReadableQuizNamesForGrade(grade).map(
 			(qReadableName) => {
 				const quiz = allQuizzes.find((q) => getReadableTitleOfQuiz(q) === qReadableName);
 				if (quiz) {
 					dataExists = true;
 					const quizSummary = summaryMapByAccessCode[quiz.accessCode];
 					return {
-						averageScore: Math.round(quizSummary._avg.correctAnswers * 100) / 100,
+						averageCorrectQuestions: Math.round(quizSummary._avg.correctAnswers * 100) / 100,
+						// this is the value rendered as the chart data point, out of 100
+						averageCorrectAsPercentage: Math.round(
+							(quizSummary._avg.correctAnswers / quiz.totalQuestions) * 100
+						),
 						submittedScores: quizSummary._count.id,
 						quizName: qReadableName,
 						totalQuestions: quiz.totalQuestions
@@ -60,5 +64,5 @@ export const POST = async ({ request, cookies }) =>
 			}
 		);
 
-		return json({ success: true, summary: result, dataExists });
+		return json({ success: true, summary: dataForBarchart, dataExists });
 	});

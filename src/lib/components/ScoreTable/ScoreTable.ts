@@ -1,6 +1,6 @@
 import { DataTable } from 'simple-datatables';
 import type { GetScoresScore } from '../database';
-import { getPercentageCorrect } from '$lib/dataUtils';
+import { getPercentageAsString } from '$lib/dataUtils';
 import { format } from 'date-fns';
 import { getButtonStyles } from '../../cssUtils';
 import DeleteButton from './ScoreDeleteButton.svelte';
@@ -35,7 +35,7 @@ export const createDataTable = (id: string, scoreData: GetScoresScore[]) => {
 			data: scoreData.map((i) => [
 				`${i.quizTitle} (${i.quiz.accessCode})`,
 				i.student.name,
-				getPercentageCorrect(i.correctAnswers, i.quiz.totalQuestions),
+				getPercentageAsString(i.correctAnswers, i.quiz.totalQuestions),
 				format(new Date(i.createdAt), 'MMM do - h:mmaaa'),
 				i.student.teacher.grade,
 				i.student.teacher.name,

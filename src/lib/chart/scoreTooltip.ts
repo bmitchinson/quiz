@@ -1,8 +1,9 @@
 import type { Chart, TooltipModel } from 'chart.js';
-import { getPercentageCorrect } from '../dataUtils';
+import { getPercentageAsString } from '../dataUtils';
 
 export interface QuizScoreSummaryDataPoint {
-	averageScore: number;
+	averageCorrectQuestions: number;
+	averageCorrectAsPercentage: number;
 	totalQuestions: number;
 	submittedScores: number;
 	quizName: string;
@@ -68,7 +69,7 @@ export const externalTooltip = (context) => {
 
 			tableBody.appendChild(
 				getTooltipRowWithText(
-					`Average Score: ${datapoint.averageScore} out of ${datapoint.totalQuestions} (${getPercentageCorrect(datapoint.averageScore, datapoint.totalQuestions)})`
+					`Average Score: ${datapoint.averageCorrectQuestions} out of ${datapoint.totalQuestions} (${getPercentageAsString(datapoint.averageCorrectQuestions, datapoint.totalQuestions)})`
 				)
 			);
 			tableBody.appendChild(getTooltipRowWithText(`Submissions: ${datapoint.submittedScores}`));
