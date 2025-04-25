@@ -12,13 +12,21 @@
 
 	$: drawings = data.drawings;
 	$: currentPage = data.currentPage;
-	$: totalPages = data.total;
+	$: totalPages = data.totalPages;
 	$: totalItems = data.total;
 
 	// Filter state
 	let selectedGrade = '';
 	let selectedTeacher = '';
 	let quizCode = '';
+
+	function clearFilters() {
+		selectedGrade = '';
+		selectedTeacher = '';
+		quizCode = '';
+		// navigate to the same page without any query params
+		goto(window.location.pathname);
+	}
 
 	function applyFilters() {
 		const params = new URLSearchParams();
@@ -53,7 +61,7 @@
 	<div class="text-2xl font-bold text-center">Student Drawings</div>
 
 	<!-- Filter Controls -->
-	<div class="flex flex-row flex-wrap justify-center items-center space-y-4">
+	<div class="flex flex-row flex-wrap justify-center items-center space-y-4 space-x-4">
 		<!-- Using GradeTeacherDropdown component -->
 		<GradeTeacherDropdown
 			bind:selectedGrade
@@ -61,7 +69,7 @@
 			teacherOptions={data.teachers}
 		/>
 
-		<div class="flex flex-row items-center w-96 space-x-4">
+		<div class="flex flex-row items-center space-x-4">
 			<span class="block font-semibold">Quiz Code:</span>
 			<input
 				type="text"
@@ -71,6 +79,7 @@
 			/>
 		</div>
 
+		<button on:click={clearFilters} class="${getButtonStyles()} "> Clear Filters </button>
 		<button on:click={applyFilters} class="${getButtonStyles()} "> Apply Filters </button>
 	</div>
 
