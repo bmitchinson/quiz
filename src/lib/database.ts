@@ -200,12 +200,12 @@ export class Database {
 
 	async getDrawings(
 		page = 1,
-		pageSize = 5, 
+		pageSize = 5,
 		filters: { grade?: number; teacherName?: string; quizCode?: string } = {}
 	): Promise<GetDrawingsResult> {
 		try {
 			const skip = (page - 1) * pageSize;
-			
+
 			const where = {
 				jpgBase64: { not: null },
 				...(filters.quizCode && { accessCode: filters.quizCode }),
@@ -623,6 +623,19 @@ export class Database {
 			}
 		} catch (error) {
 			logDBError('database', 'Error checking if student has teacher', error);
+			throw error;
+		}
+	}
+
+	async deleteDrawing(drawingId: number): Promise<void> {
+		try {
+			return await this.prisma.drawing.delete({
+				where: {
+					id: drawingId
+				}
+			});
+		} catch (error) {
+			logDBError('database', 'Error deleting drawing', error);
 			throw error;
 		}
 	}

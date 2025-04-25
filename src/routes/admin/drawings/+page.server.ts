@@ -1,6 +1,6 @@
 import type { Actions, PageServerLoad } from './$types';
 import { Database } from '$lib/database';
-import { error } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { validateRole } from '$lib/passwordUtils';
 import { logEvent } from '$lib/logging';
 
@@ -35,3 +35,24 @@ export const load: PageServerLoad = async ({ request, cookies, url }) =>
 			throw error(500, 'Failed to load drawings');
 		}
 	});
+
+export const actions: Actions = {
+	deleteDrawing: async ({ request, cookies }) =>
+		validateRole(request, cookies, ['Admin'], async (req, loginName) => {
+			const data = await request.formData();
+			const drawingId = data.get('drawingId');
+
+			if (!drawingId) {
+				return fail(400, { error: 'Missing drawing ID' });
+			}
+
+			try {
+				await db.deleteDrawing(Number(drawingId));
+				logEvent(loginName, `Deleted drawing ${drawingId}`);
+				return { success: true };
+			} catch (err) {
+				logEvent(loginName, `Failed to delete drawing ${drawingId}: ${err.message}`);
+				return fail(500, { error: 'Failed to delete drawing' });
+			}
+		})
+};

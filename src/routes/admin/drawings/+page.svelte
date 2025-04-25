@@ -5,12 +5,14 @@
 	import { goto } from '$app/navigation';
 	import GradeTeacherDropdown from '$lib/components/ScoreChart/GradeTeacherDropdown.svelte';
 	import { getButtonStyles } from '../../../lib/cssUtils.js';
+	import { enhance } from '$app/forms';
 
 	export let data;
+	export let form;
 
 	$: drawings = data.drawings;
 	$: currentPage = data.currentPage;
-	$: totalPages = data.totalPages;
+	$: totalPages = data.total;
 	$: totalItems = data.total;
 
 	// Filter state
@@ -95,6 +97,18 @@
 								alt={`Drawing by ${drawing.student.name}`}
 								class="w-full h-full object-contain"
 							/>
+						</div>
+						<div class="mt-3 flex justify-end">
+							<form action="?/deleteDrawing" method="POST" use:enhance>
+								<input type="hidden" name="drawingId" value={drawing.id} />
+								<button
+									type="submit"
+									class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-md text-sm"
+									onclick="return confirm('Are you sure you want to delete this drawing? This cannot be undone.')"
+								>
+									Delete
+								</button>
+							</form>
 						</div>
 					</div>
 				{/if}
