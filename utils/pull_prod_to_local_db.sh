@@ -2,18 +2,28 @@
 
 # - github action runs every 24 hours and pulls prod tables into a sql file
 # - used townie to write a webhook that pulls the latest prod backup from that
-#    azure blob storage bucket
+#   azure blob storage bucket
 # - this script hits that endpoint and downloads the latest prod backup
-# - this script than also imports that sql file into the local db
+# - this script then also imports that sql file into the local db
 
+if [ "$1" == "skip" ]; then
+  echo "Skipping backup download and using latest_prod_backup.sql"
+else
+  echo -n "Enter password to download prod data: "
+  read -s PASSWORD
+  echo
+  curl -X POST \
+    https://bmitchinson-getmostrecentazureblob.web.val.run \
+    -H "Content-Type: application/json" \
+    -d "{\"password\":\"${PASSWORD}\"}" \
+    -o utils/latest_prod_backup.sql
+fi
 
-echo -n "Enter password: "
-read -s PASSWORD
-echo
-curl -X POST \
-  https://bmitchinson-getmostrecentazureblob.web.val.run \
-  -H "Content-Type: application/json" \
-  -d "{\"password\":\"${PASSWORD}\"}" \
-  -o latest_prod_backup.sql
+# reset local db
+psql "postgres://your_username:your_password@localhost:5432/your_database?sslmode=disable" -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" > /dev/null
+npx prisma migrate deploy > /dev/null
 
-psql "postgres://your_username:your_password@localhost:5432/your_database?sslmode=disable" -f latest_prod_backup.sql
+# import backup
+psql "postgres://your_username:your_password@localhost:5432/your_database?sslmode=disable" -f utils/latest_prod_backup.sql > /dev/null
+
+echo "Data imported successfully ✅"

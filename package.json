@@ -6,6 +6,7 @@
 		"dev": "dotenv -e .env -- vite dev",
 		"build": "prisma generate && vite build",
 		"db:seed": "tsx utils/seedData.ts",
+		"db:seed:from-prod": "utils/pull_prod_to_local_db.sh",
 		"db:seed:dev": "dotenv -e .env.dev -- tsx utils/seedData.ts",
 		"db:apply": "prisma migrate deploy",
 		"db:apply:dev": "dotenv -e .env.dev -- prisma migrate deploy",
