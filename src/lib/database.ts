@@ -23,6 +23,25 @@ export interface GetScoresFilters {
 	quizSequenceLetter: string;
 }
 
+export interface GetDrawingsResult {
+	drawings: {
+		id: number;
+		jpgBase64: string;
+		student: {
+			name: string;
+		};
+		accessCode: string;
+		quiz: {
+			title: string;
+			grade: number;
+			quarter: number;
+			sequenceLetter: string;
+		};
+		timeStarted: Date;
+	}[];
+	total: number;
+}
+
 const logLevels = /production|test/.test(process.env.NODE_ENV)
 	? ['warn', 'error']
 	: tempDisablePrismaQuery
@@ -175,6 +194,61 @@ export class Database {
 			});
 		} catch (error) {
 			logDBError('database', 'Error fetching drawing', error);
+			throw error;
+		}
+	}
+
+	async getDrawings(
+		page = 1,
+		pageSize = 5, 
+		filters: { grade?: number; teacherName?: string; quizCode?: string } = {}
+	): Promise<GetDrawingsResult> {
+		try {
+			const skip = (page - 1) * pageSize;
+			
+			const where = {
+				jpgBase64: { not: null },
+				...(filters.quizCode && { accessCode: filters.quizCode }),
+				student: {
+					...(filters.teacherName && { teacher: { name: filters.teacherName } }),
+					...(filters.grade && { teacher: { grade: filters.grade } })
+				}
+			};
+
+			const [drawings, total] = await Promise.all([
+				this.prisma.drawing.findMany({
+					where,
+					select: {
+						id: true,
+						jpgBase64: true,
+						student: {
+							select: {
+								name: true
+							}
+						},
+						accessCode: true,
+						quiz: {
+							select: {
+								title: true,
+								grade: true,
+								quarter: true,
+								sequenceLetter: true
+							}
+						},
+						timeStarted: true
+					},
+					skip,
+					take: pageSize,
+					orderBy: {
+						timeStarted: 'desc'
+					}
+				}),
+				this.prisma.drawing.count({ where })
+			]);
+
+			return { drawings, total };
+		} catch (error) {
+			logDBError('database', 'Error fetching drawings', error);
 			throw error;
 		}
 	}

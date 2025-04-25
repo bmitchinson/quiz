@@ -16,7 +16,7 @@
 	}
 </script>
 
-<div class="flex flex-row space-x-4 justify-center">
+<div class="flex flex-row flex-wrap space-x-4 gap-y-4 justify-center align-center">
 	<div class="flex flex-row items-center space-x-4">
 		<p class="block font-semibold">Grade:</p>
 		<RadioButtons name="grade" options={grades} bind:selectedOptionValue={selectedGrade} />
