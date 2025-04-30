@@ -1,34 +1,25 @@
 import type { Actions, PageServerLoad } from './$types';
-import { Database } from '$lib/database';
 import { validateRole } from '$lib/passwordUtils';
 import { loadDrawings, deleteDrawingById } from '../../drawingsUtils.server';
 
-const db = new Database();
-
 export const load: PageServerLoad = async ({ request, cookies, url }) =>
-	validateRole(request, cookies, ['Admin'], async () => {
+	validateRole(request, cookies, ['Teacher'], async (_, teacherName) => {
 		const page = parseInt(url.searchParams.get('page') || '1');
 		const pageSize = 6;
-		const gradeParam = url.searchParams.get('grade');
-		const teacherName = url.searchParams.get('teacherName');
 
+		// For teachers, always filter by their own name
 		const filters = {
-			...(gradeParam && { grade: parseInt(gradeParam) }),
-			...(teacherName && { teacherName })
+			teacherName
 		};
 
 		const result = await loadDrawings(page, pageSize, filters);
-		const teachers = await db.getAllTeachers();
 
-		return {
-			...result,
-			teachers
-		};
+		return result;
 	});
 
 export const actions: Actions = {
 	deleteDrawing: async ({ request, cookies }) =>
-		validateRole(request, cookies, ['Admin'], async (req, loginName) => {
+		validateRole(request, cookies, ['Teacher'], async (req, loginName) => {
 			const data = await request.formData();
 			const drawingId = data.get('drawingId');
 			return deleteDrawingById(Number(drawingId), loginName);

@@ -3,7 +3,6 @@
 	import Card from '$lib/components/Card.svelte';
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
-	import GradeTeacherDropdown from '$lib/components/ScoreChart/GradeTeacherDropdown.svelte';
 	import { getButtonStyles } from '../../../lib/cssUtils.js';
 	import { enhance } from '$app/forms';
 
@@ -14,27 +13,6 @@
 	$: currentPage = data.currentPage;
 	$: totalPages = data.totalPages;
 	$: totalItems = data.total;
-
-	// Filter state
-	let selectedGrade = '';
-	let selectedTeacher = '';
-
-	function clearFilters() {
-		selectedGrade = '';
-		selectedTeacher = '';
-		// navigate to the same page without any query params
-		goto(window.location.pathname);
-	}
-
-	function applyFilters() {
-		const params = new URLSearchParams();
-		params.set('page', '1');
-
-		if (selectedGrade) params.set('grade', selectedGrade);
-		if (selectedTeacher && selectedTeacher !== 'all') params.set('teacherName', selectedTeacher);
-
-		goto(`?${params.toString()}`);
-	}
 
 	function goToPage(page: number) {
 		if (page < 1 || page > totalPages) return;
@@ -51,29 +29,16 @@
 </script>
 
 <svelte:head>
-	<title>Admin: Student Drawings</title>
+	<title>Teacher: Student Drawings</title>
 </svelte:head>
 
 <Card additionalClasses={'w-5/6'}>
 	<div class="text-2xl font-bold text-center">Student Drawings</div>
 
-	<!-- Filter Controls -->
-	<div class="flex flex-row flex-wrap justify-center items-center space-y-4 space-x-4">
-		<!-- Using GradeTeacherDropdown component -->
-		<GradeTeacherDropdown
-			bind:selectedGrade
-			bind:selectedTeacherName={selectedTeacher}
-			teacherOptions={data.teachers}
-		/>
-
-		<button on:click={clearFilters} class="${getButtonStyles()} "> Clear Filters </button>
-		<button on:click={applyFilters} class="${getButtonStyles()} "> Apply Filters </button>
-	</div>
-
 	<!-- Drawings Display -->
 	{#if drawings.length === 0}
 		<div class="text-center py-8">
-			<p class="text-gray-600">No drawings found. Try adjusting your filters.</p>
+			<p class="text-gray-600">No drawings found.</p>
 		</div>
 	{:else}
 		<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

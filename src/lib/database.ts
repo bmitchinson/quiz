@@ -201,19 +201,20 @@ export class Database {
 	async getDrawings(
 		page = 1,
 		pageSize = 5,
-		filters: { grade?: number; teacherName?: string; quizCode?: string } = {}
+		filters: { grade?: number; teacherName?: string } = {}
 	): Promise<GetDrawingsResult> {
 		try {
 			const skip = (page - 1) * pageSize;
 
 			const where = {
 				jpgBase64: { not: null },
-				...(filters.quizCode && { accessCode: filters.quizCode }),
 				student: {
 					...(filters.teacherName && { teacher: { name: filters.teacherName } }),
 					...(filters.grade && { teacher: { grade: filters.grade } })
 				}
 			};
+
+			console.log('where', where);
 
 			const [drawings, total] = await Promise.all([
 				this.prisma.drawing.findMany({
