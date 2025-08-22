@@ -61,7 +61,7 @@ function generate4DigitCode(): string {
  * Provides methods to interact with the database.
  */
 export class Database {
-	private prisma: PrismaClient;
+	public prisma: PrismaClient;
 
 	constructor() {
 		this.prisma = prisma;

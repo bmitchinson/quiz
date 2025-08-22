@@ -2,9 +2,7 @@ import {
 	clearAllDbEntries,
 	resetQuizzesToTestData,
 	resetStudentsAndScores,
-	initializeTestTeachers,
-	resetScoresToTestData,
-	printQuizCodes
+	initializeTestTeachers
 } from '../tests/testutils';
 
 await clearAllDbEntries();
