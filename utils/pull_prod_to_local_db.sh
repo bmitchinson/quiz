@@ -6,7 +6,9 @@
 # - this script hits that endpoint and downloads the latest prod backup
 # - this script then also imports that sql file into the local db
 
-if [ "$1" == "skip" ]; then
+mode="$1"
+
+if [ "$mode" == "import_only" ]; then
   echo "Skipping backup download and using latest_prod_backup.sql"
 else
   echo -n "Enter password to download prod data: "
@@ -17,6 +19,11 @@ else
     -H "Content-Type: application/json" \
     -d "{\"password\":\"${PASSWORD}\"}" \
     -o utils/latest_prod_backup.sql
+
+  if [ "$mode" == "download_only" ]; then
+    echo "Backup downloaded to utils/latest_prod_backup.sql ✅"
+    exit 0
+  fi
 fi
 
 # reset local db
