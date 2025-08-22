@@ -191,7 +191,8 @@ export const clearDbScores = async () => {
 export async function createScoreForQuiz(
 	quizAccessCode: string,
 	studentName: string,
-	answers: string[]
+	answers: string[],
+	allQuestionsAnswered = false
 ) {
 	const student = await db.prisma.student.findFirst({ where: { name: studentName } });
 	await db.prisma.score.create({
@@ -201,7 +202,8 @@ export async function createScoreForQuiz(
 				connect: { accessCode: quizAccessCode }
 			},
 			student: { connect: { id: student.id } },
-			correctAnswers: 1
+			correctAnswers: 1,
+			timeFinished: allQuestionsAnswered ? new Date() : null
 		}
 	});
 }
@@ -221,6 +223,12 @@ export async function getScore(quizCode: string) {
 	return await db.prisma.score.findFirst({
 		where: { quizCode },
 		include: { student: true }
+	});
+}
+
+export async function getDrawing(quizCode: string, studentName: string) {
+	return await db.prisma.drawing.findFirst({
+		where: { accessCode: quizCode, student: { name: studentName } }
 	});
 }
 

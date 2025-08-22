@@ -11,7 +11,9 @@ import {
 	eraseThirdGradeTestTakerScores,
 	createScoreForQuiz,
 	thirdGradeQuizTakerName,
-	performXDistractions
+	performXDistractions,
+	resetDrawingsToTestData,
+	getDrawing
 } from './testutils';
 
 test.beforeAll(async () => {
@@ -19,6 +21,7 @@ test.beforeAll(async () => {
 	await initializeTestTeachers();
 	await resetQuizzesToTestData();
 	await resetStudentsAndScores();
+	await resetDrawingsToTestData();
 });
 
 test.beforeEach(async () => {
@@ -63,11 +66,11 @@ test('Taking a quiz', async ({ page }) => {
 	await page.locator('button:has-text("Next Question")').click();
 
 	expect(await page.locator('h2:has-text("Quiz Complete")')).toBeVisible();
-	expect(await page.locator('p:has-text("You got 2 out of 4 correct.")')).toBeVisible();
+	expect(await page.locator('p:has-text("You got 3 out of 4 correct.")')).toBeVisible();
 
 	const score = await getScore(quizCode);
 	await page.waitForTimeout(400);
-	expect(score.correctAnswers).toBe(2);
+	expect(score.correctAnswers).toBe(3);
 	expect(score.student.name).toBe('thirdgrader1');
 	expect(score.answers).toStrictEqual(['4', '0', '9', '25']);
 });
@@ -86,7 +89,7 @@ test('Student cannot retake quiz', async ({ page }) => {
 	await page.locator('input[name="accessCode"]').fill(quiz?.accessCode);
 	await page.locator('button:has-text("Start Quiz")').click();
 	await expect(page.locator('h2:has-text("Quiz Complete!")')).toBeVisible();
-	await expect(page.locator('p:has-text("You got 2 out of 4 correct.")')).toBeVisible();
+	await expect(page.locator('p:has-text("You got 3 out of 4 correct.")')).toBeVisible();
 });
 
 test('Student can resume a quiz', async ({ page }) => {
@@ -103,6 +106,52 @@ test('Student can resume a quiz', async ({ page }) => {
 	await page.locator('input[name="accessCode"]').fill(quiz?.accessCode);
 	await page.locator('button:has-text("Start Quiz")').click();
 	expect(await page.locator('div[id="displayedQuestion"]').innerText()).toBe('9-0 =');
+});
+
+test('Student can submit a drawing after a quiz is complete', async ({ page }) => {
+	const quiz = await getQuizByMetadata({
+		year: 2425,
+		grade: 3,
+		quarter: 1,
+		sequenceLetter: 'A'
+	});
+
+	await createScoreForQuiz(quiz?.accessCode, thirdGradeQuizTakerName, ['4', '1', '9', '25'], true);
+
+	await loginAsTestThirdGradeQuizTaker(page);
+
+	await page.locator('input[name="accessCode"]').fill(quiz?.accessCode);
+	await page.locator('button:has-text("Start Quiz")').click();
+
+	const drawingLink = page.locator('a:has-text("Make a Drawing")').click();
+
+	await expect(page).toHaveURL(`/student/draw/${quiz?.accessCode}`);
+
+	// Get viewport size
+	const { width, height } = page.viewportSize();
+
+	// Calculate center point
+	const centerX = width / 2;
+	const centerY = height / 2;
+
+	// Draw a 10px horizontal line at the center of the viewport
+	await page.mouse.move(centerX, centerY);
+	await page.mouse.down();
+	await page.mouse.move(centerX + 10, centerY, { steps: 5 });
+	await page.mouse.up();
+
+	// in preperation of "submit" below
+	page.once('dialog', async (dialog) => {
+		await dialog.accept();
+	});
+
+	await page.locator('button:has-text("Submit")').click();
+
+	await page.locator(`h1:has-text("Your drawing has been submitted! ✅")`);
+	await page.waitForTimeout(400);
+
+	const drawing = await getDrawing(quiz?.accessCode, thirdGradeQuizTakerName);
+	expect(drawing?.jpgBase64).not.toBeNull();
 });
 
 test('Student that is distracted during a quiz has their score marked accordingly', async ({
