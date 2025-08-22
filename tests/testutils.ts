@@ -164,7 +164,7 @@ export async function resetQuizzesToTestData(): Promise<void> {
 		`1+3
 4/4
 9-0
-5*5`
+5x5`
 	);
 
 	await db.addQuiz(
