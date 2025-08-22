@@ -19,8 +19,12 @@ Reminders for myself:
 - `docker compose up -d` + `docker compose down` (orbstack)
 - `npm run test` or `npm run test:gui` (playwright tests only)
 - `npm run dev`
-- quiz.mitchinson.dev - `main`
-- quiz-staging.mitchinson.dev - `dev`
+- `npm run db:seed` seed local database with seedData.ts
+  - `npm run db:seed:dev` seed staging site / remote dev db
+
+quiz.mitchinson.dev - `main`
+
+quiz-staging.mitchinson.dev - `dev`
 
 ### Tools
 

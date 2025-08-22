@@ -266,13 +266,13 @@ export class Database {
 		}
 	}
 
-	async getStudentsOfTeacher(teacherId: int): Promise<string[]> {
+	async getStudentsOfTeacher(teacherId: number) {
 		try {
 			if (teacherId === null) {
 				throw new Error('Missing teacher id');
 			}
 			const students = await this.prisma.student.findMany({
-				select: { name: true },
+				select: { name: true, id: true },
 				where: { archived: false, teacherId },
 				orderBy: { name: 'asc' }
 			});
