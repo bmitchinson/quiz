@@ -6,7 +6,8 @@ import {
 	initializeTestTeachers,
 	amountOfStudentsForTeacher,
 	resetQuizzesToTestData,
-	addFourSecondGraderStudents
+	addFourSecondGraderStudents,
+	resetDrawingsToTestData
 } from './testutils';
 
 test.beforeEach(async () => {
@@ -47,4 +48,45 @@ test('Students can be added', async ({ page }) => {
 	await expect(page.locator(`td:has-text("william")`)).toBeVisible();
 	await expect(page.locator(`td:has-text("benjamin")`)).toBeVisible();
 	await expect(page.locator(`td:has-text("sara")`)).toBeVisible();
+});
+
+test('Students drawings can be viewed', async ({ page }) => {
+	await clearAllDbEntries();
+	await initializeTestTeachers();
+	await resetQuizzesToTestData();
+	await resetStudentsAndScores();
+	await resetDrawingsToTestData();
+
+	await loginAsTeacher(page);
+
+	await page.locator('a:has-text("View Student Drawings")').click();
+
+	await expect(page.locator('div.drawing-card')).toHaveCount(6);
+	await expect(page.locator('span#page-x-of-y')).toHaveText('Page 1 of 2 (8 drawings)');
+
+	await page.locator(`button:has-text("next")`).click();
+
+	await expect(page.locator('div.drawing-card')).toHaveCount(2);
+});
+
+test('Students drawings can be deleted', async ({ page }) => {
+	await clearAllDbEntries();
+	await initializeTestTeachers();
+	await resetQuizzesToTestData();
+	await resetStudentsAndScores();
+	await resetDrawingsToTestData();
+
+	await loginAsTeacher(page);
+
+	await page.locator('a:has-text("View Student Drawings")').click();
+
+	await expect(page.locator('div.drawing-card')).toHaveCount(6);
+	await expect(page.locator('span#page-x-of-y')).toHaveText('Page 1 of 2 (8 drawings)');
+
+	page.once('dialog', async (dialog) => {
+		await dialog.accept();
+	});
+	await page.locator('button:has-text("Delete")').first().click();
+
+	await expect(page.locator('span#total-drawings')).toHaveText('(7 drawings)');
 });

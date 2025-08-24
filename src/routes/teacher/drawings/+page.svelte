@@ -44,7 +44,7 @@
 		<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 			{#each drawings as drawing}
 				{#if drawing.jpgBase64}
-					<div class="border-2 border-[#26561b] rounded-lg p-4">
+					<div class="border-2 border-[#26561b] rounded-lg p-4 drawing-card">
 						<div class="font-bold text-lg">{drawing.student.name}</div>
 						<div class="text-gray-600 text-sm">
 							Quiz: {getReadableTitleOfQuiz(drawing.quiz)} ({drawing.accessCode})
@@ -88,9 +88,9 @@
 				Previous
 			</button>
 
-			<span class="text-sm">
+			<span class="text-sm" id="page-x-of-y">
 				Page {currentPage} of {totalPages}
-				<span class="text-gray-500">({totalItems} drawings)</span>
+				<span class="text-gray-500" id="total-drawings">({totalItems} drawings)</span>
 			</span>
 
 			<button
