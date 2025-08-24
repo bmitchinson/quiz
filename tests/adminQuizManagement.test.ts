@@ -1,5 +1,14 @@
 import test, { expect } from '@playwright/test';
-import { getQuizByMetadata, getQuizzes, resetQuizzesToTestData, loginAsAdmin } from './testutils';
+import {
+	getQuizByMetadata,
+	getQuizzes,
+	resetQuizzesToTestData,
+	loginAsAdmin,
+	clearAllDbEntries,
+	initializeTestTeachers,
+	resetStudentsAndScores,
+	resetDrawingsToTestData
+} from './testutils';
 
 test.beforeAll(async () => {
 	await resetQuizzesToTestData();
@@ -75,4 +84,45 @@ test('Quizzes can be edited', async ({ page }) => {
 	const quiz = await getQuizByMetadata({ grade: 3, quarter: 1, sequenceLetter: 'B', year: 2425 });
 	expect(quiz.questionsData).toBe('1 + 2|3 + 4|5 + 6|20 x 20');
 	expect(quiz?.totalQuestions).toBe(4);
+});
+
+test('Students drawings can be viewed', async ({ page }) => {
+	await clearAllDbEntries();
+	await initializeTestTeachers();
+	await resetQuizzesToTestData();
+	await resetStudentsAndScores();
+	await resetDrawingsToTestData();
+
+	await loginAsAdmin(page);
+
+	await page.locator('a:has-text("View Drawings")').click();
+
+	await expect(page.locator('div.drawing-card')).toHaveCount(6);
+	await expect(page.locator('span#page-x-of-y')).toHaveText('Page 1 of 2 (12 drawings)');
+
+	await page.locator(`button:has-text("next")`).click();
+
+	await expect(page.locator('div.drawing-card')).toHaveCount(6);
+});
+
+test('Students drawings can be deleted', async ({ page }) => {
+	await clearAllDbEntries();
+	await initializeTestTeachers();
+	await resetQuizzesToTestData();
+	await resetStudentsAndScores();
+	await resetDrawingsToTestData();
+
+	await loginAsAdmin(page);
+
+	await page.locator('a:has-text("View Drawings")').click();
+
+	await expect(page.locator('div.drawing-card')).toHaveCount(6);
+	await expect(page.locator('span#page-x-of-y')).toHaveText('Page 1 of 2 (12 drawings)');
+
+	page.once('dialog', async (dialog) => {
+		await dialog.accept();
+	});
+	await page.locator('button:has-text("Delete")').first().click();
+
+	await expect(page.locator('span#total-drawings')).toHaveText('(11 drawings)');
 });
