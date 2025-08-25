@@ -14,6 +14,26 @@
 	$: userText = data.loginType === 'Admin' ? 'Admin' : `${data.loginType}: ${data.loginName}`;
 
 	let bannerText = data.bannerText;
+
+	// Generate school year options dynamically
+	const generateSchoolYears = () => {
+		const now = new Date();
+		const currentYear = now.getFullYear();
+		const isAfterJuly1 = now.getMonth() >= 6; // July is month 6 (0-indexed)
+
+		const currentSchoolYearStart = isAfterJuly1 ? currentYear : currentYear - 1;
+		const years = [];
+
+		for (let year = 2024; year <= currentSchoolYearStart; year++) {
+			const nextYear = year + 1;
+			const yearLabel = `${year.toString().slice(-2)}-${nextYear.toString().slice(-2)}`;
+			years.push(yearLabel);
+		}
+
+		return years;
+	};
+
+	let selectedSchoolYear = generateSchoolYears()[generateSchoolYears().length - 1]; // Default to current year
 </script>
 
 <div class="flex flex-col items-center h-screen justify-between">
@@ -40,6 +60,16 @@
 		{#if data.loginType}
 			<div class="absolute right-4 flex items-center space-x-4">
 				<span class="text-lg font-medium">{userText}</span>
+				{#if data.loginType === 'Admin' || data.loginType === 'Teacher'}
+					<select
+						bind:value={selectedSchoolYear}
+						class="bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#26561b] focus:border-transparent"
+					>
+						{#each generateSchoolYears() as year}
+							<option value={year}>{year}</option>
+						{/each}
+					</select>
+				{/if}
 				<button
 					class="bg-[#26561b] hover:bg-[#316f23] text-white px-4 py-2 rounded-md transition duration-300"
 					on:click={logout}
