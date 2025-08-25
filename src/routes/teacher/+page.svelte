@@ -24,5 +24,11 @@
 		>
 			View Available Quizzes
 		</a>
+		<a
+			href="/teacher/drawings"
+			class="bg-[#26561b] text-white flex items-center justify-center px-4 py-2 rounded shadow hover:bg-[#316f23] transition"
+		>
+			View Student Drawings
+		</a>
 	</div>
 </div>

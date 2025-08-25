@@ -3,11 +3,11 @@ import {
 	resetQuizzesToTestData,
 	resetStudentsAndScores,
 	initializeTestTeachers,
-	resetScoresToTestData,
-	printQuizCodes
+	resetDrawingsToTestData
 } from '../tests/testutils';
 
 await clearAllDbEntries();
 await initializeTestTeachers();
 await resetQuizzesToTestData();
 await resetStudentsAndScores();
+await resetDrawingsToTestData();

@@ -43,7 +43,7 @@
 
 {#if drawingSubmitted}
 	<Card additionalClasses={'items-center'}>
-		<h1>Your drawing has been submitted! ✅</h1>
+		<p>Your drawing has been submitted! ✅</p>
 		<img src={exportedImage} class="w-md" alt="drawing" />
 		<a class={`${getButtonStyles()}`} href="/">Home</a>
 	</Card>
