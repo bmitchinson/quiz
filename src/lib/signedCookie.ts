@@ -37,4 +37,5 @@ export function clearCookies(cookies: Cookies): void {
 	cookies.delete('loginName', { path: '/' });
 	cookies.delete('studentId', { path: '/' });
 	cookies.delete('teacherId', { path: '/' });
+	cookies.delete('schoolYear', { path: '/' });
 }

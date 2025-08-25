@@ -33,7 +33,25 @@
 		return years;
 	};
 
-	let selectedSchoolYear = generateSchoolYears()[generateSchoolYears().length - 1]; // Default to current year
+	let selectedSchoolYear = data.schoolYear; // Use value from cookie
+
+	const handleSchoolYearChange = async () => {
+		try {
+			const response = await fetch('/api/set-school-year', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ schoolYear: selectedSchoolYear })
+			});
+
+			if (response.ok) {
+				location.reload();
+			}
+		} catch (error) {
+			console.error('Failed to set school year:', error);
+		}
+	};
 </script>
 
 <div class="flex flex-col items-center h-screen justify-between">
@@ -63,6 +81,7 @@
 				{#if data.loginType === 'Admin' || data.loginType === 'Teacher'}
 					<select
 						bind:value={selectedSchoolYear}
+						on:change={handleSchoolYearChange}
 						class="bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#26561b] focus:border-transparent"
 					>
 						{#each generateSchoolYears() as year}
