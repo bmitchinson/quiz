@@ -5,7 +5,7 @@
 	import { getButtonStyles } from '$lib/cssUtils';
 
 	export let data;
-	const { secondsToDraw, accessCode, drawingAlreadyExistsBase64 } = data;
+	const { accessCode, drawingAlreadyExistsBase64 } = data;
 
 	let drawingSubmitted = !!drawingAlreadyExistsBase64;
 	let exportedImage = drawingSubmitted ? drawingAlreadyExistsBase64 : '';
@@ -49,7 +49,6 @@
 	</Card>
 {:else}
 	<div class="container">
-		<h1>{secondsToDraw}</h1>
 		<DrawingCanvas bind:canvas />
 
 		<button class="tool-button" on:click={submitImage}>Submit</button>

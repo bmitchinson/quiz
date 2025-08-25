@@ -8,7 +8,8 @@ Technical Guidelines:
 
 - Do not run terminal commands without asking for approval
 - Base asthetic related css on existing components and pages, and the reusable tailwind collections defined in src/lib/ccsUtils.ts.
-- TypeScript Support: Full type safety with proper API declarations
+- TypeScript Support: Full type safety with proper API declarations.
+  - When creating methods, do no specify the return type on the function signature. Implicit typing is preferred.
 - Svelte 4: Use Svelte 4 syntax, runs like `$state` from Svelte 5 ARE NOT ALLOWED
 - Responsive Design: Better styling that works on different screen sizes. You're free to use tailwind.
 - Browser Compatibility: Clear messaging in chat responses about browser support requirements. Not displayed on the UI.

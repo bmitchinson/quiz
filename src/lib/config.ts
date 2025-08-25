@@ -15,4 +15,4 @@ export const allowedDistractionsBeforeQuizEnds = 4; // only has impact if above 
 
 export const tempDisablePrismaQuery = false;
 
-export const timeToDrawAfterSubmittingQuiz = 300;
+// export const timeToDrawAfterSubmittingQuiz = 300;

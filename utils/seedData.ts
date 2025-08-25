@@ -8,6 +8,8 @@ import {
 
 await clearAllDbEntries();
 await initializeTestTeachers();
-await resetQuizzesToTestData();
+const quizCodes = await resetQuizzesToTestData();
 await resetStudentsAndScores();
 await resetDrawingsToTestData();
+
+console.log(quizCodes);

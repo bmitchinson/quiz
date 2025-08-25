@@ -138,7 +138,7 @@ export async function resetDrawingsToTestData(): Promise<void> {
 	await db.prisma.drawing.createMany({ data: drawingsToMake });
 }
 
-export async function resetQuizzesToTestData(): Promise<void> {
+export async function resetQuizzesToTestData() {
 	await db.prisma.quiz.deleteMany({});
 	const quizzesToMake: Partial<Quiz>[] = [];
 	[1, 2].forEach((grade, x) => {
@@ -159,7 +159,7 @@ export async function resetQuizzesToTestData(): Promise<void> {
 	});
 	await db.prisma.quiz.createMany({ data: quizzesToMake });
 
-	await db.addQuiz(
+	const one = await db.addQuiz(
 		{ year: 2425, grade: 3, quarter: 1, sequenceLetter: 'A' },
 		`1+3
 4/4
@@ -167,12 +167,14 @@ export async function resetQuizzesToTestData(): Promise<void> {
 5x5`
 	);
 
-	await db.addQuiz(
+	const two = await db.addQuiz(
 		{ year: 2425, grade: 3, quarter: 1, sequenceLetter: 'B' },
 		`1+2
 3+4
 5+6`
 	);
+
+	return `Quizzes for thirdgrader1 to take: ${one.accessCode} and ${two.accessCode}`;
 }
 
 export const clearAllDbEntries = async () => {

@@ -425,10 +425,10 @@ export class Database {
 			sequenceLetter: string;
 		},
 		providedQuestionsText: string
-	): Promise<void> {
+	) {
 		try {
 			const questions = providedQuestionsText.replace(/\r?\n/g, '|');
-			const quiz = await this.prisma.quiz.create({
+			return await this.prisma.quiz.create({
 				data: {
 					title: 'temp',
 					accessCode: await this.generateUnique4DigitCode(),
