@@ -16,6 +16,17 @@ import { addSeconds } from 'date-fns';
 
 const db = new Database();
 
+export function getCurrentYearInt() {
+	const now = new Date();
+	const currentYear = now.getFullYear();
+	const isAfterJuly1 = now.getMonth() >= 6; // July is month 6 (0-indexed)
+
+	const currentSchoolYearStart = isAfterJuly1 ? currentYear : currentYear - 1;
+	const nextYear = currentSchoolYearStart + 1;
+
+	return parseInt(`${currentSchoolYearStart.toString().slice(-2)}${nextYear.toString().slice(-2)}`);
+}
+
 // NOTE: Seed Data Functions //////////////////////////////////////////
 
 const sampleJpgBase64 =
@@ -149,7 +160,7 @@ export async function resetQuizzesToTestData() {
 					accessCode: '0' + x + y + z,
 					questionsData: '1+2|3+4|5+6|1+2|3+4|5+6|1+2|3+4|5+6|0+0',
 					totalQuestions: 10,
-					year: 2425,
+					year: getCurrentYearInt(),
 					grade,
 					quarter,
 					sequenceLetter
@@ -160,7 +171,7 @@ export async function resetQuizzesToTestData() {
 	await db.prisma.quiz.createMany({ data: quizzesToMake });
 
 	const one = await db.addQuiz(
-		{ year: 2425, grade: 3, quarter: 1, sequenceLetter: 'A' },
+		{ year: getCurrentYearInt(), grade: 3, quarter: 1, sequenceLetter: 'A' },
 		`1+3
 4/4
 9-0
@@ -168,7 +179,7 @@ export async function resetQuizzesToTestData() {
 	);
 
 	const two = await db.addQuiz(
-		{ year: 2425, grade: 3, quarter: 1, sequenceLetter: 'B' },
+		{ year: getCurrentYearInt(), grade: 3, quarter: 1, sequenceLetter: 'B' },
 		`1+2
 3+4
 5+6`

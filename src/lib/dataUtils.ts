@@ -53,3 +53,14 @@ export const getRandomDateForQuarterAndSequence = (quarter: number, sequenceLett
 
 	return result;
 };
+
+export function getCurrentYearInt() {
+	const now = new Date();
+	const currentYear = now.getFullYear();
+	const isAfterJuly1 = now.getMonth() >= 6; // July is month 6 (0-indexed)
+
+	const currentSchoolYearStart = isAfterJuly1 ? currentYear : currentYear - 1;
+	const nextYear = currentSchoolYearStart + 1;
+
+	return parseInt(`${currentSchoolYearStart.toString().slice(-2)}${nextYear.toString().slice(-2)}`);
+}

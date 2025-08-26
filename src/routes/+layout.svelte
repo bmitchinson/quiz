@@ -27,7 +27,8 @@
 		for (let year = 2024; year <= currentSchoolYearStart; year++) {
 			const nextYear = year + 1;
 			const yearLabel = `${year.toString().slice(-2)}-${nextYear.toString().slice(-2)}`;
-			years.push(yearLabel);
+			const yearValue = parseInt(`${year.toString().slice(-2)}${nextYear.toString().slice(-2)}`);
+			years.push({ label: yearLabel, value: yearValue });
 		}
 
 		return years;
@@ -42,7 +43,7 @@
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ schoolYear: selectedSchoolYear })
+				body: JSON.stringify({ schoolYear: selectedSchoolYearInt })
 			});
 
 			if (response.ok) {
@@ -52,6 +53,11 @@
 			console.error('Failed to set school year:', error);
 		}
 	};
+
+	// Initialize with integer value from server, convert display format if needed
+	let selectedSchoolYearInt = selectedSchoolYear.includes('-')
+		? parseInt(selectedSchoolYear.replace('-', ''))
+		: parseInt(selectedSchoolYear);
 </script>
 
 <div class="flex flex-col items-center h-screen justify-between">
@@ -80,12 +86,12 @@
 				<span class="text-lg font-medium">{userText}</span>
 				{#if data.loginType === 'Admin' || data.loginType === 'Teacher'}
 					<select
-						bind:value={selectedSchoolYear}
+						bind:value={selectedSchoolYearInt}
 						on:change={handleSchoolYearChange}
 						class="bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#26561b] focus:border-transparent"
 					>
 						{#each generateSchoolYears() as year}
-							<option value={year}>{year}</option>
+							<option value={year.value}>{year.label}</option>
 						{/each}
 					</select>
 				{/if}

@@ -283,8 +283,7 @@ export class Database {
 		}
 	}
 
-	// todo: year - make selector in UI
-	async getSummaryOfScores(grade: number, teacherName: string, year = 2425) {
+	async getSummaryOfScores(grade: number, teacherName: string, year: number) {
 		try {
 			const summary = await prisma.score.groupBy({
 				by: ['quizCode'],

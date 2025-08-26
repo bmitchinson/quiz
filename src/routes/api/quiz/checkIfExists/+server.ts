@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { getSignedCookieValue } from '$lib/signedCookie';
+import { getSignedCookieValue, getYearIntFromCookies } from '$lib/cookieAndAuthUtils';
 import { Database } from '$lib/database';
 
 const db = new Database();
@@ -12,7 +12,8 @@ export const POST = async ({ request, cookies }) => {
 		sequenceLetter: string;
 	};
 
+	// TODO YEAR:
 	return db
-		.getQuizByMetadata(2425, grade, quarter, sequenceLetter)
+		.getQuizByMetadata(await getYearIntFromCookies(cookies), grade, quarter, sequenceLetter)
 		.then((quiz) => json({ quizExists: !!quiz }));
 };

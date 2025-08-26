@@ -2,7 +2,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { Database } from '$lib/database';
 import { error } from '@sveltejs/kit';
 import { validateRole } from '$lib/passwordUtils';
-import { getSignedCookieValue } from '$lib/signedCookie';
+import { getSignedCookieValue } from '$lib/cookieAndAuthUtils';
 import { logAPIError, logDBError, logEvent } from '$lib/logging';
 
 const db = new Database();

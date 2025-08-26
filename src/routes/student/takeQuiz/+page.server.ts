@@ -1,5 +1,5 @@
 import { Database } from '$lib/database';
-import { getSignedCookieValue } from '$lib/signedCookie';
+import { getSignedCookieValue } from '$lib/cookieAndAuthUtils';
 import { validateRole } from '$lib/passwordUtils';
 import { addMinutes } from 'date-fns';
 import { quizHasTakenLongerThanAllowed } from '$lib/dateUtils';

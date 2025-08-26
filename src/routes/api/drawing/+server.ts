@@ -2,7 +2,7 @@ import { Database, type GetScoresFilters } from '$lib/database';
 import { validateRole } from '$lib/passwordUtils.js';
 import { json } from '@sveltejs/kit';
 import { logDBError, logEvent } from '$lib/logging.js';
-import { getSignedCookieValue } from '$lib/signedCookie.js';
+import { getSignedCookieValue } from '$lib/cookieAndAuthUtils.js';
 
 const db = new Database();
 

@@ -1,5 +1,5 @@
 import { Database } from '$lib/database';
-import { getSignedCookieValue } from '$lib/signedCookie';
+import { getSignedCookieValue } from '$lib/cookieAndAuthUtils';
 import { validateRole } from '$lib/passwordUtils';
 import type { PageServerLoad } from './$types';
 

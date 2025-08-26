@@ -9,6 +9,7 @@ import {
 	resetStudentsAndScores,
 	resetDrawingsToTestData
 } from './testutils';
+import { getCurrentYearInt } from './testutils';
 
 test.beforeAll(async () => {
 	await resetQuizzesToTestData();
@@ -81,7 +82,12 @@ test('Quizzes can be edited', async ({ page }) => {
 		.isVisible();
 
 	await page.waitForTimeout(100);
-	const quiz = await getQuizByMetadata({ grade: 3, quarter: 1, sequenceLetter: 'B', year: 2425 });
+	const quiz = await getQuizByMetadata({
+		grade: 3,
+		quarter: 1,
+		sequenceLetter: 'B',
+		year: getCurrentYearInt()
+	});
 	expect(quiz.questionsData).toBe('1 + 2|3 + 4|5 + 6|20 x 20');
 	expect(quiz?.totalQuestions).toBe(4);
 });
