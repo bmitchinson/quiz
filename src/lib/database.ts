@@ -585,10 +585,10 @@ export class Database {
 	 * @returns Array of quizzes.
 	 */
 	// todo: year, filter by the year that the app has in env
-	async getAllQuizzes() {
+	async getAllQuizzes(year: number) {
 		try {
 			return await this.prisma.quiz.findMany({
-				where: { archived: false },
+				where: { archived: false, year },
 				include: {
 					_count: {
 						select: {

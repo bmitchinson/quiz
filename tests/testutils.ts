@@ -185,6 +185,14 @@ export async function resetQuizzesToTestData() {
 5+6`
 	);
 
+	// quizFor2425
+	await db.addQuiz(
+		{ year: 2425, grade: 1, quarter: 4, sequenceLetter: 'D' },
+		`1+2
+3+4
+5+6`
+	);
+
 	return `Quizzes for thirdgrader1 to take: ${one.accessCode} and ${two.accessCode}`;
 }
 
@@ -282,6 +290,10 @@ const loginAsStudent = async (page: Page, studentName: string, grade: string, te
 
 export const loginAsFirstAlphaFirstGrader = async (page: Page) => {
 	return await loginAsStudent(page, 'aallen', '1', 'doherty');
+};
+
+export const setYearTo = async (page: Page, year: number) => {
+	await page.locator('select#year-dropdown').selectOption(year.toString());
 };
 
 export const thirdGradeQuizTakerName = 'thirdgrader1';

@@ -147,7 +147,7 @@
 			>
 				Previous
 			</button>
-			<span>Page {currentPage} of {totalPages}</span>
+			<span id="page-x-of-y">Page {currentPage} of {totalPages}</span>
 			<button
 				on:click={() => goToPage(currentPage + 1)}
 				class="px-4 py-2 bg-gray-300 rounded-md"

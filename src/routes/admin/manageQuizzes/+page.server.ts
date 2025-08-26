@@ -11,7 +11,7 @@ const db = new Database();
 export const load: PageServerLoad = async ({ request, cookies }) =>
 	validateRole(request, cookies, ['Admin'], async () => {
 		try {
-			const quizzes = await db.getAllQuizzes();
+			const quizzes = await db.getAllQuizzes(await getYearIntFromCookies(cookies));
 			return { quizzes };
 		} catch (err) {
 			throw error(500, 'Failed to load quizzes');

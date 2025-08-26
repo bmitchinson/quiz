@@ -7,7 +7,8 @@ import {
 	clearAllDbEntries,
 	initializeTestTeachers,
 	resetStudentsAndScores,
-	resetDrawingsToTestData
+	resetDrawingsToTestData,
+	setYearTo
 } from './testutils';
 import { getCurrentYearInt } from './testutils';
 
@@ -25,6 +26,22 @@ test('Quizzes can be deleted', async ({ page }) => {
 	await expect(page.locator(`td:has-text("G3-Q1-A")`)).toBeVisible();
 	await page.locator(`button[id='delete-G3-Q1-A']:has-text("Delete")`).click();
 	await expect(page.locator(`td:has-text("G3-Q1-A")`)).not.toBeVisible();
+});
+
+// TODO
+test('Quizzes from 2425 can be viewed', async ({ page }) => {
+	page.on('dialog', (dialog) => dialog.accept());
+
+	await loginAsAdmin(page);
+	await page.locator('a:has-text("Manage Quizzes")').click();
+	await expect(page.locator(`td:has-text("G1-Q1-A")`)).toBeVisible();
+	await expect(page.locator(`span#page-x-of-y`)).toHaveText('Page 1 of 7');
+
+	await setYearTo(page, 2425);
+
+	await expect(page.locator(`td:has-text("G1-Q1-A")`)).not.toBeVisible();
+	await expect(page.locator(`td:has-text("G1-Q4-D")`)).toBeVisible();
+	await expect(page.locator(`span#page-x-of-y`)).toHaveText('Page 1 of 1');
 });
 
 test("Quizzes can't be created if one already exists", async ({ page }) => {

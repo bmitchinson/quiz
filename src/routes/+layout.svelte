@@ -15,26 +15,7 @@
 
 	let bannerText = data.bannerText;
 
-	// Generate school year options dynamically
-	const generateSchoolYears = () => {
-		const now = new Date();
-		const currentYear = now.getFullYear();
-		const isAfterJuly1 = now.getMonth() >= 6; // July is month 6 (0-indexed)
-
-		const currentSchoolYearStart = isAfterJuly1 ? currentYear : currentYear - 1;
-		const years = [];
-
-		for (let year = 2024; year <= currentSchoolYearStart; year++) {
-			const nextYear = year + 1;
-			const yearLabel = `${year.toString().slice(-2)}-${nextYear.toString().slice(-2)}`;
-			const yearValue = parseInt(`${year.toString().slice(-2)}${nextYear.toString().slice(-2)}`);
-			years.push({ label: yearLabel, value: yearValue });
-		}
-
-		return years;
-	};
-
-	let selectedSchoolYear = data.schoolYear; // Use value from cookie
+	let selectedSchoolYear = data.selectedSchoolYear; // Use value from cookie
 
 	const handleSchoolYearChange = async () => {
 		try {
@@ -43,7 +24,7 @@
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ schoolYear: selectedSchoolYearInt })
+				body: JSON.stringify({ schoolYear: selectedSchoolYear })
 			});
 
 			if (response.ok) {
@@ -53,11 +34,6 @@
 			console.error('Failed to set school year:', error);
 		}
 	};
-
-	// Initialize with integer value from server, convert display format if needed
-	let selectedSchoolYearInt = selectedSchoolYear.includes('-')
-		? parseInt(selectedSchoolYear.replace('-', ''))
-		: parseInt(selectedSchoolYear);
 </script>
 
 <div class="flex flex-col items-center h-screen justify-between">
@@ -85,13 +61,14 @@
 			<div class="absolute right-4 flex items-center space-x-4">
 				<span class="text-lg font-medium">{userText}</span>
 				{#if data.loginType === 'Admin' || data.loginType === 'Teacher'}
+					<!-- TODO: Why does this flicker from last year to now 🤔 -->
 					<select
-						bind:value={selectedSchoolYearInt}
+						bind:value={selectedSchoolYear}
 						on:change={handleSchoolYearChange}
 						id="year-dropdown"
 						class="bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#26561b] focus:border-transparent"
 					>
-						{#each generateSchoolYears() as year}
+						{#each data.schoolYearOptions as year}
 							<option value={year.value}>{year.label}</option>
 						{/each}
 					</select>
