@@ -28,7 +28,6 @@ test('Quizzes can be deleted', async ({ page }) => {
 	await expect(page.locator(`td:has-text("G3-Q1-A")`)).not.toBeVisible();
 });
 
-// TODO
 test('Quizzes from 2425 can be viewed', async ({ page }) => {
 	page.on('dialog', (dialog) => dialog.accept());
 

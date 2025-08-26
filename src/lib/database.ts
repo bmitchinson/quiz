@@ -118,6 +118,7 @@ export class Database {
 		});
 	}
 
+	// TODO NEXT: Add year to students schema defaulted to 2425
 	async addStudents(studentNames: string[], teacherName: string) {
 		try {
 			return await this.prisma.$transaction(async (prisma) => {
@@ -581,10 +582,6 @@ export class Database {
 		}
 	}
 
-	/**
-	 * @returns Array of quizzes.
-	 */
-	// todo: year, filter by the year that the app has in env
 	async getAllQuizzes(year: number) {
 		try {
 			return await this.prisma.quiz.findMany({
