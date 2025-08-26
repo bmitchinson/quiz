@@ -1,10 +1,5 @@
 import { expect, test } from '@playwright/test';
-import {
-	initializeTeachersData,
-	resetQuizzesToTestData,
-	loginAsAdmin,
-	loginAsTeacher
-} from './testutils';
+import { getCurrentYearInt, loginAsAdmin } from './testutils';
 
 test.beforeEach(async ({ context }) => {
 	await context.clearCookies();
@@ -21,6 +16,20 @@ test.describe('Admin', () => {
 	test('admin/manageQuizzes page redirects to login', async ({ page }) => {
 		await page.goto('/admin/manageQuizzes');
 		await expect(page).toHaveURL('/login');
+	});
+
+	test('year dropdown defaults to current year and persists navigation', async ({ page }) => {
+		const currentYear = getCurrentYearInt().toString();
+
+		await expect(page.locator('select#year-dropdown')).not.toBeVisible();
+		await loginAsAdmin(page);
+		await expect(page.locator('select#year-dropdown')).toHaveValue(currentYear);
+		await page.locator('select#year-dropdown').selectOption('2425');
+		await page.locator(`a:has-text("View Drawings")`).click();
+		await expect(page.locator('select#year-dropdown')).toHaveValue('2425');
+		await page.locator('select#year-dropdown').selectOption(currentYear);
+		await page.locator(`a:has-text("Home")`).click();
+		await expect(page.locator('select#year-dropdown')).toHaveValue(currentYear);
 	});
 
 	test('logging in as admin allows for managing quizzes', async ({ page }) => {
