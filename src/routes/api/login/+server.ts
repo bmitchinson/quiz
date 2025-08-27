@@ -1,7 +1,7 @@
 import { json, type Cookies } from '@sveltejs/kit';
 import { adminPasswordIsValid, teacherPasswordIsValid } from '$lib/passwordUtils';
 import { Database } from '$lib/database';
-import { clearCookies, setSignedCookieValue } from '$lib/cookieAndAuthUtils';
+import { clearCookies, getYearIntFromCookies, setSignedCookieValue } from '$lib/cookieAndAuthUtils';
 import { logEvent } from '$lib/logging';
 
 const db = new Database();
@@ -46,12 +46,13 @@ const checkStudentLoginAndSetCookies = async (
 	teacherName: String,
 	cookies: Cookies
 ): Promise<boolean> => {
-	const studentId = await db.studentBelongsToTeacher(studentName, teacherName);
+	const studentResult = await db.studentBelongsToTeacher(studentName, teacherName);
 	clearCookies(cookies);
-	if (studentId) {
+	if (studentResult) {
 		await setSignedCookieValue('loginType', 'Student', cookies);
 		await setSignedCookieValue('loginName', studentName.toLowerCase(), cookies);
-		await setSignedCookieValue('studentId', studentId.toString(), cookies);
+		await setSignedCookieValue('studentId', studentResult.id.toString(), cookies);
+		await setSignedCookieValue('schoolYear', studentResult.year.toString(), cookies);
 		logEvent(studentName.toLowerCase(), `Student Logged In Successfully`);
 		return true;
 	} else {

@@ -53,7 +53,11 @@ export const actions: Actions = {
 			const name = formData.get('name');
 
 			try {
-				await db.archiveStudent(name, parseInt(await getSignedCookieValue('teacherId', cookies)));
+				await db.archiveStudent(
+					name,
+					parseInt(await getSignedCookieValue('teacherId', cookies)),
+					await getYearIntFromCookies(cookies)
+				);
 				logEvent(loginName, `Archived Student: ${name}`);
 				return { success: true, message: 'Student deleted successfully' };
 			} catch (err) {

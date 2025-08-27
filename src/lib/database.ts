@@ -381,12 +381,12 @@ export class Database {
 		}
 	}
 
-	async archiveStudent(name: string, teacherId: int): Promise<void> {
+	async archiveStudent(name: string, teacherId: number, year: number) {
 		try {
 			// using updateMany instead of update because prisma doesn't know that
 			// name is unique within a teacherId
 			await this.prisma.student.updateMany({
-				where: { name, teacherId },
+				where: { name, teacherId, year },
 				data: { archived: true }
 			});
 		} catch (error) {
@@ -604,7 +604,9 @@ export class Database {
 		}
 	}
 
-	async studentBelongsToTeacher(studentName: string, teacherName: string): Promise<boolean> {
+	// only used by the login function. No year filter.
+	// The year that comes back from this is assigned to the students cookie.
+	async studentBelongsToTeacher(studentName: string, teacherName: string) {
 		try {
 			if (!studentName || !teacherName) {
 				throw new Error('Missing student or teacher name on db lookup');
@@ -618,7 +620,7 @@ export class Database {
 				}
 			});
 			if (student) {
-				return student.id;
+				return student;
 			} else {
 				return 0;
 			}
