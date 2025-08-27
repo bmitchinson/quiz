@@ -6,7 +6,13 @@
 # - this script hits that endpoint and downloads the latest prod backup
 # - this script then also imports that sql file into the local db
 
+set -e
+
 mode="$1"
+
+docker compose down && docker compose up -d
+
+sleep 3
 
 if [ "$mode" == "import_only" ]; then
   echo "Skipping backup download and using latest_prod_backup.sql"
@@ -33,4 +39,4 @@ npx prisma migrate deploy > /dev/null
 # import backup
 psql "postgres://your_username:your_password@localhost:5432/your_database?sslmode=disable" -f utils/latest_prod_backup.sql > /dev/null
 
-echo "Data imported successfully ✅"
+echo "Data import attempt done"
