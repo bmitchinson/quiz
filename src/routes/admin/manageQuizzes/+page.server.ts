@@ -4,13 +4,14 @@ import { error } from '@sveltejs/kit';
 import { validateRole } from '$lib/passwordUtils';
 import { parseEnteredQuestionsIntoEvalAble } from '$lib/dataUtils';
 import { logDBError, logEvent } from '$lib/logging';
+import { getYearIntFromCookies } from '$lib/cookieAndAuthUtils';
 
 const db = new Database();
 
 export const load: PageServerLoad = async ({ request, cookies }) =>
 	validateRole(request, cookies, ['Admin'], async () => {
 		try {
-			const quizzes = await db.getAllQuizzes();
+			const quizzes = await db.getAllQuizzes(await getYearIntFromCookies(cookies));
 			return { quizzes };
 		} catch (err) {
 			throw error(500, 'Failed to load quizzes');
@@ -24,7 +25,7 @@ export const actions: Actions = {
 			const grade = parseInt(formData.get('grade'));
 			const quarter = parseInt(formData.get('quarter'));
 			const sequenceLetter = formData.get('sequenceLetter');
-			const year = 2425;
+			const year = await getYearIntFromCookies(cookies);
 
 			let questionData = parseEnteredQuestionsIntoEvalAble(formData.get('questionData'));
 

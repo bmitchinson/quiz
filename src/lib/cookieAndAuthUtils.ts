@@ -1,6 +1,9 @@
 import type { Cookies } from '@sveltejs/kit';
+// todo: why aren't I using 'cookie-signature' instead. 44m weekly and has types.
 import signature from 'cookie-signature-subtle';
 import { getEnv } from './config';
+import { getCurrentYearInt } from './dataUtils';
+import { logEvent } from '$lib/logging';
 
 const cookieSecret = getEnv('COOKIE_SECRET');
 
@@ -32,9 +35,27 @@ export async function getSignedCookieValue(attr: String, cookies: Cookies): Prom
 	}
 }
 
+export async function userIsLoggedIn(cookies: Cookies) {
+	const loggedInUser = await getSignedCookieValue('loginName', cookies);
+	return !!loggedInUser;
+}
+
+export async function logout(cookies: Cookies) {
+	const loginName = await getSignedCookieValue('loginName', cookies);
+	logEvent(loginName, 'Logged Out');
+	clearCookies(cookies);
+}
+
 export function clearCookies(cookies: Cookies): void {
 	cookies.delete('loginType', { path: '/' });
 	cookies.delete('loginName', { path: '/' });
 	cookies.delete('studentId', { path: '/' });
 	cookies.delete('teacherId', { path: '/' });
+	cookies.delete('schoolYear', { path: '/' });
+}
+
+export async function getYearIntFromCookies(cookies: Cookies) {
+	return await getSignedCookieValue('schoolYear', cookies).then((year) =>
+		year ? parseInt(year) : getCurrentYearInt()
+	);
 }

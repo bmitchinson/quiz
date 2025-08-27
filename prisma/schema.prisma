@@ -12,8 +12,6 @@ model Teacher {
   name     String    @unique
   grade    Int       @db.SmallInt
   students Student[] @relation("TeacherStudents")
-  // end-of-year: add year "2324" attr to teacher, update teacher login to query
-  //     that year
 
   createdAt DateTime @default(now())
 }
@@ -30,7 +28,9 @@ model Student {
   scores  Score[]
   Drawing Drawing[]
 
-  @@unique([name, teacherId])
+  year Int
+
+  @@unique([name, year, teacherId])
 }
 
 model Quiz {
@@ -41,11 +41,9 @@ model Quiz {
   archived       Boolean  @default(false)
   createdAt      DateTime @default(now())
 
-  // old
   title String @db.VarChar(50)
-  // todo: remove title
+  // todo: unused attr. consider removing
 
-  // new
   year           Int
   grade          Int
   quarter        Int
@@ -74,7 +72,7 @@ model Score {
 }
 
 model Drawing {
-  id        Int    @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   jpgBase64 String? @db.VarChar(409600) // Limits to 400KB
   // there are more efficient ways to store this with buffer or postgrs text but I don't care
 
@@ -84,7 +82,7 @@ model Drawing {
   accessCode String @db.VarChar(6)
   quiz       Quiz   @relation(fields: [accessCode], references: [accessCode], onDelete: Cascade)
 
-  @@unique([accessCode, studentId])
+  timeStarted DateTime?
 
-  timeStarted    DateTime?
+  @@unique([accessCode, studentId])
 }

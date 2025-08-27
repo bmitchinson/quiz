@@ -1,7 +1,6 @@
 import test, { expect } from '@playwright/test';
 import {
 	clearAllDbEntries,
-	clearDbScores,
 	getQuizByMetadata,
 	getScore,
 	resetQuizzesToTestData,
@@ -15,6 +14,7 @@ import {
 	resetDrawingsToTestData,
 	getDrawing
 } from './testutils';
+import { getCurrentYearInt } from './testutils';
 
 test.beforeAll(async () => {
 	await clearAllDbEntries();
@@ -30,7 +30,7 @@ test.beforeEach(async () => {
 
 test('Taking a quiz', async ({ page }) => {
 	const quizCode = await getQuizByMetadata({
-		year: 2425,
+		year: getCurrentYearInt(),
 		grade: 3,
 		quarter: 1,
 		sequenceLetter: 'A'
@@ -77,7 +77,7 @@ test('Taking a quiz', async ({ page }) => {
 
 test('Student cannot retake quiz', async ({ page }) => {
 	const quiz = await getQuizByMetadata({
-		year: 2425,
+		year: getCurrentYearInt(),
 		grade: 3,
 		quarter: 1,
 		sequenceLetter: 'A'
@@ -94,7 +94,7 @@ test('Student cannot retake quiz', async ({ page }) => {
 
 test('Student can resume a quiz', async ({ page }) => {
 	const quiz = await getQuizByMetadata({
-		year: 2425,
+		year: getCurrentYearInt(),
 		grade: 3,
 		quarter: 1,
 		sequenceLetter: 'A'
@@ -110,7 +110,7 @@ test('Student can resume a quiz', async ({ page }) => {
 
 test('Student can submit a drawing after a quiz is complete', async ({ page }) => {
 	const quiz = await getQuizByMetadata({
-		year: 2425,
+		year: getCurrentYearInt(),
 		grade: 3,
 		quarter: 1,
 		sequenceLetter: 'A'
@@ -158,7 +158,7 @@ test('Student that is distracted during a quiz has their score marked accordingl
 	page
 }) => {
 	const quiz = await getQuizByMetadata({
-		year: 2425,
+		year: getCurrentYearInt(),
 		grade: 3,
 		quarter: 1,
 		sequenceLetter: 'A'
@@ -195,7 +195,7 @@ test('Student that is distracted during a quiz has their score marked accordingl
 
 test('Student cannot take a quiz from another grade', async ({ page }) => {
 	const quizCodeOfSecondGrade = await getQuizByMetadata({
-		year: 2425,
+		year: getCurrentYearInt(),
 		grade: 2,
 		quarter: 1,
 		sequenceLetter: 'A'

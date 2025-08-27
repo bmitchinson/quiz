@@ -2,9 +2,9 @@ import { Database } from '$lib/database';
 import { validateRole } from '$lib/passwordUtils';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
-import { addMinutes, addSeconds, differenceInSeconds } from 'date-fns';
+// import { addMinutes, addSeconds, differenceInSeconds } from 'date-fns';
 // import { timeToDrawAfterSubmittingQuiz } from '$lib/config';
-import { getSignedCookieValue } from '$lib/signedCookie';
+import { getSignedCookieValue } from '$lib/cookieAndAuthUtils';
 import { logEvent } from '../../../../lib/logging';
 
 const db = new Database();

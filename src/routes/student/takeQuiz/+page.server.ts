@@ -1,5 +1,5 @@
 import { Database } from '$lib/database';
-import { getSignedCookieValue } from '$lib/signedCookie';
+import { getSignedCookieValue, getYearIntFromCookies } from '$lib/cookieAndAuthUtils';
 import { validateRole } from '$lib/passwordUtils';
 import { addMinutes } from 'date-fns';
 import { quizHasTakenLongerThanAllowed } from '$lib/dateUtils';
@@ -12,7 +12,10 @@ const db = new Database();
 export const load: PageServerLoad = async ({ request, cookies }) =>
 	validateRole(request, cookies, ['Student'], async () => {
 		try {
-			const student = await db.getStudent(await getSignedCookieValue('loginName', cookies));
+			const student = await db.getStudent(
+				await getSignedCookieValue('loginName', cookies),
+				await getYearIntFromCookies(cookies)
+			);
 			return { studentGrade: student?.teacher.grade };
 		} catch (err) {
 			throw error(500, 'Failed to find student grade');

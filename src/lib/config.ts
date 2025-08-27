@@ -1,6 +1,6 @@
-export function getEnv(name: string): string {
+export function getEnv(name: string, required = true) {
 	const value = process.env[name];
-	if (value == undefined) {
+	if (value == undefined && required) {
 		throw new Error(`Missing environment variable ${name}`);
 	}
 	return value;
