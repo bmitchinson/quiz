@@ -51,30 +51,39 @@ export async function resetStudentsAndScores(): Promise<void> {
 	await db.prisma.score.deleteMany({});
 	await db.prisma.student.deleteMany({});
 
-	const studentGroup1 = await db.addStudents(studentGroup1Marcos, 'marcos');
+	const studentGroup1 = await db.addStudents(studentGroup1Marcos, 'marcos', getCurrentYearInt());
 
-	const studentGroup2 = await db.addStudents(studentGroup2Burke, 'burke');
+	const studentGroup2 = await db.addStudents(studentGroup2Burke, 'burke', getCurrentYearInt());
 
-	const studentGroup3 = await db.addStudents(studentGroup3Doherty, 'doherty');
+	const studentGroup3 = await db.addStudents(studentGroup3Doherty, 'doherty', getCurrentYearInt());
 
-	const studentGroup4 = await db.addStudents(studentGroup4Schillo, 'schillo');
+	const studentGroup4 = await db.addStudents(studentGroup4Schillo, 'schillo', getCurrentYearInt());
 
-	const studentGroup5 = await db.addStudents(studentGroup5Boyle, 'boyle');
+	const studentGroup5 = await db.addStudents(studentGroup5Boyle, 'boyle', getCurrentYearInt());
 
-	const studentGroup6 = await db.addStudents(studentGroup6Eklund, 'eklund');
+	const studentGroup6 = await db.addStudents(studentGroup6Eklund, 'eklund', getCurrentYearInt());
 
-	const studentGroup7 = await db.addStudents(studentGroup7Mitchinson, 'mitchinson');
+	const studentGroup7 = await db.addStudents(
+		studentGroup7Mitchinson,
+		'mitchinson',
+		getCurrentYearInt()
+	);
 
-	const studentGroup8 = await db.addStudents(studentGroup8RosalesMedina, 'rosales-medina');
+	const studentGroup8 = await db.addStudents(
+		studentGroup8RosalesMedina,
+		'rosales-medina',
+		getCurrentYearInt()
+	);
 
-	await db.addStudents(['thirdgrader1', 'thirdgrader2'], 'mrs_thirdgrade');
+	await db.addStudents(['thirdgrader1', 'thirdgrader2'], 'mrs_thirdgrade', getCurrentYearInt());
 
 	await db.addStudents(
 		['fourthgrader1', 'fourthgrader2', 'fourthgrader3', 'fourthgrader4'],
-		'mr_fourthgrade'
+		'mr_fourthgrade',
+		getCurrentYearInt()
 	);
 
-	await db.addStudents(['fifthgrader1', 'fifthgrader2'], 'mrs_fifthgrade');
+	await db.addStudents(['fifthgrader1', 'fifthgrader2'], 'mrs_fifthgrade', getCurrentYearInt());
 
 	const groupsToSeedScoresOf = [
 		{ s: studentGroup1, sG: (i) => 3.5 + i * 0.2, q: g1QuizCodes },
@@ -122,10 +131,10 @@ export async function resetStudentsAndScores(): Promise<void> {
 export async function resetDrawingsToTestData(): Promise<void> {
 	const mitchinsonStudents = await db
 		.getTeacher('mitchinson')
-		.then((t) => db.getStudentsOfTeacher(t?.id || 0));
+		.then((t) => db.getStudentsOfTeacher(t?.id || 0, getCurrentYearInt()));
 	const eklundStudents = await db
 		.getTeacher('eklund')
-		.then((t) => db.getStudentsOfTeacher(t?.id || 0));
+		.then((t) => db.getStudentsOfTeacher(t?.id || 0, getCurrentYearInt()));
 
 	await db.prisma.drawing.deleteMany({});
 	const drawingsToMake: Prisma.DrawingCreateManyInput[] = [];
@@ -293,7 +302,9 @@ export const loginAsFirstAlphaFirstGrader = async (page: Page) => {
 };
 
 export const setYearTo = async (page: Page, year: number) => {
+	console.log('Selecting year:', year.toString());
 	await page.locator('select#year-dropdown').selectOption(year.toString());
+	await page.waitForTimeout(200);
 };
 
 export const thirdGradeQuizTakerName = 'thirdgrader1';
@@ -318,14 +329,15 @@ export const performXDistractions = async (page: Page, count: number) => {
 	}
 };
 
-export const amountOfStudentsForTeacher = async (teacherName: string): Promise<number> => {
+export const amountOfStudentsForTeacherFromDB = async (teacherName: string): Promise<number> => {
 	return (await db.prisma.student.findMany({ where: { teacher: { name: teacherName } } })).length;
 };
 
 export async function addFourSecondGraderStudents() {
 	await db.addStudents(
 		['secondgrader1', 'secondgrader2', 'secondgrader3', 'secondgrader4'],
-		'mitchinson'
+		'mitchinson',
+		getCurrentYearInt()
 	);
 }
 

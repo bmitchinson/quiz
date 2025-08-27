@@ -119,16 +119,18 @@ export class Database {
 	}
 
 	// TODO NEXT: Add year to students schema defaulted to 2425
-	async addStudents(studentNames: string[], teacherName: string) {
+	async addStudents(studentNames: string[], teacherName: string, year: number) {
 		try {
 			return await this.prisma.$transaction(async (prisma) => {
 				const teacher = await prisma.teacher.findUnique({
 					where: { name: teacherName }
 				});
 
+				// if the teacher had this student, they were deleted, and the teacher added again, restore the existing
 				await prisma.student.updateMany({
 					where: {
 						name: { in: studentNames.map((n) => n.toLowerCase()) },
+						year,
 						teacherId: teacher.id
 					},
 					data: { archived: false }
@@ -136,7 +138,8 @@ export class Database {
 
 				const dataToInsert = studentNames.map((studentName) => ({
 					name: studentName.toLowerCase(),
-					teacherId: teacher.id
+					teacherId: teacher.id,
+					year
 				}));
 
 				return await prisma.student.createManyAndReturn({
@@ -255,11 +258,11 @@ export class Database {
 		}
 	}
 
-	async getStudent(studentName: string) {
+	async getStudent(studentName: string, year: number) {
 		try {
 			return await this.prisma.student.findFirst({
 				select: { teacher: true },
-				where: { name: studentName, archived: false }
+				where: { name: studentName, archived: false, year }
 			});
 		} catch (error) {
 			logDBError('database', 'Error doing single student lookup', error);
@@ -267,14 +270,14 @@ export class Database {
 		}
 	}
 
-	async getStudentsOfTeacher(teacherId: number) {
+	async getStudentsOfTeacher(teacherId: number, year: number) {
 		try {
 			if (teacherId === null) {
 				throw new Error('Missing teacher id');
 			}
 			const students = await this.prisma.student.findMany({
 				select: { name: true, id: true },
-				where: { archived: false, teacherId },
+				where: { archived: false, teacherId, year },
 				orderBy: { name: 'asc' }
 			});
 			return students;

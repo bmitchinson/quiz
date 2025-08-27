@@ -2,7 +2,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { Database } from '$lib/database';
 import { error } from '@sveltejs/kit';
 import { validateRole } from '$lib/passwordUtils';
-import { getSignedCookieValue } from '$lib/cookieAndAuthUtils';
+import { getSignedCookieValue, getYearIntFromCookies } from '$lib/cookieAndAuthUtils';
 import { logAPIError, logDBError, logEvent } from '$lib/logging';
 
 const db = new Database();
@@ -10,7 +10,8 @@ const db = new Database();
 export const load: PageServerLoad = async ({ request, cookies }) => {
 	try {
 		const students = await db.getStudentsOfTeacher(
-			parseInt(await getSignedCookieValue('teacherId', cookies))
+			parseInt(await getSignedCookieValue('teacherId', cookies)),
+			await getYearIntFromCookies(cookies)
 		);
 		return { students };
 	} catch (err) {
@@ -37,7 +38,7 @@ export const actions: Actions = {
 				.filter((studentName) => studentName.length > 0);
 
 			try {
-				await db.addStudents(uniqueLastNames, teacherName);
+				await db.addStudents(uniqueLastNames, teacherName, await getYearIntFromCookies(cookies));
 				logEvent(loginName, `Added ${uniqueLastNames.length} students successfully`);
 				return { success: true, message: 'Students added successfully' };
 			} catch (err) {

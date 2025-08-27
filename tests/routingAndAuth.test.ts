@@ -24,10 +24,10 @@ test.describe('Admin', () => {
 		await expect(page.locator('select#year-dropdown')).not.toBeVisible();
 		await loginAsAdmin(page);
 		await expect(page.locator('select#year-dropdown')).toHaveValue(currentYear);
-		setYearTo(page, 2425);
+		await setYearTo(page, 2425);
 		await page.locator(`a:has-text("View Drawings")`).click();
 		await expect(page.locator('select#year-dropdown')).toHaveValue('2425');
-		setYearTo(page, getCurrentYearInt());
+		await setYearTo(page, getCurrentYearInt());
 		await page.locator(`a:has-text("Home")`).click();
 		await expect(page.locator('select#year-dropdown')).toHaveValue(currentYear);
 	});

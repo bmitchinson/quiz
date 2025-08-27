@@ -28,7 +28,9 @@ model Student {
   scores  Score[]
   Drawing Drawing[]
 
-  @@unique([name, teacherId])
+  year Int
+
+  @@unique([name, year, teacherId])
 }
 
 model Quiz {
@@ -39,11 +41,9 @@ model Quiz {
   archived       Boolean  @default(false)
   createdAt      DateTime @default(now())
 
-  // old
   title String @db.VarChar(50)
-  // todo: remove title
+  // todo: unused attr. consider removing
 
-  // new
   year           Int
   grade          Int
   quarter        Int
