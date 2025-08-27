@@ -62,6 +62,25 @@ export interface GetDrawingsResult {
 	total: number;
 }
 
+export interface GetDrawingsResult {
+	drawings: {
+		id: number;
+		jpgBase64: string;
+		student: {
+			name: string;
+		};
+		accessCode: string;
+		quiz: {
+			title: string;
+			grade: number;
+			quarter: number;
+			sequenceLetter: string;
+		};
+		timeStarted: Date;
+	}[];
+	total: number;
+}
+
 const logLevels = /production|test/.test(process.env.NODE_ENV)
 	? ['warn', 'error']
 	: tempDisablePrismaQuery
