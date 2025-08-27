@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
 import { Database } from '$lib/database';
 import type { QuizScoreSummaryDataPoint } from '$lib/chart/scoreTooltip';
-import { getReadableTitleOfQuiz } from '$lib/dataUtils.js';
-import { validateRole } from '$lib/passwordUtils.js';
+import { getReadableTitleOfQuiz } from '$lib/dataUtils';
+import { validateRole } from '$lib/passwordUtils';
 import { getYearIntFromCookies } from '$lib/cookieAndAuthUtils';
 
 const db = new Database();

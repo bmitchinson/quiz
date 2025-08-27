@@ -101,16 +101,12 @@ test('Drawings only show for current year', async ({ page }) => {
 
 	await page.locator('a:has-text("View Student Drawings")').click();
 
-	await expect(
-		page.locator('p:has-text("No drawings found. Try adjusting your filters.")')
-	).not.toBeVisible();
+	await expect(page.locator('p:has-text("No drawings found.")')).not.toBeVisible();
 	await expect(page.locator('div.drawing-card')).not.toHaveCount(0);
 
 	await setYearTo(page, 2425);
 
-	await expect(
-		page.locator('p:has-text("No drawings found. Try adjusting your filters.")')
-	).toBeVisible();
+	await expect(page.locator('p:has-text("No drawings found.")')).toBeVisible();
 	await expect(page.locator('div.drawing-card')).toHaveCount(0);
 });
 

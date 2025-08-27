@@ -302,7 +302,6 @@ export const loginAsFirstAlphaFirstGrader = async (page: Page) => {
 };
 
 export const setYearTo = async (page: Page, year: number) => {
-	console.log('Selecting year:', year.toString());
 	await page.locator('select#year-dropdown').selectOption(year.toString());
 	await page.waitForTimeout(200);
 };

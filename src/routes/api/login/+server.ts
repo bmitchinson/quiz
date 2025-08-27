@@ -2,7 +2,7 @@ import { json, type Cookies } from '@sveltejs/kit';
 import { adminPasswordIsValid, teacherPasswordIsValid } from '$lib/passwordUtils';
 import { Database } from '$lib/database';
 import { clearCookies, setSignedCookieValue } from '$lib/cookieAndAuthUtils';
-import { logEvent } from '$lib/logging.js';
+import { logEvent } from '$lib/logging';
 
 const db = new Database();
 

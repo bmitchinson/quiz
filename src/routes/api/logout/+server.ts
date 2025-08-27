@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { logout } from '$lib/cookieAndAuthUtils.js';
+import { logout } from '$lib/cookieAndAuthUtils';
 
 export const POST = async ({ cookies }) => {
 	await logout(cookies);

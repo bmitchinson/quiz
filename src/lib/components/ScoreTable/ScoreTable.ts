@@ -1,8 +1,6 @@
 import { DataTable } from 'simple-datatables';
-import type { GetScoresScore } from '../database';
 import { getPercentageAsString } from '$lib/dataUtils';
 import { format } from 'date-fns';
-import { getButtonStyles } from '../../cssUtils';
 import DeleteButton from './ScoreDeleteButton.svelte';
 import { writable } from 'svelte/store';
 
@@ -18,7 +16,7 @@ function renderDeleteButton(scoreId: number): string {
 	return div.innerHTML;
 }
 
-export const createDataTable = (id: string, scoreData: GetScoresScore[]) => {
+export const createDataTable = (id: string, scoreData: Object[]) => {
 	const sortTableByLatestDate = [3, 'desc'];
 	const dt = new DataTable(document.querySelector(`#${id}`) as HTMLTableElement, {
 		perPageSelect: [5, 10, 15, ['All', -1]],

@@ -15,12 +15,13 @@ export interface GetScoresScore {
 }
 
 export interface GetScoresFilters {
-	grade: number;
-	teacherName: string;
-	quizCode: string;
-	studentName: string;
-	quizQuarter: number;
-	quizSequenceLetter: string;
+	grade?: number;
+	teacherName?: string;
+	year?: number;
+	quizCode?: string;
+	studentName?: string;
+	quizQuarter?: number;
+	quizSequenceLetter?: string;
 }
 
 export interface GetDrawingsResult {
@@ -118,7 +119,6 @@ export class Database {
 		});
 	}
 
-	// TODO NEXT: Add year to students schema defaulted to 2425
 	async addStudents(studentNames: string[], teacherName: string, year: number) {
 		try {
 			return await this.prisma.$transaction(async (prisma) => {
@@ -205,7 +205,7 @@ export class Database {
 	async getDrawings(
 		page = 1,
 		pageSize = 5,
-		filters: { grade?: number; teacherName?: string } = {}
+		filters: { grade?: number; teacherName?: string; year?: number } = {}
 	): Promise<GetDrawingsResult> {
 		try {
 			const skip = (page - 1) * pageSize;
@@ -214,11 +214,10 @@ export class Database {
 				jpgBase64: { not: null },
 				student: {
 					...(filters.teacherName && { teacher: { name: filters.teacherName } }),
-					...(filters.grade && { teacher: { grade: filters.grade } })
+					...(filters.grade && { teacher: { grade: filters.grade } }),
+					...(filters.year && { year: filters.year })
 				}
 			};
-
-			console.log('where', where);
 
 			const [drawings, total] = await Promise.all([
 				this.prisma.drawing.findMany({
@@ -338,10 +337,12 @@ export class Database {
 					quiz: {
 						accessCode: filters?.quizCode || undefined,
 						quarter: filters?.quizQuarter || undefined,
-						sequenceLetter: filters?.quizSequenceLetter || undefined
+						sequenceLetter: filters?.quizSequenceLetter || undefined,
+						year: filters?.year || undefined
 					},
 					student: {
 						name: filters?.studentName || undefined,
+						year: filters?.year || undefined,
 						archived: false,
 						teacher: {
 							name: filters?.teacherName || undefined,

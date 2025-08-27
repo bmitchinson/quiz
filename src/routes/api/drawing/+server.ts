@@ -1,8 +1,8 @@
-import { Database, type GetScoresFilters } from '$lib/database';
-import { validateRole } from '$lib/passwordUtils.js';
+import { Database } from '$lib/database';
+import { validateRole } from '$lib/passwordUtils';
 import { json } from '@sveltejs/kit';
-import { logDBError, logEvent } from '$lib/logging.js';
-import { getSignedCookieValue } from '$lib/cookieAndAuthUtils.js';
+import { logDBError, logEvent } from '$lib/logging';
+import { getSignedCookieValue } from '$lib/cookieAndAuthUtils';
 
 const db = new Database();
 

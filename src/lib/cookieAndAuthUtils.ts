@@ -3,7 +3,7 @@ import type { Cookies } from '@sveltejs/kit';
 import signature from 'cookie-signature-subtle';
 import { getEnv } from './config';
 import { getCurrentYearInt } from './dataUtils';
-import { logEvent } from '$lib/logging.js';
+import { logEvent } from '$lib/logging';
 
 const cookieSecret = getEnv('COOKIE_SECRET');
 
