@@ -127,6 +127,30 @@ test('Students drawings can be viewed', async ({ page }) => {
 	await expect(page.locator('div.drawing-card')).toHaveCount(6);
 });
 
+test('Drawings only show for current year', async ({ page }) => {
+	await clearAllDbEntries();
+	await initializeTestTeachers();
+	await resetQuizzesToTestData();
+	await resetStudentsAndScores();
+	await resetDrawingsToTestData();
+
+	await loginAsAdmin(page);
+
+	await page.locator('a:has-text("View Drawings")').click();
+
+	await expect(
+		page.locator('p:has-text("No drawings found. Try adjusting your filters.")')
+	).not.toBeVisible();
+	await expect(page.locator('div.drawing-card')).not.toHaveCount(0);
+
+	await setYearTo(page, 2425);
+
+	await expect(
+		page.locator('p:has-text("No drawings found. Try adjusting your filters.")')
+	).toBeVisible();
+	await expect(page.locator('div.drawing-card')).toHaveCount(0);
+});
+
 test('Students drawings can be deleted', async ({ page }) => {
 	await clearAllDbEntries();
 	await initializeTestTeachers();
