@@ -139,6 +139,7 @@ export class Database {
 	}
 
 	async addStudents(studentNames: string[], teacherName: string, year: number) {
+		if (!year) throw new Error('addStudents missing year');
 		try {
 			return await this.prisma.$transaction(async (prisma) => {
 				const teacher = await prisma.teacher.findUnique({
@@ -226,6 +227,7 @@ export class Database {
 		pageSize = 5,
 		filters: { grade?: number; teacherName?: string; year?: number } = {}
 	): Promise<GetDrawingsResult> {
+		if (!filters.year) throw new Error('getDrawings missing year');
 		try {
 			const skip = (page - 1) * pageSize;
 
@@ -234,7 +236,7 @@ export class Database {
 				student: {
 					...(filters.teacherName && { teacher: { name: filters.teacherName } }),
 					...(filters.grade && { teacher: { grade: filters.grade } }),
-					...(filters.year && { year: filters.year })
+					...{ year: filters.year }
 				}
 			};
 
@@ -277,6 +279,7 @@ export class Database {
 	}
 
 	async getStudent(studentName: string, year: number) {
+		if (!year) throw new Error('getStudent missing year');
 		try {
 			return await this.prisma.student.findFirst({
 				select: { teacher: true },
@@ -289,6 +292,7 @@ export class Database {
 	}
 
 	async getStudentsOfTeacher(teacherId: number, year: number) {
+		if (!year) throw new Error('getStudentsOfTeacher missing year');
 		try {
 			if (teacherId === null) {
 				throw new Error('Missing teacher id');
@@ -306,6 +310,7 @@ export class Database {
 	}
 
 	async getSummaryOfScores(grade: number, teacherName: string, year: number) {
+		if (!year) throw new Error('getSummaryOfScores missing year');
 		try {
 			const summary = await prisma.score.groupBy({
 				by: ['quizCode'],
@@ -350,6 +355,7 @@ export class Database {
 	}
 
 	async getScores(filters: GetScoresFilters): Promise<GetScoresScore[]> {
+		if (!filters.year) throw new Error('getScores missing year');
 		try {
 			const scores = await prisma.score.findMany({
 				where: {
@@ -401,6 +407,7 @@ export class Database {
 	}
 
 	async archiveStudent(name: string, teacherId: number, year: number) {
+		if (!year) throw new Error('archiveStudent missing year');
 		try {
 			// using updateMany instead of update because prisma doesn't know that
 			// name is unique within a teacherId
@@ -449,6 +456,7 @@ export class Database {
 		},
 		providedQuestionsText: string
 	) {
+		if (!metadata.year) throw new Error('addQuiz missing year');
 		try {
 			const questions = providedQuestionsText.replace(/\r?\n/g, '|');
 			return await this.prisma.quiz.create({
@@ -554,6 +562,7 @@ export class Database {
 	}
 
 	async getQuizByMetadata(year: number, grade: number, quarter: number, sequenceLetter: string) {
+		if (!year) throw new Error('getQuizByMetadata missing year');
 		try {
 			return await this.prisma.quiz.findFirst({
 				where: {
