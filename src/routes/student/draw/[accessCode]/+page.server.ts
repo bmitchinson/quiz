@@ -3,7 +3,7 @@ import { validateRole } from '$lib/passwordUtils';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
 import { addMinutes, addSeconds, differenceInSeconds } from 'date-fns';
-import { timeToDrawAfterSubmittingQuiz } from '$lib/config';
+// import { timeToDrawAfterSubmittingQuiz } from '$lib/config';
 import { getSignedCookieValue } from '$lib/signedCookie';
 import { logEvent } from '../../../../lib/logging';
 
@@ -32,12 +32,12 @@ export const load: PageServerLoad = async ({ params, request, cookies }) => {
 			logEvent(loginName, `Started drawing image for quiz ${accessCode}`);
 		}
 
-		const drawingDueDate = addSeconds(drawing?.timeStarted, timeToDrawAfterSubmittingQuiz);
-		const diffSeconds = differenceInSeconds(drawingDueDate, new Date());
+		// const drawingDueDate = addSeconds(drawing?.timeStarted, timeToDrawAfterSubmittingQuiz);
+		// const diffSeconds = differenceInSeconds(drawingDueDate, new Date());
 
 		return {
 			drawingAlreadyExistsBase64: drawing?.jpgBase64,
-			secondsToDraw: diffSeconds,
+			// secondsToDraw: diffSeconds,
 			accessCode
 		};
 	});

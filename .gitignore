@@ -27,3 +27,6 @@ test-results/
 /prisma/*
 !/prisma/migrations/
 !/prisma/migrations/**
+
+# Tooling
+latest_prod_backup.sql

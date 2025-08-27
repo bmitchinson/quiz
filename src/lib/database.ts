@@ -23,6 +23,25 @@ export interface GetScoresFilters {
 	quizSequenceLetter: string;
 }
 
+export interface GetDrawingsResult {
+	drawings: {
+		id: number;
+		jpgBase64: string;
+		student: {
+			name: string;
+		};
+		accessCode: string;
+		quiz: {
+			title: string;
+			grade: number;
+			quarter: number;
+			sequenceLetter: string;
+		};
+		timeStarted: Date;
+	}[];
+	total: number;
+}
+
 const logLevels = /production|test/.test(process.env.NODE_ENV)
 	? ['warn', 'error']
 	: tempDisablePrismaQuery
@@ -42,7 +61,7 @@ function generate4DigitCode(): string {
  * Provides methods to interact with the database.
  */
 export class Database {
-	private prisma: PrismaClient;
+	public prisma: PrismaClient;
 
 	constructor() {
 		this.prisma = prisma;
@@ -179,6 +198,62 @@ export class Database {
 		}
 	}
 
+	async getDrawings(
+		page = 1,
+		pageSize = 5,
+		filters: { grade?: number; teacherName?: string } = {}
+	): Promise<GetDrawingsResult> {
+		try {
+			const skip = (page - 1) * pageSize;
+
+			const where = {
+				jpgBase64: { not: null },
+				student: {
+					...(filters.teacherName && { teacher: { name: filters.teacherName } }),
+					...(filters.grade && { teacher: { grade: filters.grade } })
+				}
+			};
+
+			console.log('where', where);
+
+			const [drawings, total] = await Promise.all([
+				this.prisma.drawing.findMany({
+					where,
+					select: {
+						id: true,
+						jpgBase64: true,
+						student: {
+							select: {
+								name: true
+							}
+						},
+						accessCode: true,
+						quiz: {
+							select: {
+								title: true,
+								grade: true,
+								quarter: true,
+								sequenceLetter: true
+							}
+						},
+						timeStarted: true
+					},
+					skip,
+					take: pageSize,
+					orderBy: {
+						timeStarted: 'desc'
+					}
+				}),
+				this.prisma.drawing.count({ where })
+			]);
+
+			return { drawings, total };
+		} catch (error) {
+			logDBError('database', 'Error fetching drawings', error);
+			throw error;
+		}
+	}
+
 	async getStudent(studentName: string) {
 		try {
 			return await this.prisma.student.findFirst({
@@ -191,13 +266,13 @@ export class Database {
 		}
 	}
 
-	async getStudentsOfTeacher(teacherId: int): Promise<string[]> {
+	async getStudentsOfTeacher(teacherId: number) {
 		try {
 			if (teacherId === null) {
 				throw new Error('Missing teacher id');
 			}
 			const students = await this.prisma.student.findMany({
-				select: { name: true },
+				select: { name: true, id: true },
 				where: { archived: false, teacherId },
 				orderBy: { name: 'asc' }
 			});
@@ -350,10 +425,10 @@ export class Database {
 			sequenceLetter: string;
 		},
 		providedQuestionsText: string
-	): Promise<void> {
+	) {
 		try {
 			const questions = providedQuestionsText.replace(/\r?\n/g, '|');
-			const quiz = await this.prisma.quiz.create({
+			return await this.prisma.quiz.create({
 				data: {
 					title: 'temp',
 					accessCode: await this.generateUnique4DigitCode(),
@@ -549,6 +624,19 @@ export class Database {
 			}
 		} catch (error) {
 			logDBError('database', 'Error checking if student has teacher', error);
+			throw error;
+		}
+	}
+
+	async deleteDrawing(drawingId: number): Promise<void> {
+		try {
+			return await this.prisma.drawing.delete({
+				where: {
+					id: drawingId
+				}
+			});
+		} catch (error) {
+			logDBError('database', 'Error deleting drawing', error);
 			throw error;
 		}
 	}

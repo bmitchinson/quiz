@@ -15,7 +15,7 @@ export const POST = async ({ request, cookies }) =>
 		};
 		const studentId = await getSignedCookieValue('studentId', cookies);
 		try {
-			const drawing = await db.saveDrawingImage(studentId, accessCode, jpgBase64);
+			await db.saveDrawingImage(studentId, accessCode, jpgBase64);
 			logEvent(loginName, `Finished drawing image for quiz: ${accessCode}`);
 		} catch (err) {
 			logDBError(

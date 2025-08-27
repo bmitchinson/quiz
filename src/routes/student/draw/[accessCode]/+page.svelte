@@ -5,7 +5,7 @@
 	import { getButtonStyles } from '$lib/cssUtils';
 
 	export let data;
-	const { secondsToDraw, accessCode, drawingAlreadyExistsBase64 } = data;
+	const { accessCode, drawingAlreadyExistsBase64 } = data;
 
 	let drawingSubmitted = !!drawingAlreadyExistsBase64;
 	let exportedImage = drawingSubmitted ? drawingAlreadyExistsBase64 : '';
@@ -43,13 +43,12 @@
 
 {#if drawingSubmitted}
 	<Card additionalClasses={'items-center'}>
-		<h1>Your drawing has been submitted! ✅</h1>
+		<p>Your drawing has been submitted! ✅</p>
 		<img src={exportedImage} class="w-md" alt="drawing" />
 		<a class={`${getButtonStyles()}`} href="/">Home</a>
 	</Card>
 {:else}
 	<div class="container">
-		<h1>{secondsToDraw}</h1>
 		<DrawingCanvas bind:canvas />
 
 		<button class="tool-button" on:click={submitImage}>Submit</button>
