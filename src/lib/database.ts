@@ -606,6 +606,7 @@ export class Database {
 	}
 
 	async getAllQuizzes(year: number) {
+		if (!year) throw new Error('getAllQuizzes missing year');
 		try {
 			return await this.prisma.quiz.findMany({
 				where: { archived: false, year },
