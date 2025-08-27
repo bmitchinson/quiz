@@ -7,8 +7,10 @@ import {
 	clearAllDbEntries,
 	initializeTestTeachers,
 	resetStudentsAndScores,
-	resetDrawingsToTestData
+	resetDrawingsToTestData,
+	setYearTo
 } from './testutils';
+import { getCurrentYearInt } from './testutils';
 
 test.beforeAll(async () => {
 	await resetQuizzesToTestData();
@@ -24,6 +26,21 @@ test('Quizzes can be deleted', async ({ page }) => {
 	await expect(page.locator(`td:has-text("G3-Q1-A")`)).toBeVisible();
 	await page.locator(`button[id='delete-G3-Q1-A']:has-text("Delete")`).click();
 	await expect(page.locator(`td:has-text("G3-Q1-A")`)).not.toBeVisible();
+});
+
+test('Quizzes from 2425 can be viewed', async ({ page }) => {
+	page.on('dialog', (dialog) => dialog.accept());
+
+	await loginAsAdmin(page);
+	await page.locator('a:has-text("Manage Quizzes")').click();
+	await expect(page.locator(`td:has-text("G1-Q1-A")`)).toBeVisible();
+	await expect(page.locator(`span#page-x-of-y`)).toHaveText('Page 1 of 7');
+
+	await setYearTo(page, 2425);
+
+	await expect(page.locator(`td:has-text("G1-Q1-A")`)).not.toBeVisible();
+	await expect(page.locator(`td:has-text("G1-Q4-D")`)).toBeVisible();
+	await expect(page.locator(`span#page-x-of-y`)).toHaveText('Page 1 of 1');
 });
 
 test("Quizzes can't be created if one already exists", async ({ page }) => {
@@ -81,7 +98,12 @@ test('Quizzes can be edited', async ({ page }) => {
 		.isVisible();
 
 	await page.waitForTimeout(100);
-	const quiz = await getQuizByMetadata({ grade: 3, quarter: 1, sequenceLetter: 'B', year: 2425 });
+	const quiz = await getQuizByMetadata({
+		grade: 3,
+		quarter: 1,
+		sequenceLetter: 'B',
+		year: getCurrentYearInt()
+	});
 	expect(quiz.questionsData).toBe('1 + 2|3 + 4|5 + 6|20 x 20');
 	expect(quiz?.totalQuestions).toBe(4);
 });
@@ -103,6 +125,30 @@ test('Students drawings can be viewed', async ({ page }) => {
 	await page.locator(`button:has-text("next")`).click();
 
 	await expect(page.locator('div.drawing-card')).toHaveCount(6);
+});
+
+test('Drawings only show for current year', async ({ page }) => {
+	await clearAllDbEntries();
+	await initializeTestTeachers();
+	await resetQuizzesToTestData();
+	await resetStudentsAndScores();
+	await resetDrawingsToTestData();
+
+	await loginAsAdmin(page);
+
+	await page.locator('a:has-text("View Drawings")').click();
+
+	await expect(
+		page.locator('p:has-text("No drawings found. Try adjusting your filters.")')
+	).not.toBeVisible();
+	await expect(page.locator('div.drawing-card')).not.toHaveCount(0);
+
+	await setYearTo(page, 2425);
+
+	await expect(
+		page.locator('p:has-text("No drawings found. Try adjusting your filters.")')
+	).toBeVisible();
+	await expect(page.locator('div.drawing-card')).toHaveCount(0);
 });
 
 test('Students drawings can be deleted', async ({ page }) => {

@@ -15,12 +15,32 @@ export interface GetScoresScore {
 }
 
 export interface GetScoresFilters {
-	grade: number;
-	teacherName: string;
-	quizCode: string;
-	studentName: string;
-	quizQuarter: number;
-	quizSequenceLetter: string;
+	grade?: number;
+	teacherName?: string;
+	year?: number;
+	quizCode?: string;
+	studentName?: string;
+	quizQuarter?: number;
+	quizSequenceLetter?: string;
+}
+
+export interface GetDrawingsResult {
+	drawings: {
+		id: number;
+		jpgBase64: string;
+		student: {
+			name: string;
+		};
+		accessCode: string;
+		quiz: {
+			title: string;
+			grade: number;
+			quarter: number;
+			sequenceLetter: string;
+		};
+		timeStarted: Date;
+	}[];
+	total: number;
 }
 
 export interface GetDrawingsResult {
@@ -118,16 +138,18 @@ export class Database {
 		});
 	}
 
-	async addStudents(studentNames: string[], teacherName: string) {
+	async addStudents(studentNames: string[], teacherName: string, year: number) {
 		try {
 			return await this.prisma.$transaction(async (prisma) => {
 				const teacher = await prisma.teacher.findUnique({
 					where: { name: teacherName }
 				});
 
+				// if the teacher had this student, they were deleted, and the teacher added again, restore the existing
 				await prisma.student.updateMany({
 					where: {
 						name: { in: studentNames.map((n) => n.toLowerCase()) },
+						year,
 						teacherId: teacher.id
 					},
 					data: { archived: false }
@@ -135,7 +157,8 @@ export class Database {
 
 				const dataToInsert = studentNames.map((studentName) => ({
 					name: studentName.toLowerCase(),
-					teacherId: teacher.id
+					teacherId: teacher.id,
+					year
 				}));
 
 				return await prisma.student.createManyAndReturn({
@@ -201,7 +224,7 @@ export class Database {
 	async getDrawings(
 		page = 1,
 		pageSize = 5,
-		filters: { grade?: number; teacherName?: string } = {}
+		filters: { grade?: number; teacherName?: string; year?: number } = {}
 	): Promise<GetDrawingsResult> {
 		try {
 			const skip = (page - 1) * pageSize;
@@ -210,11 +233,10 @@ export class Database {
 				jpgBase64: { not: null },
 				student: {
 					...(filters.teacherName && { teacher: { name: filters.teacherName } }),
-					...(filters.grade && { teacher: { grade: filters.grade } })
+					...(filters.grade && { teacher: { grade: filters.grade } }),
+					...(filters.year && { year: filters.year })
 				}
 			};
-
-			console.log('where', where);
 
 			const [drawings, total] = await Promise.all([
 				this.prisma.drawing.findMany({
@@ -254,11 +276,11 @@ export class Database {
 		}
 	}
 
-	async getStudent(studentName: string) {
+	async getStudent(studentName: string, year: number) {
 		try {
 			return await this.prisma.student.findFirst({
 				select: { teacher: true },
-				where: { name: studentName, archived: false }
+				where: { name: studentName, archived: false, year }
 			});
 		} catch (error) {
 			logDBError('database', 'Error doing single student lookup', error);
@@ -266,14 +288,14 @@ export class Database {
 		}
 	}
 
-	async getStudentsOfTeacher(teacherId: number) {
+	async getStudentsOfTeacher(teacherId: number, year: number) {
 		try {
 			if (teacherId === null) {
 				throw new Error('Missing teacher id');
 			}
 			const students = await this.prisma.student.findMany({
 				select: { name: true, id: true },
-				where: { archived: false, teacherId },
+				where: { archived: false, teacherId, year },
 				orderBy: { name: 'asc' }
 			});
 			return students;
@@ -283,8 +305,7 @@ export class Database {
 		}
 	}
 
-	// todo: year - make selector in UI
-	async getSummaryOfScores(grade: number, teacherName: string, year = 2425) {
+	async getSummaryOfScores(grade: number, teacherName: string, year: number) {
 		try {
 			const summary = await prisma.score.groupBy({
 				by: ['quizCode'],
@@ -335,10 +356,12 @@ export class Database {
 					quiz: {
 						accessCode: filters?.quizCode || undefined,
 						quarter: filters?.quizQuarter || undefined,
-						sequenceLetter: filters?.quizSequenceLetter || undefined
+						sequenceLetter: filters?.quizSequenceLetter || undefined,
+						year: filters?.year || undefined
 					},
 					student: {
 						name: filters?.studentName || undefined,
+						year: filters?.year || undefined,
 						archived: false,
 						teacher: {
 							name: filters?.teacherName || undefined,
@@ -377,12 +400,12 @@ export class Database {
 		}
 	}
 
-	async archiveStudent(name: string, teacherId: int): Promise<void> {
+	async archiveStudent(name: string, teacherId: number, year: number) {
 		try {
 			// using updateMany instead of update because prisma doesn't know that
 			// name is unique within a teacherId
 			await this.prisma.student.updateMany({
-				where: { name, teacherId },
+				where: { name, teacherId, year },
 				data: { archived: true }
 			});
 		} catch (error) {
@@ -582,14 +605,10 @@ export class Database {
 		}
 	}
 
-	/**
-	 * @returns Array of quizzes.
-	 */
-	// todo: year, filter by the year that the app has in env
-	async getAllQuizzes() {
+	async getAllQuizzes(year: number) {
 		try {
 			return await this.prisma.quiz.findMany({
-				where: { archived: false },
+				where: { archived: false, year },
 				include: {
 					_count: {
 						select: {
@@ -604,7 +623,9 @@ export class Database {
 		}
 	}
 
-	async studentBelongsToTeacher(studentName: string, teacherName: string): Promise<boolean> {
+	// only used by the login function. No year filter.
+	// The year that comes back from this is assigned to the students cookie.
+	async studentBelongsToTeacher(studentName: string, teacherName: string) {
 		try {
 			if (!studentName || !teacherName) {
 				throw new Error('Missing student or teacher name on db lookup');
@@ -618,7 +639,7 @@ export class Database {
 				}
 			});
 			if (student) {
-				return student.id;
+				return student;
 			} else {
 				return 0;
 			}

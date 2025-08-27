@@ -1,7 +1,7 @@
 import { invalidateAll } from '$app/navigation';
 import { type Cookies } from '@sveltejs/kit';
 import { get } from 'svelte/store';
-import { clearCookies, getSignedCookieValue } from './signedCookie';
+import { clearCookies, getSignedCookieValue } from '$lib/cookieAndAuthUtils';
 import { env } from '$env/dynamic/private';
 import { logAPIError } from './logging';
 import { getEnv } from './config';

@@ -1,7 +1,7 @@
 import { Database, type GetScoresFilters } from '$lib/database';
-import { validateRole } from '$lib/passwordUtils.js';
+import { validateRole } from '$lib/passwordUtils';
 import { json } from '@sveltejs/kit';
-import { logDBError, logEvent } from '$lib/logging.js';
+import { logDBError, logEvent } from '$lib/logging';
 
 const db = new Database();
 

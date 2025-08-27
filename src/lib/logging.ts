@@ -1,8 +1,8 @@
 import { Logtail } from '@logtail/node';
 import { getEnv } from './config';
 
-const sourceToken = getEnv('SOURCE_TOKEN');
-const ingestingHost = getEnv('INGESTING_HOST');
+const sourceToken = getEnv('SOURCE_TOKEN', false);
+const ingestingHost = getEnv('INGESTING_HOST', false);
 
 class FakeLogtail {
 	error(msg, object) {

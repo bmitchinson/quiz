@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { Database } from '$lib/database';
-import { getSignedCookieValue } from '$lib/signedCookie';
+import { getSignedCookieValue } from '$lib/cookieAndAuthUtils';
 
 const db = new Database();
 

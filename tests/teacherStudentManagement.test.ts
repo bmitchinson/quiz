@@ -4,10 +4,12 @@ import {
 	clearAllDbEntries,
 	resetStudentsAndScores,
 	initializeTestTeachers,
-	amountOfStudentsForTeacher,
+	amountOfStudentsForTeacherFromDB,
 	resetQuizzesToTestData,
 	addFourSecondGraderStudents,
-	resetDrawingsToTestData
+	resetDrawingsToTestData,
+	setYearTo,
+	getCurrentYearInt
 } from './testutils';
 
 test.beforeEach(async () => {
@@ -42,12 +44,31 @@ test('Students can be added', async ({ page }) => {
 
 	await page.locator('button:has-text("Add Students")').click();
 
-	await expect(await amountOfStudentsForTeacher('mitchinson')).toBe(4);
+	await expect(await amountOfStudentsForTeacherFromDB('mitchinson')).toBe(4);
 
 	await expect(page.locator(`td:has-text("allison")`)).toBeVisible();
 	await expect(page.locator(`td:has-text("william")`)).toBeVisible();
 	await expect(page.locator(`td:has-text("benjamin")`)).toBeVisible();
 	await expect(page.locator(`td:has-text("sara")`)).toBeVisible();
+});
+
+test("Students added don't affect other years", async ({ page }) => {
+	await loginAsTeacher(page);
+	await page.locator('a:has-text("Manage Students")').click();
+
+	await page.locator('textarea').fill('allison\nwilliam\n');
+	await page.locator('button:has-text("Add Students")').click();
+
+	await setYearTo(page, 2425);
+
+	await expect(await amountOfStudentsForTeacherFromDB('mitchinson')).toBe(2);
+	await expect(page.locator(`td:has-text("allison")`)).not.toBeVisible();
+	await expect(page.locator(`td:has-text("william")`)).not.toBeVisible();
+
+	await setYearTo(page, getCurrentYearInt());
+
+	await expect(page.locator(`td:has-text("allison")`)).toBeVisible();
+	await expect(page.locator(`td:has-text("william")`)).toBeVisible();
 });
 
 test('Students drawings can be viewed', async ({ page }) => {
@@ -67,6 +88,26 @@ test('Students drawings can be viewed', async ({ page }) => {
 	await page.locator(`button:has-text("next")`).click();
 
 	await expect(page.locator('div.drawing-card')).toHaveCount(2);
+});
+
+test('Drawings only show for current year', async ({ page }) => {
+	await clearAllDbEntries();
+	await initializeTestTeachers();
+	await resetQuizzesToTestData();
+	await resetStudentsAndScores();
+	await resetDrawingsToTestData();
+
+	await loginAsTeacher(page);
+
+	await page.locator('a:has-text("View Student Drawings")').click();
+
+	await expect(page.locator('p:has-text("No drawings found.")')).not.toBeVisible();
+	await expect(page.locator('div.drawing-card')).not.toHaveCount(0);
+
+	await setYearTo(page, 2425);
+
+	await expect(page.locator('p:has-text("No drawings found.")')).toBeVisible();
+	await expect(page.locator('div.drawing-card')).toHaveCount(0);
 });
 
 test('Students drawings can be deleted', async ({ page }) => {

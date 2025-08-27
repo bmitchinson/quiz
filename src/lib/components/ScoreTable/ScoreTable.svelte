@@ -24,6 +24,7 @@
 	onMount(() => {
 		fetchScores = () => {
 			scoresLoading = true;
+			// TODO why couldn't I make this generic, broke ts imports
 			makePostRequest(
 				'/api/quiz/getScores',
 				{

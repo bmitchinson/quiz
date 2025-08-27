@@ -14,6 +14,26 @@
 	$: userText = data.loginType === 'Admin' ? 'Admin' : `${data.loginType}: ${data.loginName}`;
 
 	let bannerText = data.bannerText;
+
+	let selectedSchoolYear = data.selectedSchoolYear; // Use value from cookie
+
+	const handleSchoolYearChange = async () => {
+		try {
+			const response = await fetch('/api/set-school-year', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ schoolYear: selectedSchoolYear })
+			});
+
+			if (response.ok) {
+				location.reload();
+			}
+		} catch (error) {
+			console.error('Failed to set school year:', error);
+		}
+	};
 </script>
 
 <div class="flex flex-col items-center h-screen justify-between">
@@ -40,6 +60,19 @@
 		{#if data.loginType}
 			<div class="absolute right-4 flex items-center space-x-4">
 				<span class="text-lg font-medium">{userText}</span>
+				{#if data.loginType === 'Admin' || data.loginType === 'Teacher'}
+					<!-- TODO: Why does this flicker from last year to now 🤔 -->
+					<select
+						bind:value={selectedSchoolYear}
+						on:change={handleSchoolYearChange}
+						id="year-dropdown"
+						class="bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#26561b] focus:border-transparent"
+					>
+						{#each data.schoolYearOptions as year}
+							<option value={year.value}>{year.label}</option>
+						{/each}
+					</select>
+				{/if}
 				<button
 					class="bg-[#26561b] hover:bg-[#316f23] text-white px-4 py-2 rounded-md transition duration-300"
 					on:click={logout}

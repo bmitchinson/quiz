@@ -5,10 +5,10 @@ import {
 	initializeTestTeachers,
 	loginAsAdmin,
 	loginAsFirstAlphaFirstGrader,
-	loginAsSecondGradeStudent,
 	resetQuizzesToTestData,
 	resetStudentsAndScores
 } from './testutils';
+import { getCurrentYearInt } from './testutils';
 
 test.beforeAll(async () => {
 	await clearAllDbEntries();
@@ -19,7 +19,7 @@ test.beforeAll(async () => {
 
 test('Student can retake quiz by deleting', async ({ page }) => {
 	const quizCode = await getQuizByMetadata({
-		year: 2425,
+		year: getCurrentYearInt(),
 		grade: 1,
 		quarter: 1,
 		sequenceLetter: 'A'

@@ -4,7 +4,7 @@
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
 	import GradeTeacherDropdown from '$lib/components/ScoreChart/GradeTeacherDropdown.svelte';
-	import { getButtonStyles } from '../../../lib/cssUtils.js';
+	import { getButtonStyles } from '$lib/cssUtils';
 	import { enhance } from '$app/forms';
 
 	export let data;
