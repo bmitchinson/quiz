@@ -180,6 +180,16 @@
 		currentQuestionIndex++;
 	}
 
+	function handleGlobalEnterKey(event) {
+		if (event.key === 'Enter' && quizStarted && currentQuestionIndex < questions.length) {
+			if (isCorrect === null && !submissionDisabled) {
+				submitAnswer();
+			} else if (isCorrect !== null) {
+				goToNextQuestion();
+			}
+		}
+	}
+
 	function showReadableOpSymbols(question: String): String {
 		return question.replace(/\//g, '÷').replace('*', 'x');
 	}
@@ -189,6 +199,11 @@
 			quizStarted && focusLossDetectedCount++;
 		});
 		window.addEventListener('blur', () => quizStarted && focusLossDetectedCount++);
+		document.addEventListener('keydown', handleGlobalEnterKey);
+
+		return () => {
+			document.removeEventListener('keydown', handleGlobalEnterKey);
+		};
 	});
 </script>
 
