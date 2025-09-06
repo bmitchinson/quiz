@@ -207,6 +207,22 @@
 {:else if !quizStarted}
 	<!-- Show the access code form -->
 	<div class="bg-white rounded-lg p-8 shadow-md text-center max-w-xl mx-auto mt-10">
+		<!-- Back to Student Portal -->
+		<div class="mb-6 text-left">
+			<a
+				href="/student"
+				class="inline-flex items-center text-[#26561b] hover:text-[#316f23] font-medium transition duration-200"
+			>
+				<svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+					<path
+						fill-rule="evenodd"
+						d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+						clip-rule="evenodd"
+					></path>
+				</svg>
+				Back to Student Portal
+			</a>
+		</div>
 		<h2 class="text-4xl mb-4">Enter Quiz Access Code</h2>
 		<form class="flex flex-col items-center">
 			<input
