@@ -8,6 +8,7 @@ import { logDBError } from './logging';
 export interface GetScoresScore {
 	id: number;
 	correctAnswers: number;
+	answers: string[];
 	createdAt: Date;
 	quiz: Quiz;
 	quizTitle: string;

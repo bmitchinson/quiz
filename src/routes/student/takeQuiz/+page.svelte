@@ -5,6 +5,7 @@
 	import Card from '$lib/components/Card.svelte';
 	import { allowedDistractionsBeforeQuizEnds, disallowDistractionsFeatureFlag } from '$lib/config';
 	import { getButtonStyles } from '$lib/cssUtils';
+	import { evaluateExpression } from '$lib/quizUtils';
 
 	export let data;
 	const studentGrade = data.studentGrade;
@@ -107,22 +108,6 @@
 				accessCodeErr = result.data.message;
 				questionsData = '';
 			}
-		}
-	}
-
-	// Function to evaluate the expression
-	function evaluateExpression(expression) {
-		try {
-			// Remove any unwanted characters (whitelist numbers, operators, parentheses)
-			const safeExpression = expression.replace(/[^-()\d/x+.\s]/g, '');
-			// Replace X with * for evaluating multiplication
-			const safeExpressionWithFixedMultiplication = safeExpression.replace(/x/g, '*');
-			// Evaluate the expression
-			// eslint-disable-next-line no-new-func
-			return Function(`'use strict'; return (${safeExpressionWithFixedMultiplication})`)();
-		} catch (e) {
-			console.error('Error evaluating expression:', e);
-			return null;
 		}
 	}
 
