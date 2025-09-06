@@ -22,6 +22,7 @@ export interface GetScoresFilters {
 	studentName?: string;
 	quizQuarter?: number;
 	quizSequenceLetter?: string;
+	id?: number;
 }
 
 export interface GetDrawingsResult {
@@ -378,6 +379,7 @@ export class Database {
 		try {
 			const scores = await prisma.score.findMany({
 				where: {
+					id: filters?.id || undefined,
 					quiz: {
 						accessCode: filters?.quizCode || undefined,
 						quarter: filters?.quizQuarter || undefined,
@@ -397,6 +399,7 @@ export class Database {
 				select: {
 					id: true,
 					correctAnswers: true,
+					answers: true,
 					createdAt: true,
 					quiz: true,
 					student: {
