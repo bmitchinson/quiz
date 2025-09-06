@@ -61,7 +61,10 @@
 		<label for="lastNames" class="block text-gray-700 font-medium mb-2">
 			Enter Student First Initial + Last Name (one per line):
 		</label>
-		<p>This name is what a student will enter as their "name" to take their quiz</p>
+		<p>
+			This name is what a student will enter as their "name" to take their quiz. Numbers and symbols
+			will be removed.
+		</p>
 		<textarea
 			id="lastNames"
 			name="lastNames"
