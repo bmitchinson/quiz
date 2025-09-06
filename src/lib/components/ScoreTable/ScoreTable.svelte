@@ -109,6 +109,10 @@
 		width: 100%;
 	}
 
+	:global(.datatable-search) {
+		border: 2px solid black;
+	}
+
 	h1 {
 		margin: 0;
 	}
