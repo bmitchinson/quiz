@@ -180,6 +180,16 @@
 		currentQuestionIndex++;
 	}
 
+	function handleGlobalEnterKey(event) {
+		if (event.key === 'Enter' && quizStarted && currentQuestionIndex < questions.length) {
+			if (isCorrect === null && !submissionDisabled) {
+				submitAnswer();
+			} else if (isCorrect !== null) {
+				goToNextQuestion();
+			}
+		}
+	}
+
 	function showReadableOpSymbols(question: String): String {
 		return question.replace(/\//g, '÷').replace('*', 'x');
 	}
@@ -189,6 +199,11 @@
 			quizStarted && focusLossDetectedCount++;
 		});
 		window.addEventListener('blur', () => quizStarted && focusLossDetectedCount++);
+		document.addEventListener('keydown', handleGlobalEnterKey);
+
+		return () => {
+			document.removeEventListener('keydown', handleGlobalEnterKey);
+		};
 	});
 </script>
 
@@ -238,6 +253,9 @@
       {isCorrect === true ? 'bg-green-200' : ''}
       {isCorrect === false ? 'bg-red-200' : ''}"
 		>
+			<div class="text-lg pb-8">
+				Question: {currentQuestionIndex + 1} of {questions.length}
+			</div>
 			<div
 				class="flex gap-7 text-6xl font-serif mb-4"
 				style="font-family: 'Times New Roman', Times, serif;"
@@ -269,7 +287,9 @@
 					Next Question
 				</button>
 			{/if}
-			{#if isCorrect !== null && !isCorrect}
+			{#if isCorrect === null}
+				<p id="result-msg" class="text-2xl mt-4 h-[32px]"></p>
+			{:else if !isCorrect}
 				<p id="result-msg" class="text-2xl mt-4">Correct answer: {correctAnswer}</p>
 			{:else if isCorrect}
 				<p id="result-msg" class="text-2xl mt-4">Correct!</p>
