@@ -35,6 +35,8 @@ test('Student can retake quiz by deleting', async ({ page }) => {
 	await page.locator('a:has-text("View Scores")').click();
 	await page.waitForTimeout(500);
 	await page.locator('button:has-text("Student")').click();
+
+	page.on('dialog', (dialog) => dialog.accept());
 	await page.locator('button:has-text("Delete")').first().click();
 	await page.waitForTimeout(100);
 
