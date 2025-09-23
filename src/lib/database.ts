@@ -5,14 +5,7 @@ import { getReadableTitleOfQuiz } from './dataUtils';
 import { tempDisablePrismaQuery } from './config';
 import { logDBError } from './logging';
 
-export interface GetScoresScore {
-	id: number;
-	correctAnswers: number;
-	createdAt: Date;
-	quiz: Quiz;
-	quizTitle: string;
-	student: { name: string; teacher: { name: string; grade: number } };
-}
+export type GetScoresResult = Awaited<ReturnType<Database['getScores']>>;
 
 export interface GetScoresFilters {
 	grade?: number;
@@ -22,6 +15,7 @@ export interface GetScoresFilters {
 	studentName?: string;
 	quizQuarter?: number;
 	quizSequenceLetter?: string;
+	id?: number;
 }
 
 export interface GetDrawingsResult {
@@ -297,12 +291,19 @@ export class Database {
 		}
 	}
 
-	async getStudent(studentName: string, year: number) {
+	async getStudent(studentFilter: { studentName?: string; studentId?: number }, year: number) {
 		if (!year) throw new Error('getStudent missing year');
+		const { studentName, studentId } = studentFilter || {};
+		if (!studentName && !studentId) throw new Error('getStudent requires studentName or studentId');
 		try {
 			return await this.prisma.student.findFirst({
-				select: { teacher: true },
-				where: { name: studentName, archived: false, year }
+				select: { teacher: true, name: true },
+				where: {
+					archived: false,
+					year,
+					...(studentName && { name: studentName }),
+					...(studentId && { id: studentId })
+				}
 			});
 		} catch (error) {
 			logDBError('database', 'Error doing single student lookup', error);
@@ -373,11 +374,12 @@ export class Database {
 		}
 	}
 
-	async getScores(filters: GetScoresFilters): Promise<GetScoresScore[]> {
+	async getScores(filters: GetScoresFilters) {
 		if (!filters.year) throw new Error('getScores missing year');
 		try {
 			const scores = await prisma.score.findMany({
 				where: {
+					id: filters?.id || undefined,
 					quiz: {
 						accessCode: filters?.quizCode || undefined,
 						quarter: filters?.quizQuarter || undefined,
@@ -397,6 +399,7 @@ export class Database {
 				select: {
 					id: true,
 					correctAnswers: true,
+					answers: true,
 					createdAt: true,
 					quiz: true,
 					student: {

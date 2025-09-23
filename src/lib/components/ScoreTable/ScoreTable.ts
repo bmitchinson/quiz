@@ -2,18 +2,33 @@ import { DataTable } from 'simple-datatables';
 import { getPercentageAsString } from '$lib/dataUtils';
 import { format } from 'date-fns';
 import DeleteButton from './ScoreDeleteButton.svelte';
+import ViewButton from './ScoreViewButton.svelte';
 import { writable } from 'svelte/store';
 
 export const scoreIdToDeleteStore = writable<{ scoreIdToDelete: number } | null>(null);
 
-function renderDeleteButton(scoreId: number): string {
-	const div = document.createElement('div');
-	const btn = new DeleteButton({
-		target: div,
+function renderActionButtons(scoreId: number): string {
+	const actionsContainer = document.createElement('div');
+	actionsContainer.style.display = 'flex';
+	actionsContainer.style.flexDirection = 'row';
+	actionsContainer.style.flexWrap = 'wrap';
+	actionsContainer.style.gap = '4px';
+
+	const buttonContainer1 = document.createElement('div');
+	new ViewButton({
+		target: buttonContainer1,
 		props: { scoreId }
 	});
 
-	return div.innerHTML;
+	const buttonContainer2 = document.createElement('div');
+	new DeleteButton({
+		target: buttonContainer2,
+		props: { scoreId }
+	});
+
+	actionsContainer.appendChild(buttonContainer1);
+	actionsContainer.appendChild(buttonContainer2);
+	return actionsContainer.innerHTML;
 }
 
 export const createDataTable = (id: string, scoreData: Object[]) => {
@@ -37,17 +52,40 @@ export const createDataTable = (id: string, scoreData: Object[]) => {
 				format(new Date(i.createdAt), 'MMM do - h:mmaaa'),
 				i.student.teacher.grade,
 				i.student.teacher.name,
-				renderDeleteButton(i.id)
+				renderActionButtons(i.id)
 			])
 		},
 		sortable: true,
 		sortInitial: sortTableByLatestDate
 	});
 
+	document.querySelectorAll('.score-view-btn').forEach((btn) => {
+		btn.addEventListener('click', (event) => {
+			const target = event.target as HTMLElement;
+			const scoreId = parseInt(target.getAttribute('scoreId'));
+			window.location.href = `/score/${scoreId}`;
+		});
+	});
+
 	document.querySelectorAll('.score-delete-btn').forEach((btn) => {
 		btn.addEventListener('click', (event) => {
 			const target = event.target as HTMLElement;
-			scoreIdToDeleteStore.set({ scoreIdToDelete: parseInt(target.getAttribute('scoreId')) });
+			const scoreId = parseInt(target.getAttribute('scoreId'));
+
+			// Find the table row to get student and quiz info
+			const row = target.closest('tr');
+			if (row) {
+				const cells = row.querySelectorAll('td');
+				const quizTitle = cells[0]?.textContent?.split(' (')[0] || 'Unknown Quiz';
+				const studentName = cells[1]?.textContent || 'Unknown Student';
+
+				const confirmed = confirm(
+					`Are you sure you'd like to delete ${studentName}'s ${quizTitle} score?`
+				);
+				if (confirmed) {
+					scoreIdToDeleteStore.set({ scoreIdToDelete: scoreId });
+				}
+			}
 		});
 	});
 
