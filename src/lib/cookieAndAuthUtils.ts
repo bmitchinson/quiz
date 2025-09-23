@@ -21,7 +21,7 @@ export async function setSignedCookieValue(
 	});
 }
 
-export async function getSignedCookieValue(attr: String, cookies: Cookies): Promise<String> {
+export async function getSignedCookieValue(attr: String, cookies: Cookies): Promise<string> {
 	const signedValue = cookies.get(attr);
 	try {
 		const unsignedValue = await signature.unsign(signedValue, cookieSecret);

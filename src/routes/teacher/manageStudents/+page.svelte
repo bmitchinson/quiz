@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
+	import { invalidateAll, goto } from '$app/navigation';
+	import { getButtonStyles } from '$lib/cssUtils';
 
-	export let data: { students: { name: string }[] };
+	export let data;
 	let message = '';
 	let success = false;
 	let searchQuery = '';
@@ -61,7 +62,10 @@
 		<label for="lastNames" class="block text-gray-700 font-medium mb-2">
 			Enter Student First Initial + Last Name (one per line):
 		</label>
-		<p>This name is what a student will enter as their "name" to take their quiz</p>
+		<p>
+			This name is what a student will enter as their "name" to take their quiz. Numbers and symbols
+			will be removed.
+		</p>
 		<textarea
 			id="lastNames"
 			name="lastNames"
@@ -113,12 +117,18 @@ bdylan"
 							{student.name}
 						</div>
 					</td>
-					<td class="flex justify-center m-2">
+					<td class="py-2 px-4 border-b flex flex-row justify-center gap-4">
 						<button
 							on:click={() => deleteStudent(student.name)}
-							class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-md transition duration-200"
+							class={getButtonStyles(false, true)}
 						>
 							Delete
+						</button>
+						<button
+							on:click={() => goto(`/teacher/manageStudents/${student.id}`)}
+							class={getButtonStyles()}
+						>
+							View Scores
 						</button>
 					</td>
 				</tr>

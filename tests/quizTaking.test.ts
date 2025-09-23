@@ -37,6 +37,7 @@ test('Taking a quiz', async ({ page }) => {
 	}).then((quiz) => quiz?.accessCode);
 
 	await loginAsTestThirdGradeQuizTaker(page);
+	await page.locator('a:has-text("Take Quiz")').click();
 
 	await page.locator(`h2:has-text("Enter Quiz Access Code")`);
 
@@ -85,6 +86,7 @@ test('Student cannot retake quiz', async ({ page }) => {
 	await createScoreForQuiz(quiz?.accessCode, thirdGradeQuizTakerName, ['4', '0', '9', '25']);
 
 	await loginAsTestThirdGradeQuizTaker(page);
+	await page.locator('a:has-text("Take Quiz")').click();
 
 	await page.locator('input[name="accessCode"]').fill(quiz?.accessCode);
 	await page.locator('button:has-text("Start Quiz")').click();
@@ -102,6 +104,7 @@ test('Student can resume a quiz', async ({ page }) => {
 	await createScoreForQuiz(quiz?.accessCode, thirdGradeQuizTakerName, ['4', '0']);
 
 	await loginAsTestThirdGradeQuizTaker(page);
+	await page.locator('a:has-text("Take Quiz")').click();
 
 	await page.locator('input[name="accessCode"]').fill(quiz?.accessCode);
 	await page.locator('button:has-text("Start Quiz")').click();
@@ -119,6 +122,7 @@ test('Student can submit a drawing after a quiz is complete', async ({ page }) =
 	await createScoreForQuiz(quiz?.accessCode, thirdGradeQuizTakerName, ['4', '1', '9', '25'], true);
 
 	await loginAsTestThirdGradeQuizTaker(page);
+	await page.locator('a:has-text("Take Quiz")').click();
 
 	await page.locator('input[name="accessCode"]').fill(quiz?.accessCode);
 	await page.locator('button:has-text("Start Quiz")').click();
@@ -165,6 +169,7 @@ test('Student that is distracted during a quiz has their score marked accordingl
 	});
 
 	await loginAsTestThirdGradeQuizTaker(page);
+	await page.locator('a:has-text("Take Quiz")').click();
 
 	await page.locator(`h2:has-text("Enter Quiz Access Code")`);
 
@@ -202,6 +207,7 @@ test('Student cannot take a quiz from another grade', async ({ page }) => {
 	}).then((quiz) => quiz?.accessCode);
 
 	await loginAsTestThirdGradeQuizTaker(page);
+	await page.locator('a:has-text("Take Quiz")').click();
 
 	await page.locator(`h2:has-text("Enter Quiz Access Code")`);
 

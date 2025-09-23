@@ -17,7 +17,7 @@
 						goto('/admin', { replaceState: true });
 						break;
 					case 'Student':
-						goto('/student/takeQuiz', { replaceState: true });
+						goto('/student', { replaceState: true });
 						break;
 					case 'Teacher':
 						goto('/teacher', { replaceState: true });

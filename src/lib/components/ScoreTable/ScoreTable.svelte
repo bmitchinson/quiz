@@ -3,10 +3,10 @@
 	import { DataTable } from 'simple-datatables';
 	import { makePostRequest } from '$lib/apiUtils';
 	import Card from '$lib/components/Card.svelte';
-	import type { GetScoresScore } from '$lib/database';
 	import { createDataTable, scoreIdToDeleteStore } from './ScoreTable';
 	import LoadingSquare from '../LoadingSquare.svelte';
 	import ScoreTableFilter from './ScoreTableFilter.svelte';
+	import type { GetScoresResult } from '$lib/database';
 
 	export let allTeachers: { grade: number; name: string }[] = [];
 
@@ -33,7 +33,7 @@
 					quizQuarter: parseInt(quizQuarter),
 					quizSequenceLetter
 				},
-				(data: { scores: GetScoresScore[]; dataExists: boolean }) => {
+				(data: { scores: GetScoresResult }) => {
 					dataTable && dataTable.destroy();
 					dataTable = createDataTable('scores-table', data.scores);
 					setTimeout(() => {
@@ -107,6 +107,10 @@
 		gap: 1em;
 		display: flex;
 		width: 100%;
+	}
+
+	:global(.datatable-search) {
+		border: 2px solid black;
 	}
 
 	h1 {
