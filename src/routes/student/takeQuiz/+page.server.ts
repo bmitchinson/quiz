@@ -1,7 +1,6 @@
 import { Database } from '$lib/database';
 import { getSignedCookieValue, getYearIntFromCookies } from '$lib/cookieAndAuthUtils';
 import { validateRole } from '$lib/passwordUtils';
-import { addMinutes } from 'date-fns';
 import { quizHasTakenLongerThanAllowed } from '$lib/dateUtils';
 import { logAPIError, logEvent } from '$lib/logging';
 import { getReadableTitleOfQuiz } from '$lib/dataUtils';
@@ -13,7 +12,7 @@ export const load: PageServerLoad = async ({ request, cookies }) =>
 	validateRole(request, cookies, ['Student'], async () => {
 		try {
 			const student = await db.getStudent(
-				await getSignedCookieValue('loginName', cookies),
+				{ studentName: await getSignedCookieValue('loginName', cookies) },
 				await getYearIntFromCookies(cookies)
 			);
 			return { studentGrade: student?.teacher.grade };

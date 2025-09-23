@@ -1,4 +1,4 @@
-import { getYearIntFromCookies, getSignedCookieValue } from '$lib/cookieAndAuthUtils';
+import { getYearIntFromCookies } from '$lib/cookieAndAuthUtils';
 import { Database } from '$lib/database';
 import { validateRole } from '$lib/passwordUtils';
 import type { PageServerLoad } from './$types';

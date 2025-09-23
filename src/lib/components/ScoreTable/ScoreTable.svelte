@@ -3,7 +3,6 @@
 	import { DataTable } from 'simple-datatables';
 	import { makePostRequest } from '$lib/apiUtils';
 	import Card from '$lib/components/Card.svelte';
-	import type { GetScoresScore } from '$lib/database';
 	import { createDataTable, scoreIdToDeleteStore } from './ScoreTable';
 	import LoadingSquare from '../LoadingSquare.svelte';
 	import ScoreTableFilter from './ScoreTableFilter.svelte';
@@ -33,7 +32,7 @@
 					quizQuarter: parseInt(quizQuarter),
 					quizSequenceLetter
 				},
-				(data: { scores: GetScoresScore[]; dataExists: boolean }) => {
+				(data: { scores: any }) => {
 					dataTable && dataTable.destroy();
 					dataTable = createDataTable('scores-table', data.scores);
 					setTimeout(() => {
