@@ -13,7 +13,7 @@
 		headerTxt = `Page Not Found`;
 	} else {
 		contactTxt = `Please report this to mitchinson.dev@gmail.com and wmitchinson@d124.org.`;
-		contactTxt2 = `Please include a description of how you encountered this error, what page you're on, and the date/time it occurred.`;
+		contactTxt2 = `Please include a description of how you encountered this error, what URL is in your browser, and the date/time it occurred.`;
 		console.log(`Status: ${status}`);
 		console.log(`Error shown on client: ${msg}`);
 	}
