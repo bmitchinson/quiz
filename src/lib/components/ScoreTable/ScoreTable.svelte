@@ -6,6 +6,7 @@
 	import { createDataTable, scoreIdToDeleteStore } from './ScoreTable';
 	import LoadingSquare from '../LoadingSquare.svelte';
 	import ScoreTableFilter from './ScoreTableFilter.svelte';
+	import type { GetScoresResult } from '$lib/database';
 
 	export let allTeachers: { grade: number; name: string }[] = [];
 
@@ -32,7 +33,7 @@
 					quizQuarter: parseInt(quizQuarter),
 					quizSequenceLetter
 				},
-				(data: { scores: any }) => {
+				(data: { scores: GetScoresResult }) => {
 					dataTable && dataTable.destroy();
 					dataTable = createDataTable('scores-table', data.scores);
 					setTimeout(() => {
