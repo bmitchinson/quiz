@@ -35,3 +35,8 @@ quiz-staging.mitchinson.dev - `dev`
 - tailwind
 - lots and lots of chatgpt o1 as an exercise in AI codegen for rapid
   development
+
+### Future Ideas
+
+- Quizzes not associated with the standardization tests.
+  - Allowing random generation of questions for those quizzes
