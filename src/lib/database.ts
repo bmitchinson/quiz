@@ -5,6 +5,8 @@ import { getReadableTitleOfQuiz } from './dataUtils';
 import { tempDisablePrismaQuery } from './config';
 import { logDBError } from './logging';
 
+export type GetScoresResult = Awaited<ReturnType<Database['getScores']>>;
+
 export interface GetScoresFilters {
 	grade?: number;
 	teacherName?: string;

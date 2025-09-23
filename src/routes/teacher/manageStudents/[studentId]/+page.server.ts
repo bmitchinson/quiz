@@ -11,6 +11,6 @@ export const load: PageServerLoad = async ({ params, request, cookies }) => {
 		const activeYear = await getYearIntFromCookies(cookies);
 		const student = await db.getStudent({ studentId: parseInt(studentId) }, activeYear);
 		const scores = await db.getScores({ studentName: student?.name, year: activeYear });
-		return { studentName: student?.name, scores };
+		return { studentName: student?.name || '', scores };
 	});
 };
