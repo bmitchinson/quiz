@@ -7,6 +7,7 @@ const lokiUrl = getEnv('LOKI_URL', false);
 const transports: winston.transport[] = [];
 
 if (lokiUrl) {
+	console.log('Confguring loki logger @' + lokiUrl);
 	transports.push(
 		new LokiTransport({
 			host: lokiUrl,
@@ -19,6 +20,7 @@ if (lokiUrl) {
 		})
 	);
 } else {
+	console.log('Using standard logger');
 	const consoleTransport = new winston.transports.Console({
 		format: winston.format.simple()
 	});
