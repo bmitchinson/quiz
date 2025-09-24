@@ -13,10 +13,16 @@ if (lokiUrl) {
 			host: lokiUrl,
 			labels: { app: `quiz-${getEnv('NODE_ENV')?.toLowerCase()}` },
 			json: true,
-			interval: 5, // flush every 5s
 			replaceTimestamp: true,
 			basicAuth: getEnv('LOKI_BASICAUTH'),
-			batching: true,
+			batching: false,
+			// ^ I need to disable batching to send logs as soon as they arrive.
+			// A race condition against svelte resolving a request which has vercel end the active process.
+			// This was a major engineering flaw, but I didn't
+			//   know I'd care for log aggregation to this app when choosing serverless.
+			// log drains would fix this, but I don't want to pay.
+			// adding async blocking logging could fix this as a stop gap, but I don't want to risk a
+			//    failing log stopping the application.
 			onConnectionError: (err) => console.error(`LOKI ERROR: ${err}`)
 		})
 	);
