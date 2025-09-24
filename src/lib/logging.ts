@@ -1,46 +1,49 @@
-import { Logtail } from '@logtail/node';
+import winston from 'winston';
+import LokiTransport from 'winston-loki';
 import { getEnv } from './config';
 
-const sourceToken = getEnv('SOURCE_TOKEN', false);
-const ingestingHost = getEnv('INGESTING_HOST', false);
+const lokiUrl = getEnv('LOKI_URL', false);
 
-class FakeLogtail {
-	error(msg, object) {
-		console.error(`${msg} ${object || ''}`);
-	}
-	info(msg, object) {
-		console.info(`${msg} ${object || ''}`);
-	}
-	flush() {}
+const transports: winston.transport[] = [];
+
+if (lokiUrl) {
+	transports.push(
+		new LokiTransport({
+			host: lokiUrl,
+			labels: { app: `quiz-${getEnv('NODE_ENV')?.toLowerCase()}` },
+			json: true,
+			interval: 5, // flush every 5s
+			replaceTimestamp: true,
+			basicAuth: getEnv('LOKI_BASICAUTH'),
+			batching: true
+		})
+	);
+} else {
+	const consoleTransport = new winston.transports.Console({
+		format: winston.format.simple()
+	});
+	transports.push(consoleTransport);
 }
 
-const logger =
-	sourceToken && ingestingHost
-		? new Logtail(sourceToken, {
-				endpoint: `https://${ingestingHost}`
-			})
-		: new FakeLogtail();
+const logger = winston.createLogger({
+	format: lokiUrl ? undefined : winston.format.colorize(),
+	transports
+});
 
 export const logEvent = (username: string, msg: string) => {
 	logger.info(`USR_EVENT {${username}}: ${msg}`);
-	logger.flush();
 };
 
 export const logDBError = (username: string, msg: string, error: object) => {
-	logger.error(`DB_ERR {${username}}: ${msg} ${error}`);
-	logger.flush();
+	logger.error(`DB_ERR {${username}}: ${msg}`, { error });
 };
 
 export const logAPIError = (username: string, msg: string, error: object) => {
-	logger.error(`API_ERR {${username}}: ${msg} ${error}`);
-	logger.flush();
+	logger.error(`API_ERR {${username}}: ${msg}`, { error });
 };
 
-export const logSvelteError = (error: object, event: object) => {
-	let errorMsg = `SVELTE_ERR {${error}} - {${JSON.stringify(event)}}`;
-	if (error?.stack) {
-		errorMsg += ' - Stack: ' + JSON.stringify(error.stack);
-	}
-	logger.error(errorMsg);
-	logger.flush();
+export const logSvelteError = (error: any, event: object) => {
+	let errorMsg = `SVELTE_ERR ${error} - ${JSON.stringify(event)}`;
+	if (error?.stack) errorMsg += ' - Stack: ' + error.stack;
+	logger.error(errorMsg, { event });
 };
