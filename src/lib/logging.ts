@@ -16,7 +16,8 @@ if (lokiUrl) {
 			interval: 5, // flush every 5s
 			replaceTimestamp: true,
 			basicAuth: getEnv('LOKI_BASICAUTH'),
-			batching: true
+			batching: true,
+			onConnectionError: (err) => console.error(`LOKI ERROR: ${err}`)
 		})
 	);
 } else {
