@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
 
 export async function GET() {
-	const lokiUrl = process.env.LOKI_URL! + '/loki/api/v1/push'; // e.g. https://logs.mitchinson.dev/loki/api/v1/push
-	const basicAuth = process.env.LOKI_BASICAUTH!; // "admin:password"
+	const lokiUrl = process.env.LOKI_URL! + '/loki/api/v1/push';
+	const basicAuth = process.env.LOKI_BASICAUTH!;
 
 	const authHeader = 'Basic ' + Buffer.from(basicAuth).toString('base64');
 
@@ -16,17 +16,19 @@ export async function GET() {
 		]
 	};
 
-	const res = await fetch(lokiUrl, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: authHeader
-		},
-		body: JSON.stringify(payload)
-	});
+	return json({});
 
-	return json({
-		lokiStatus: res.status,
-		lokiStatusText: res.statusText
-	});
+	// const res = await fetch(lokiUrl, {
+	// 	method: 'POST',
+	// 	headers: {
+	// 		'Content-Type': 'application/json',
+	// 		Authorization: authHeader
+	// 	},
+	// 	body: JSON.stringify(payload)
+	// });
+
+	// return json({
+	// 	lokiStatus: res.status,
+	// 	lokiStatusText: res.statusText
+	// });
 }
