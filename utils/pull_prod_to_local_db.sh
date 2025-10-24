@@ -16,12 +16,10 @@ if [ "$mode" == "help" ]; then
 fi
 
 
-echo "if you've had the db up for a while, you may want to down/up to clear it before continuing. (enter)"
-read -s tmp
-
 if [ "$mode" == "import_only" ]; then
   echo "Skipping backup download and using latest_prod_backup.sql"
 else
+  echo "if you've had the db up for a while, you may want to down/up to clear it before continuing."
   echo -n "Enter valtown password to download prod data: "
   read -s PASSWORD
   echo
@@ -31,7 +29,7 @@ else
     -o utils/latest_prod_backup.sql \
     https://bmitchinson-getmostrecentazureblob.web.val.run && \
   grep -i '^x-filename:' utils/latest_prod_headers.txt || echo "X-Filename: <missing>"
-
+  sed -i '' -e 's/^\\restrict /-- \\restrict /' -e 's/^\\unrestrict /-- \\unrestrict /' utils/latest_prod_backup.sql
 
   if [ "$mode" == "download_only" ]; then
     echo "Backup downloaded to utils/latest_prod_backup.sql ✅"
