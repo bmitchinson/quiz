@@ -13,7 +13,7 @@ jobs:
         uses: tj-actions/pg-dump@v3
         with:
           database_url: ${{ secrets.DATABASE_URL }}
-          postgresql_version: '16'
+          postgresql_version: '15'
           path: 'backups/backup.sql'
           options: '-a --schema=public'
           # restore with the following after a table delete w nr db:delete
