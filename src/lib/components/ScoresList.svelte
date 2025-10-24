@@ -80,13 +80,15 @@
 					</svg>
 				</div>
 				<h3 class="text-lg font-medium text-gray-900 mb-2">No Scores Yet</h3>
-				<p class="text-gray-500 mb-6">You haven't taken any quizzes yet.</p>
-				<a
-					href="/student/takeQuiz"
-					class="bg-[#26561b] hover:bg-[#316f23] text-white font-semibold py-2 px-4 rounded-md transition duration-200"
-				>
-					Take Your First Quiz
-				</a>
+				{#if !teacherView}
+					<p class="text-gray-500 mb-6">You haven't taken any quizzes yet.</p>
+					<a
+						href="/student/takeQuiz"
+						class="bg-[#26561b] hover:bg-[#316f23] text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+					>
+						Take Your First Quiz
+					</a>
+				{/if}
 			</div>
 		{:else}
 			<!-- Scores List -->
