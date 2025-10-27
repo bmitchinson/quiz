@@ -28,13 +28,15 @@ quiz-staging.mitchinson.dev - `dev`
 
 ### Tools
 
-- vercel hosting w sveltekit instead of react
+- ~~vercel hosting w sveltekit instead of react~~
+  - hetzner hosted node bundle behind coolify
+- logging to self hosted loki/grafana instance
 - vercel postgres (neon) + supabase
 - prismadb
 - cloudflare
 - tailwind
-- lots and lots of chatgpt o1 as an exercise in AI codegen for rapid
-  development
+- lots and lots of chatgpt as an exercise in AI codegen for rapid
+  development mid 2024
 
 ### Future Ideas
 

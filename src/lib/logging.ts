@@ -7,10 +7,6 @@ const lokiUrl = getEnv('LOKI_URL', false);
 let logger = (() => {
 	if (lokiUrl) {
 		console.log('Logging with loki @ ', lokiUrl);
-		const isVercel = !!getEnv('VERCEL', false);
-		const bachingEnabled = !isVercel;
-		console.log('Is batching enabled: ', bachingEnabled);
-
 		const lokiAuthUser = getEnv('LOKI_BASICAUTH')?.split(':')[0];
 		const lokiAuthPass = getEnv('LOKI_BASICAUTH')?.split(':')[1];
 		const transport = pino.transport({
@@ -18,8 +14,8 @@ let logger = (() => {
 			options: {
 				host: lokiUrl,
 				labels: { app: `quiz-${getEnv('NODE_ENV', false)?.toLowerCase() ?? 'development'}` },
-				batching: bachingEnabled,
-				interval: 1,
+				batching: true,
+				interval: 5,
 				basicAuth: {
 					username: lokiAuthUser,
 					password: lokiAuthPass
