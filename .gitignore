@@ -30,3 +30,4 @@ test-results/
 
 # Tooling
 latest_prod_backup.sql
+utils/latest_prod_headers.txt

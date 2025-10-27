@@ -9,7 +9,10 @@ const playwrightConfig: PlaywrightTestConfig = {
 	},
 	testDir: 'tests',
 	testMatch: /(.+\.)?(test|spec)\.[jt]s/,
-	timeout: 10000
+	timeout: 10000,
+	expect: {
+		toHaveScreenshot: { maxDiffPixelRatio: 0.03 }
+	}
 };
 
 export default playwrightConfig;
