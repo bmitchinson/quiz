@@ -1,4 +1,5 @@
 import pino from 'pino';
+import 'pino-loki';
 import { getEnv } from './config';
 
 const lokiUrl = getEnv('LOKI_URL', false);
